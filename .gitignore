@@ -1,0 +1,17 @@
+/bin/
+/obj/
+/redist/
+*.user
+*.suo
+*.pdb
+*.cache
+*.log
+
+/DarkHubRmk/bin/
+/DarkHubRmk/obj/
+
+*.tmp
+*.bak
+
+assets/yt-dlp.exe
+assets/ffmpeg.exe

@@ -1,0 +1,117 @@
+﻿<Page x:Class="DarkHub.AutoClicker"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.openxmlformats.org/markup-compatibility/2008" 
+      xmlns:local="clr-namespace:DarkHub"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AutoClicker">
+
+    <Page.Resources>
+        <ControlTemplate x:Key="NoHoverBtn" TargetType="Button">
+            <Border Background="{TemplateBinding Background}"  
+                    BorderBrush="{TemplateBinding BorderBrush}"  
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="10">
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  
+                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+        </ControlTemplate>
+
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template" Value="{StaticResource NoHoverBtn}"/>
+            <Setter Property="Padding" Value="10,5"/>
+        </Style>
+
+        <FontFamily x:Key="JetBrainsMono">pack://application:,,,/Fonts/#JetBrains Mono</FontFamily>
+    </Page.Resources>
+
+    <Grid Background="{x:Null}">
+        <TextBlock FontFamily="{StaticResource JetBrainsMono}" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,20">
+            AutoClicker
+        </TextBlock>
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Width="300">
+            <TextBlock Text="Intervalo (ms):" 
+                       Foreground="Black" 
+                       FontSize="14" 
+                       FontFamily="{StaticResource JetBrainsMono}" 
+                       HorizontalAlignment="Center"/>
+            <TextBox x:Name="txtInterval" 
+                     Text="100" 
+                     Width="100" 
+                     Margin="5" 
+                     Padding="5" 
+                     Foreground="Black" 
+                     BorderThickness="1" 
+                     FontFamily="{StaticResource JetBrainsMono}"/>
+
+            <TextBlock Text="Tecla de Ativação" 
+                       Foreground="Black" 
+                       FontSize="14" 
+                       FontFamily="{StaticResource JetBrainsMono}" 
+                       HorizontalAlignment="Center"/>
+            <ComboBox x:Name="cmbActivationKey" 
+                      Width="100" 
+                      Margin="5" 
+                      Background="#3C3C3C" 
+                      Foreground="Black" 
+                      BorderThickness="1" 
+                      FontFamily="{StaticResource JetBrainsMono}">
+                <ComboBoxItem Content="F6"/>
+                <ComboBoxItem Content="F7"/>
+                <ComboBoxItem Content="F8"/>
+            </ComboBox>
+
+            <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Center" 
+                        Margin="0,10,0,10">
+                <Button x:Name="btnStart" 
+                        Content="Iniciar" 
+                        Click="StartClicking" 
+                        Width="100" 
+                        Margin="0,0,10,0" 
+                        Background="#4CAF50" 
+                        Foreground="Black" 
+                        BorderBrush="#388E3C" 
+                        BorderThickness="1" 
+                        FontFamily="{StaticResource JetBrainsMono}" 
+                        FontSize="14" 
+                        Height="40"/>
+                <Button x:Name="btnStop" 
+                        Content="Parar" 
+                        Click="StopClicking" 
+                        Width="100" 
+                        Margin="0" 
+                        Background="#F44336" 
+                        Foreground="Black" 
+                        BorderBrush="#D32F2F" 
+                        BorderThickness="1" 
+                        FontFamily="{StaticResource JetBrainsMono}" 
+                        FontSize="14" 
+                        Height="40"/>
+            </StackPanel>
+
+            <TextBlock x:Name="lblStatus" 
+                       Text="Status: Parado" 
+                       Foreground="Black" 
+                       FontSize="14" 
+                       FontFamily="{StaticResource JetBrainsMono}" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,5"/>
+            <TextBlock x:Name="lblClicksPerSecond" 
+                       Text="Cliques por segundo: 0" 
+                       Foreground="Black" 
+                       FontSize="12" 
+                       FontFamily="{StaticResource JetBrainsMono}" 
+                       HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Page>

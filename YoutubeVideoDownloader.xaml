@@ -1,0 +1,45 @@
+﻿<Page x:Class="DarkHub.YoutubeVideoDownloader"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Youtube Video Downloader" Background="{x:Null}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   Text="YouTube Downloader" 
+                   FontFamily="{StaticResource JetBrainsMono}" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   Foreground="Black" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,10"/>
+
+        <Border Grid.Row="1" Background="#ECECEC" CornerRadius="5" Padding="5" Margin="0,0,20,5">
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="urlTextBox" Width="600" Height="30" Margin="0,0,10,0" VerticalContentAlignment="Center" 
+                         FontFamily="{StaticResource JetBrainsMono}" FontSize="12" 
+                         Text="Insira a URL do vídeo ou playlist" 
+                         GotFocus="UrlTextBox_GotFocus"/>
+                <Button x:Name="btnDownload" Click="Download_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Height="30" ToolTip="Baixar Vídeo">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/assets/baixar.png" Width="24" Height="24" Margin="0,0,5,0"/>
+                        <TextBlock Text="Baixar"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <ListBox x:Name="downloadListBox" Grid.Row="2" Margin="0,0,20,5" FontFamily="{StaticResource JetBrainsMono}" FontSize="12" Background="#F5F5F5" BorderBrush="#D3D3D3" BorderThickness="1"/>
+
+        <TextBox x:Name="statusTextBox" Grid.Row="3" Height="100" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" FontFamily="{StaticResource JetBrainsMono}" FontSize="12" Background="#F5F5F5" BorderBrush="#D3D3D3" BorderThickness="1" Margin="0,0,20,0"/>
+    </Grid>
+</Page>

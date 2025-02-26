@@ -1,0 +1,131 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationIcon>assets\DarkHub.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="assets\baixar.png" />
+		<None Remove="assets\clicker.png" />
+		<None Remove="assets\converter.png" />
+		<None Remove="assets\DarkHub.ico" />
+		<None Remove="assets\DarkHub.pfx" />
+		<None Remove="assets\delete.png" />
+		<None Remove="assets\exif.png" />
+		<None Remove="assets\extrairtxt.png" />
+		<None Remove="assets\extrairtxtinv.png" />
+		<None Remove="assets\extraittxt.png" />
+		<None Remove="assets\ffmpeg.exe" />
+		<None Remove="assets\newtab.png" />
+		<None Remove="assets\optimizer.png" />
+		<None Remove="assets\python.png" />
+		<None Remove="assets\rename.png" />
+		<None Remove="assets\rmbackground.png" />
+		<None Remove="assets\run.png" />
+		<None Remove="assets\save.png" />
+		<None Remove="assets\selectimg.png" />
+		<None Remove="assets\SpaceSniffer.exe" />
+		<None Remove="assets\youtubedw.png" />
+		<None Remove="assets\yt-dlp.exe" />
+		<None Remove="fonts\JetBrainsMono.ttf" />
+		<None Remove="tessdata\eng.traineddata" />
+		<None Remove="tessdata\osd.traineddata" />
+		<None Remove="tessdata\por.traineddata" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+		<PackageReference Include="IronPython" Version="3.4.2" />
+		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
+		<PackageReference Include="pythonnet" Version="3.0.5" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.2" />
+		<PackageReference Include="System.Management" Version="9.0.2" />
+		<PackageReference Include="Tesseract" Version="5.2.0" />
+		<PackageReference Include="YoutubeDLSharp" Version="1.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="assets\baixar.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\clicker.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\converter.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\DarkHub.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\SpaceSniffer.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\delete.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\exif.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\extrairtxt.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\extrairtxtinv.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\ffmpeg.exe">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\newtab.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\optimizer.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\python.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\rmbackground.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\run.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\save.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="assets\rename.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="assets\selectimg.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="assets\youtubedw.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="assets\yt-dlp.exe">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="fonts\JetBrainsMono.ttf">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="tessdata\eng.traineddata">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="tessdata\osd.traineddata">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="tessdata\por.traineddata">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+</Project>
