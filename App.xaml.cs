@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Threading;
+using System.Text;
 
 namespace DarkHubRmk
 {
@@ -13,6 +14,11 @@ namespace DarkHubRmk
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                base.OnStartup(e);
+            }
+
             base.OnStartup(e);
 
             LogToFile("Aplicação iniciada.");

@@ -6,13 +6,8 @@
     <Application.Resources>
         <FontFamily x:Key="JetBrainsMono">pack://applic3213ation:,,,/Fonts/#JetBrains Mono</FontFamily>
 
-        <SolidColorBrush x:Key="ButtonBackgroundDefault" Color="Transparent"/>
-        <SolidColorBrush x:Key="ButtonBackgroundActive" Color="#1F1F1F"/>
-        <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#5F3A91"/>
-        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#7345A1"/>
-
         <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="80"/>
+            <Setter Property="Height" Value="60"/>
             <Setter Property="Width" Value="60"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -43,7 +38,7 @@
                     </Setter>
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#5F3A91"/>
+                    <Setter Property="Background" Value="#2A2A2E"/>
                     <Setter Property="RenderTransform">
                         <Setter.Value>
                             <ScaleTransform ScaleX="1.05" ScaleY="1.05"/>
@@ -51,7 +46,7 @@
                     </Setter>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#7345A1"/>
+                    <Setter Property="Background" Value="#2A2A2E"/>
                     <Setter Property="RenderTransform">
                         <Setter.Value>
                             <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>

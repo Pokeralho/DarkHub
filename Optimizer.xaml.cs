@@ -113,14 +113,14 @@ namespace DarkHub
                     Height = 500,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Colors.White),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
                     WindowStyle = WindowStyle.ToolWindow,
                     FontFamily = new FontFamily("JetBrains Mono"),
-                    FontSize = 14,
+                    FontSize = 14
                 };
 
-                infoWindow.BorderBrush = new SolidColorBrush(Color.FromRgb(115, 69, 161));
-                infoWindow.BorderThickness = new Thickness(2);
+                infoWindow.BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)); // #80848e
+                infoWindow.BorderThickness = new Thickness(1);
 
                 var grid = new Grid();
                 grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(50) });
@@ -132,7 +132,7 @@ namespace DarkHub
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 20,
                     FontWeight = FontWeights.Bold,
-                    Foreground = Brushes.Black,
+                    Foreground = Brushes.White,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(0, 10, 0, 10)
@@ -146,13 +146,13 @@ namespace DarkHub
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)),
-                    Foreground = Brushes.Black,
+                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)), // #2A2A2E
+                    Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     Padding = new Thickness(10),
                     FontSize = 14,
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(90, 90, 90)),
-                    BorderThickness = new Thickness(1),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                    BorderThickness = new Thickness(1)
                 };
                 Grid.SetRow(textBox, 1);
                 grid.Children.Add(textBox);
@@ -268,9 +268,9 @@ namespace DarkHub
                     Height = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Colors.White),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(115, 69, 161)),
-                    BorderThickness = new Thickness(2)
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                    BorderThickness = new Thickness(1)
                 };
 
                 var grid = new Grid();
@@ -283,7 +283,7 @@ namespace DarkHub
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 20,
                     FontWeight = FontWeights.Bold,
-                    Foreground = Brushes.Black,
+                    Foreground = Brushes.White,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -295,12 +295,14 @@ namespace DarkHub
                     Name = "ProgressTextBox",
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)),
-                    Foreground = Brushes.Black,
+                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)), // #2A2A2E
+                    Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     Padding = new Thickness(5),
                     FontFamily = new FontFamily("JetBrains Mono"),
-                    FontSize = 12
+                    FontSize = 12,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                    BorderThickness = new Thickness(1)
                 };
                 Grid.SetRow(textBox, 1);
                 grid.Children.Add(textBox);
@@ -629,42 +631,43 @@ namespace DarkHub
             }
         }
 
-        private string ExecuteCommandWithOutput(string command, TextBox? progressTextBox)
+        private string ExecuteCommandWithOutput(string command, TextBox progressTextBox)
         {
             try
             {
-                var process = new Process
+                ProcessStartInfo processInfo = new ProcessStartInfo
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = $"/C {command}",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true,
-                        StandardOutputEncoding = Encoding.GetEncoding(850),
-                        StandardErrorEncoding = Encoding.GetEncoding(850)
-                    }
+                    FileName = "cmd.exe",
+                    Arguments = $"/c {command}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.GetEncoding(850),
+                    StandardErrorEncoding = Encoding.GetEncoding(850)
                 };
 
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+                using (Process process = new Process { StartInfo = processInfo })
+                {
+                    process.Start();
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
 
-                if (!string.IsNullOrEmpty(output))
-                    AppendProgress(progressTextBox, $"Saída: {output}");
-                if (!string.IsNullOrEmpty(error))
-                    AppendProgress(progressTextBox, $"Erro: {error}");
+                    string result = output;
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        result += $"\nErro: {error}";
+                        AppendProgress(progressTextBox, $"Erro ao executar '{command}': {error}");
+                    }
 
-                return output + error;
+                    return result;
+                }
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro ao executar '{command}': {ex.Message}");
-                Debug.WriteLine($"Erro em ExecuteCommandWithOutput: {ex.Message}\nStackTrace: {ex.StackTrace}");
-                throw;
+                AppendProgress(progressTextBox, $"Exceção ao executar comando: {ex.Message}");
+                return $"Erro: {ex.Message}";
             }
         }
 
@@ -1137,9 +1140,22 @@ namespace DarkHub
             }
 
             button.IsEnabled = false;
-            var (progressWindow, progressTextBox) = CreateProgressWindow("Gerenciando Programas de Inicialização");
-            await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-            AppendProgress(progressTextBox, "Iniciando gerenciamento de inicialização...\n");
+            TextBox? progressTextBox = null;
+            Window? progressWindow = null;
+
+            try
+            {
+                (progressWindow, progressTextBox) = CreateProgressWindow("Gerenciando Programas de Inicialização");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando gerenciamento de inicialização...\n");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Erro ao criar janela de progresso em ManageStartupPrograms: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                button.IsEnabled = true;
+                return;
+            }
 
             try
             {
@@ -1147,10 +1163,10 @@ namespace DarkHub
                 {
                     string[] startupPaths =
                     {
-                @"Software\Microsoft\Windows\CurrentVersion\Run",
-                @"Software\Microsoft\Windows\CurrentVersion\RunOnce",
-                @"Software\Microsoft\Windows\CurrentVersion\RunServices"
-            };
+                        @"Software\Microsoft\Windows\CurrentVersion\Run",
+                        @"Software\Microsoft\Windows\CurrentVersion\RunOnce",
+                        @"Software\Microsoft\Windows\CurrentVersion\RunServices"
+                    };
 
                     string userStartupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
                     string allUsersStartupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"Microsoft\Windows\Start Menu\Programs\Startup");
@@ -1181,7 +1197,6 @@ namespace DarkHub
                             }
                         }
                     }
-
 
                     foreach (var folder in new[] { userStartupFolder, allUsersStartupFolder })
                     {
@@ -1214,15 +1229,29 @@ namespace DarkHub
                             Title = "Selecionar Programa para Desativar",
                             Width = 400,
                             Height = 300,
-                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                            BorderThickness = new Thickness(1)
                         };
 
                         var stackPanel = new StackPanel { Margin = new Thickness(10) };
-                        var listBox = new ListBox { Height = 200 };
+                        var listBox = new ListBox
+                        {
+                            Height = 200,
+                            Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)), // #2A2A2E
+                            Foreground = Brushes.White,
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)) // #80848e
+                        };
                         var disableButton = new Button
                         {
                             Content = "Desativar Selecionado",
-                            Margin = new Thickness(0, 10, 0, 0)
+                            Margin = new Thickness(0, 10, 0, 0),
+                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
+                            Foreground = Brushes.White,
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                            BorderThickness = new Thickness(1),
+                            Padding = new Thickness(5)
                         };
 
                         foreach (var item in startupItems)
@@ -1294,13 +1323,19 @@ namespace DarkHub
             catch (Exception ex)
             {
                 AppendProgress(progressTextBox, $"Erro geral: {ex.Message}\n");
+                MessageBox.Show($"Erro ao gerenciar programas de inicialização: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Erro em ManageStartupPrograms: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             finally
             {
                 button.IsEnabled = true;
-                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
             }
         }
+
         private string GetShortcutTarget(string shortcutPath)
         {
             try
@@ -1343,7 +1378,7 @@ namespace DarkHub
             {
                 (progressWindow, progressTextBox) = CreateProgressWindow("Limpando Dados de Rede");
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando limpeza de dados de rede...");
+                AppendProgress(progressTextBox, "Iniciando limpeza de dados de rede...\n");
             }
             catch (Exception ex)
             {
@@ -1370,9 +1405,9 @@ namespace DarkHub
 
                     foreach (string command in networkCommands)
                     {
-                        AppendProgress(progressTextBox, $"Executando: {command}...");
+                        AppendProgress(progressTextBox, $"Executando: {command}...\n");
                         string result = await RunCommandAsync(command);
-                        AppendProgress(progressTextBox, result);
+                        AppendProgress(progressTextBox, result + "\n");
                         await Task.Delay(100);
                     }
                 });
@@ -1435,7 +1470,7 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em RunAssetExecutable, evento ignorado.");
+                Debug.WriteLine("Sender não é um botão em RunSpaceSniffer, evento ignorado.");
                 return;
             }
 
@@ -1445,12 +1480,14 @@ namespace DarkHub
 
             try
             {
-
+                (progressWindow, progressTextBox) = CreateProgressWindow("Executando SpaceSniffer");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando SpaceSniffer...\n");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em RunAssetExecutable: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                Debug.WriteLine($"Erro ao criar janela de progresso em RunSpaceSniffer: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 button.IsEnabled = true;
                 return;
             }
@@ -1480,7 +1517,7 @@ namespace DarkHub
                     {
                         FileName = executablePath,
                         UseShellExecute = true,
-                        CreateNoWindow = false 
+                        CreateNoWindow = false
                     };
 
                     using (Process process = Process.Start(psi))
@@ -1497,12 +1534,13 @@ namespace DarkHub
                     }
                 });
 
+                AppendProgress(progressTextBox, "SpaceSniffer executado com sucesso!");
             }
             catch (Exception ex)
             {
                 AppendProgress(progressTextBox, $"Erro ao executar o programa: {ex.Message}");
                 MessageBox.Show($"Erro ao executar o SpaceSniffer: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em RunAssetExecutable: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                Debug.WriteLine($"Erro em RunSpaceSniffer: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             finally
             {
@@ -1513,6 +1551,7 @@ namespace DarkHub
                 }
             }
         }
+
         private void OpenWindowsDefender(object sender, RoutedEventArgs e)
         {
             try

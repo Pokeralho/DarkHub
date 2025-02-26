@@ -6,6 +6,76 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Youtube Video Downloader" Background="{x:Null}">
+
+    <Page.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#35373c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6896"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#3E4A6D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#2A2A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#80848e"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMono}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="#2A2A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#80848e"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMono}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Background" Value="#2A2A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6896"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#3E4A6D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -19,27 +89,26 @@
                    FontFamily="{StaticResource JetBrainsMono}" 
                    FontSize="20" 
                    FontWeight="Bold" 
-                   Foreground="Black" 
+                   Foreground="White" 
                    HorizontalAlignment="Center" 
                    Margin="0,0,0,10"/>
 
-        <Border Grid.Row="1" Background="#ECECEC" CornerRadius="5" Padding="5" Margin="0,0,20,5">
+        <Border Grid.Row="1" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal">
-                <TextBox x:Name="urlTextBox" Width="600" Height="30" Margin="0,0,10,0" VerticalContentAlignment="Center" 
-                         FontFamily="{StaticResource JetBrainsMono}" FontSize="12" 
+                <TextBox x:Name="urlTextBox" Width="600" Height="30" Margin="0,0,10,0" 
                          Text="Insira a URL do vídeo ou playlist" 
                          GotFocus="UrlTextBox_GotFocus"/>
-                <Button x:Name="btnDownload" Click="Download_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Height="30" ToolTip="Baixar Vídeo">
+                <Button x:Name="btnDownload" Click="Download_Click" Style="{StaticResource MenuButtonStyle}" Width="120" ToolTip="Baixar Vídeo">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/assets/baixar.png" Width="24" Height="24" Margin="0,0,5,0"/>
+                        <Image Source="/assets/baixar.png" Width="20" Height="20" Margin="0,0,5,0"/>
                         <TextBlock Text="Baixar"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
         </Border>
 
-        <ListBox x:Name="downloadListBox" Grid.Row="2" Margin="0,0,20,5" FontFamily="{StaticResource JetBrainsMono}" FontSize="12" Background="#F5F5F5" BorderBrush="#D3D3D3" BorderThickness="1"/>
+        <ListBox x:Name="downloadListBox" Grid.Row="2" Style="{StaticResource ListBoxStyle}" Margin="0,0,0,10"/>
 
-        <TextBox x:Name="statusTextBox" Grid.Row="3" Height="100" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" FontFamily="{StaticResource JetBrainsMono}" FontSize="12" Background="#F5F5F5" BorderBrush="#D3D3D3" BorderThickness="1" Margin="0,0,20,0"/>
+        <TextBox x:Name="statusTextBox" Grid.Row="3" Height="100" IsReadOnly="True" Margin="0,0,0,0"/>
     </Grid>
 </Page>

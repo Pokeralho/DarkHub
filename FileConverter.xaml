@@ -20,29 +20,41 @@
         </ControlTemplate>
 
         <Style TargetType="Button">
+            <Setter Property="Background" Value="#35373c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template" Value="{StaticResource NoHoverBtn}"/>
             <Setter Property="Padding" Value="10,5"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#80848e"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#80848e"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <FontFamily x:Key="JetBrainsMono">JetBrains Mono</FontFamily>
     </Page.Resources>
 
     <Grid Background="{x:Null}">
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
-            <TextBlock FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20">
+        <StackPanel VerticalAlignment="top" HorizontalAlignment="Center" Width="400">
+            <TextBlock FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White">
                 Conversor de Arquivos
             </TextBlock>
 
             <Button Content="Selecionar Arquivos" Width="200" Click="SelectFiles_Click" Margin="0,0,0,10"/>
-            <TextBlock x:Name="SelectedFilesText" Text="Nenhum arquivo selecionado!" Foreground="Black" 
+            <TextBlock x:Name="SelectedFilesText" Text="Nenhum arquivo selecionado!" Foreground="White" 
                        FontFamily="{StaticResource JetBrainsMono}" HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap"/>
 
             <Button Content="Escolher Diretório de Saída" Width="200" Click="SelectOutputDir_Click" Margin="0,0,0,10"/>
-            <TextBlock x:Name="OutputDirText" Text="Saída: Mesmo diretório dos arquivos" Foreground="Black" 
+            <TextBlock x:Name="OutputDirText" Text="Saída: Mesmo diretório dos arquivos" Foreground="White" 
                        FontFamily="{StaticResource JetBrainsMono}" HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap"/>
 
-            <TextBlock Text="Formato de Saída:" Foreground="Black" FontSize="14" FontFamily="{StaticResource JetBrainsMono}" 
+            <TextBlock Text="Formato de Saída:" Foreground="White" FontSize="14" FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center" Margin="0,0,0,5"/>
             <ComboBox x:Name="OutputFormatCombo" Width="200" Margin="0,0,0,20" FontFamily="{StaticResource JetBrainsMono}">
                 <ComboBoxItem Content="PNG"/>

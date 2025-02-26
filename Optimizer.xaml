@@ -10,10 +10,8 @@
 
     <Page.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#7345A1"/>
+            <Setter Property="Background" Value="#35373c"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="Margin" Value="5"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -35,18 +33,18 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#8A5BC7"/>
+                    <Setter Property="Background" Value="#80848e"/>
                     <Setter Property="BorderBrush" Value="White"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#5B3280"/>
+                    <Setter Property="Background" Value="#80848e"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </Page.Resources>
 
     <Grid Background="{x:Null}">
-        <TextBlock FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20">
+        <TextBlock FontFamily="JetBrains Mono" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20">
             Otimizador de PC
         </TextBlock>
 

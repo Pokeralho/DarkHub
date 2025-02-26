@@ -6,28 +6,122 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MetaData Editor" Background="{x:Null}">
+
+    <Page.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#35373c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#80848e"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#80848e"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ListViewStyle" TargetType="ListView">
+            <Setter Property="Background" Value="#35373c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#80848e"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="#35373c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6896"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#3E4A6D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="#2A2A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#2A2A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#80848e"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Page.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" 
-           Text="MetaData Editor" 
-           FontFamily="{StaticResource JetBrainsMono}" 
-           FontSize="20" 
-           FontWeight="Bold" 
-           Foreground="Black" 
-           HorizontalAlignment="Center" 
-           Margin="0,0,0,10"/>
-        
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-            <Button x:Name="btnSelectFile" Content="Selecionar Arquivo" Click="SelectFile_Click" Style="{StaticResource MenuButtonStyle}" Width="150" Height="30"/>
-            <Button x:Name="btnSaveMetadata" Content="Salvar Metadados" Click="SaveMetadata_Click" Style="{StaticResource MenuButtonStyle}" Width="150" Height="30" Margin="10,0,0,0"/>
-        </StackPanel>
-        <ListView x:Name="listViewMetadata" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,20,0">
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" 
+                       Text="MetaData Editor" 
+                       FontFamily="{StaticResource JetBrainsMono}" 
+                       FontSize="20" 
+                       FontWeight="Bold" 
+                       Foreground="White" 
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,10"/>
+
+            <Button x:Name="btnSaveMetadata" Grid.Row="1" Grid.Column="0" 
+                    Content="Salvar Metadados" 
+                    Style="{StaticResource ButtonStyle}" 
+                    Click="SaveMetadata_Click" 
+                    Width="150" Height="30"/>
+
+            <Button x:Name="btnSelectFile" Grid.Row="1" Grid.Column="1" 
+                    Content="Selecionar Arquivo" 
+                    Style="{StaticResource ButtonStyle}" 
+                    Click="SelectFile_Click" 
+                    Width="150" Height="30" 
+                    Margin="10,0,0,0"/>
+        </Grid>
+
+        <ListView x:Name="listViewMetadata" Grid.Row="1" 
+                  Style="{StaticResource ListViewStyle}" 
+                  Margin="0,10,0,0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Propriedade" Width="200" DisplayMemberBinding="{Binding PropertyName}"/>

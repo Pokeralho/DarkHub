@@ -6,29 +6,75 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Image Text Extractor" Background="{x:Null}">
+
+    <Page.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#35373c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5A6896"/>
+                    <Setter Property="BorderBrush" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#3E4A6D"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#2A2A2E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#80848e"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+        </Style>
+    </Page.Resources>
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Background="#ECECEC" CornerRadius="5" Padding="5" Margin="0,0,100,5">
+        <Border Grid.Row="0" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="btnSelectImage" Click="SelectImage_Click" Style="{StaticResource MenuButtonStyle}" Width="135" Height="30" ToolTip="Selecionar Imagem">
+                <Button x:Name="btnSelectImage" Click="SelectImage_Click" Style="{StaticResource MenuButtonStyle}" Width="135" ToolTip="Selecionar Imagem">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/assets/selectimg.png" Width="24" Height="24" Margin="0,0,5,0"/>
+                        <Image Source="/assets/selectimg.png" Width="20" Height="20" Margin="0,0,5,0"/>
                         <TextBlock Text="Selecionar Imagem"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="btnExtractText" Click="ExtractText_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Height="30" Margin="10,0,0,0" ToolTip="Extrair Texto">
-                    <StackPanel Orientation="Horizontal" Cursor="">
-                        <Image Source="/assets/extrairtxtinv.png" Width="24" Height="24" Margin="0,0,10,0"/>
+                <Button x:Name="btnExtractText" Click="ExtractText_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Margin="10,0,0,0" ToolTip="Extrair Texto">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/assets/extrairtxtinv.png" Width="20" Height="20" Margin="0,0,5,0"/>
                         <TextBlock Text="Extrair Texto"/>
                     </StackPanel>
                 </Button>
             </StackPanel>
         </Border>
 
-        <TextBox x:Name="extractedTextBox" Grid.Row="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12" Background="#F5F5F5" BorderBrush="#D3D3D3" BorderThickness="1" Margin="0,0,20,0"/>
+        <TextBox x:Name="extractedTextBox" Grid.Row="1" Margin="0,0,0,0"/>
     </Grid>
 </Page>

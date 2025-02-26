@@ -1,55 +1,55 @@
 ﻿<Window x:Class="DarkHub.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="DarkHub" Height="800" Width="1260"
+        Title="DarkHub" Height="500" Width="900"
         Background="Transparent" WindowStartupLocation="CenterScreen"
         WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True"
         Icon="/assets/DarkHub.ico"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Grid>
-        <Border CornerRadius="50" Background="#f9f7fa">
+        <Border CornerRadius="10" Background="#2b2d31">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border CornerRadius="40" Width="95" Background="#7345a1" Margin="10" Grid.Column="0">
+                <Border CornerRadius="10" Background="#1e1f22" Margin="0,0,75,0" Grid.Column="0">
                     <StackPanel Orientation="Vertical">
-                        <Button x:Name="btnOptimizer" Click="SetActiveButton" Tag="Active" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnOptimizer" Click="SetActiveButton" Tag="Active" Style="{StaticResource MenuButtonStyle}" Margin="0,15,0,10">
                             <Image Source="/assets/optimizer.png"/>
                         </Button>
-                        <Button x:Name="btnClicker" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnClicker" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="0,0,0,10">
                             <Image Source="/assets/clicker.png"/>
                         </Button>
-                        <Button x:Name="btnFileConverter" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnFileConverter" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="0,0,0,10">
                             <Image Source="/assets/converter.png"/>
                         </Button>
-                        <Button x:Name="btnMetaDataEditor" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnMetaDataEditor" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="0,0,0,10">
                             <Image Source="/assets/exif.png"/>
                         </Button>
-                        <Button x:Name="btnTextEditor" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnTextEditor" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="0,0,0,10">
                             <Image Source="/assets/python.png"/>
                         </Button>
-                        <Button x:Name="btnExtrairTexto" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnExtrairTexto" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="0,0,0,10">
                             <Image Source="/assets/extrairtxt.png"/>
                         </Button>
-                        <Button x:Name="btnYTDownloader" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}">
+                        <Button x:Name="btnYTDownloader" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="0,0,0,10">
                             <Image Source="/assets/youtubedw.png"/>
                         </Button>
                     </StackPanel>
                 </Border>
 
-                <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Grid.Column="1"/>
+                <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Grid.ColumnSpan="2" Margin="75,0,0,0"/>
             </Grid>
         </Border>
 
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="1135,-15,0,0" HorizontalAlignment="Left" Width="160">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top"  HorizontalAlignment="Left" Width="160" Margin="766,0,0,0">
             <Button Click="MinimizeWindow" Style="{StaticResource MenuButtonStyle}">
-                <TextBlock Text="—" FontWeight="Bold" Foreground="#7345a1" FontSize="18"/>
+                <TextBlock Text="—" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18"/>
             </Button>
             <Button Click="CloseWindow" Style="{StaticResource MenuButtonStyle}">
-                <TextBlock Text="X" FontWeight="Bold" Foreground="#7345a1" FontSize="18"/>
+                <TextBlock Text="X" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18"/>
             </Button>
         </StackPanel>
     </Grid>

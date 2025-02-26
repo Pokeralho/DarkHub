@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.openxmlformats.org/markup-compatibility/2008" 
       xmlns:local="clr-namespace:DarkHub"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="600" d:DesignWidth="900"
       Title="AutoClicker">
 
     <Page.Resources>
@@ -32,15 +32,16 @@
         <TextBlock FontFamily="{StaticResource JetBrainsMono}" 
                    FontSize="20" 
                    FontWeight="Bold" 
+                   Foreground="white"
                    HorizontalAlignment="Center" 
                    Margin="0,0,0,20">
             AutoClicker
         </TextBlock>
         <StackPanel VerticalAlignment="Center" 
                     HorizontalAlignment="Center" 
-                    Width="300">
+                    Width="500" Height="300">
             <TextBlock Text="Intervalo (ms):" 
-                       Foreground="Black" 
+                       Foreground="White" 
                        FontSize="14" 
                        FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center"/>
@@ -49,12 +50,12 @@
                      Width="100" 
                      Margin="5" 
                      Padding="5" 
-                     Foreground="Black" 
+                     Foreground="black" 
                      BorderThickness="1" 
                      FontFamily="{StaticResource JetBrainsMono}"/>
 
             <TextBlock Text="Tecla de Ativação" 
-                       Foreground="Black" 
+                       Foreground="White" 
                        FontSize="14" 
                        FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center"/>
@@ -79,7 +80,7 @@
                         Width="100" 
                         Margin="0,0,10,0" 
                         Background="#4CAF50" 
-                        Foreground="Black" 
+                        Foreground="White" 
                         BorderBrush="#388E3C" 
                         BorderThickness="1" 
                         FontFamily="{StaticResource JetBrainsMono}" 
@@ -91,7 +92,7 @@
                         Width="100" 
                         Margin="0" 
                         Background="#F44336" 
-                        Foreground="Black" 
+                        Foreground="White" 
                         BorderBrush="#D32F2F" 
                         BorderThickness="1" 
                         FontFamily="{StaticResource JetBrainsMono}" 
@@ -101,14 +102,14 @@
 
             <TextBlock x:Name="lblStatus" 
                        Text="Status: Parado" 
-                       Foreground="Black" 
+                       Foreground="White" 
                        FontSize="14" 
                        FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center" 
                        Margin="0,0,0,5"/>
             <TextBlock x:Name="lblClicksPerSecond" 
                        Text="Cliques por segundo: 0" 
-                       Foreground="Black" 
+                       Foreground="White" 
                        FontSize="12" 
                        FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center"/>
