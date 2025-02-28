@@ -20,11 +20,6 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - [ffmpeg.exe](https://www.gyan.dev/ffmpeg/builds/#release-builds)
 - [yt-dlp.exe](https://github.com/yt-dlp/yt-dlp/releases/)
 
-## Instalação
-1. Clone o repositório: git clone https://github.com/Pokeralho/DarkHub.git
-2. Abra o arquivo `DarkHubRmk.sln` no Visual Studio.
-3. Compile e execute o projeto.
-
 ## Uso
 - **Otimizador de PC**: Navegue pelas opções na interface para limpar arquivos, reparar o sistema ou gerenciar programas de inicialização.
 - **Auto Clicker**: Configure intervalos de cliques na ferramenta para automatizar tarefas repetitivas.
