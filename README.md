@@ -24,7 +24,7 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - **Otimizador de PC**: Navegue pelas opções na interface para limpar arquivos, reparar o sistema ou gerenciar programas de inicialização.
 - **Auto Clicker**: Configure intervalos de cliques na ferramenta para automatizar tarefas repetitivas.
 - **Conversor de Arquivos**: Selecione arquivos e escolha o formato de saída desejado.
-- **Editor de Metadados**: Abra arquivos de mídia e edite informações como título, artista ou álbum.
+- **Editor de Metadados**: Abra arquivos edite informações como título, artista, data de criação etc.
 - **Extrator de Texto de Imagens**: Carregue uma imagem e extraia o texto com a função OCR.
 - **YouTube Downloader**: Insira uma URL do YouTube e clique em "Baixar" para salvar o vídeo em `%UserProfile%\Videos\DarkHubDownloads`.
 - **Editor de Texto com Interpretador Python**: Escreva scripts Python na interface e execute-os diretamente. Arquivos salvos em `%UserProfile%\Documentos\DarkHubDocs`.
