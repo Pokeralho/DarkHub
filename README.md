@@ -16,6 +16,10 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - Windows 10 ou superior.
 - [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework) ou superior.
 
+## Pré-requisitos para o uso do youtube downloader (coloque ambos na pasta `assets`):
+- [ffmpeg.exe](https://www.gyan.dev/ffmpeg/builds/#release-builds)
+- [yt-dlp.exe](https://github.com/yt-dlp/yt-dlp/releases/)
+
 ## Instalação
 1. Clone o repositório: git clone https://github.com/Pokeralho/DarkHub.git
 2. Abra o arquivo `DarkHubRmk.sln` no Visual Studio.
@@ -37,9 +41,6 @@ Contribuições são bem-vindas! Siga estes passos:
 3. Faça commit das suas mudanças (`git commit -m "Adiciona nova funcionalidade"`).
 4. Envie para o repositório remoto (`git push origin feature/nova-funcionalidade`).
 5. Abra um Pull Request.
-
-### Notas
-- Necessário `yt-dlp.exe` e `ffmpeg.exe` na pasta `assets` para o YouTube Downloader.
 
 ## Licença
 Este projeto está licenciado sob a [MIT License](LICENSE).
