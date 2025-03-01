@@ -29,6 +29,9 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - **YouTube Downloader**: Insira uma URL do YouTube e clique em "Baixar" para salvar o vídeo em `%UserProfile%\Videos\DarkHubDownloads`.
 - **Editor de Texto com Interpretador Python**: Escreva scripts Python na interface e execute-os diretamente. Arquivos salvos em `%UserProfile%\Documentos\DarkHubDocs`.
 
+## Notas
+- Os métodos de injeção e CrunchyrollAccs foram ocultados com .gitignore para manter o código fechado e dificultar a engenharia reversa podendo levar a detecção.
+
 ## Contribuição
 Contribuições são bem-vindas! Siga estes passos:
 1. Faça um fork do repositório.
