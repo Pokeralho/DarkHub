@@ -52,5 +52,13 @@
                 <TextBlock Text="X" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18"/>
             </Button>
         </StackPanel>
+        <StackPanel>
+            <Button x:Name="btnDllInjector" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="825,60,10,10" Width="32" Height="32">
+                <Image Source="Assets/DllInjection.png"/>
+            </Button>
+            <Button x:Name="btnCrunchyrollAcc" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Margin="825,0,10,10" Width="32" Height="32">
+                <Image Source="Assets/Crunchyroll.png"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -70,6 +70,8 @@ namespace DarkHub
                 btnMetaDataEditor.Tag = null;
                 btnTextEditor.Tag = null;
                 btnExtrairTexto.Tag = null;
+                btnDllInjector.Tag = null;
+                btnCrunchyrollAcc.Tag = null;
 
                 clickedButton.Tag = "Active";
 
@@ -87,6 +89,10 @@ namespace DarkHub
                     await NavigateToPageAsync(new ImageTextExtractor());
                 else if (clickedButton == btnYTDownloader)
                     await NavigateToPageAsync(new YoutubeVideoDownloader());
+                else if (clickedButton == btnDllInjector)
+                    await NavigateToPageAsync(new DllInjector());
+                else if (clickedButton == btnCrunchyrollAcc)
+                    await NavigateToPageAsync(new CrunchyrollAcc());
             }
             catch (Exception ex)
             {
