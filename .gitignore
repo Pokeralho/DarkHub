@@ -6,6 +6,10 @@
 *.pdb
 *.cache
 *.log
+DllInjectionService.cs
+DllInjector.xaml
+DllInjector.xaml.cs
+InjectorViewModel.cs
 
 /DarkHubRmk/bin/
 /DarkHubRmk/obj/

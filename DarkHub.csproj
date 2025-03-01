@@ -14,9 +14,11 @@
 		<None Remove="assets\baixar.png" />
 		<None Remove="assets\clicker.png" />
 		<None Remove="assets\converter.png" />
+		<None Remove="assets\crunchyroll.png" />
 		<None Remove="assets\DarkHub.ico" />
 		<None Remove="assets\DarkHub.pfx" />
 		<None Remove="assets\delete.png" />
+		<None Remove="assets\DllInjection.png" />
 		<None Remove="assets\exif.png" />
 		<None Remove="assets\extrairtxt.png" />
 		<None Remove="assets\extrairtxtinv.png" />
@@ -43,6 +45,7 @@
 		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
 		<PackageReference Include="IronPython" Version="3.4.2" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
 		<PackageReference Include="pythonnet" Version="3.0.5" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.2" />
 		<PackageReference Include="System.Management" Version="9.0.2" />
@@ -60,8 +63,14 @@
 		<Content Include="assets\converter.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="assets\crunchyroll.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\DarkHub.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\DllInjection.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\SpaceSniffer.exe">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>

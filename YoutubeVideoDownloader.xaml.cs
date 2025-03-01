@@ -11,7 +11,7 @@ namespace DarkHub
 {
     public partial class YoutubeVideoDownloader : Page
     {
-        private readonly YoutubeDL ytdl;
+        private readonly YoutubeDL? ytdl;
 
         public YoutubeVideoDownloader()
         {
@@ -37,13 +37,13 @@ namespace DarkHub
             {
                 MessageBox.Show($"Erro ao inicializar YoutubeVideoDownloader: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro ao inicializar YoutubeVideoDownloader: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                ytdl = null;
             }
         }
 
         private void UrlTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
-            if (textBox != null && textBox.Text == "Insira a URL do vídeo ou playlist")
+            if (sender is TextBox textBox && textBox.Text == "Insira a URL do vídeo ou playlist")
             {
                 textBox.Text = string.Empty;
             }
@@ -53,6 +53,13 @@ namespace DarkHub
         {
             try
             {
+                if (ytdl == null)
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                        statusTextBox.Text = "Erro: YoutubeDL não foi inicializado corretamente.");
+                    return;
+                }
+
                 Debug.WriteLine("Download_Click iniciado.");
                 string url = urlTextBox.Text.Trim();
                 if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out _))
@@ -62,6 +69,16 @@ namespace DarkHub
                     Debug.WriteLine("URL inválida fornecida.");
                     return;
                 }
+
+                // Verifica se o ComboBox tem um item selecionado
+                if (formatComboBox.SelectedItem is not ComboBoxItem selectedItem)
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                        statusTextBox.Text = "Por favor, selecione um formato de saída.");
+                    return;
+                }
+
+                string selectedFormat = selectedItem.Content.ToString().ToLower();
 
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -85,12 +102,28 @@ namespace DarkHub
                 {
                     try
                     {
-                        Debug.WriteLine($"Iniciando download da URL: {url}");
+                        Debug.WriteLine($"Iniciando download da URL: {url} no formato {selectedFormat}");
                         var options = new OptionSet
                         {
                             Verbose = true,
-                            Format = "bestvideo+bestaudio/best",
+                            Format = selectedFormat == "mp3" ? "bestaudio/best" : "bestvideo+bestaudio/best",
                         };
+
+                        switch (selectedFormat)
+                        {
+                            case "mp3":
+                                options.ExtractAudio = true;
+                                options.AudioFormat = AudioConversionFormat.Mp3;
+                                break;
+                            case "mp4":
+                                options.MergeOutputFormat = DownloadMergeFormat.Mp4;
+                                break;
+                            case "mkv":
+                                options.MergeOutputFormat = DownloadMergeFormat.Mkv;
+                                break;
+                            default:
+                                throw new ArgumentException("Formato não suportado.");
+                        }
 
                         var fetch = await ytdl.RunVideoDownload(
                             url: url,
