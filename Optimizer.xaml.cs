@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Win32;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.VisualBasic.Devices;
 
 namespace DarkHub
 {
@@ -1561,6 +1562,537 @@ namespace DarkHub
             catch (Exception ex)
             {
                 MessageBox.Show("Erro ao tentar abrir o MRT: " + ex.Message);
+            }
+        }
+
+        private async void RemoveWindowsBloatware(object sender, RoutedEventArgs e)
+        {
+            Button? button = sender as Button;
+            if (button == null)
+            {
+                Debug.WriteLine("Sender não é um botão em RemoveWindowsBloatware, evento ignorado.");
+                return;
+            }
+
+            button.IsEnabled = false;
+            TextBox? progressTextBox = null;
+            Window? progressWindow = null;
+
+            try
+            {
+                // Mostrar janela de progresso durante a verificação
+                (progressWindow, progressTextBox) = CreateProgressWindow("Verificando Aplicativos Instalados");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Verificando aplicativos instalados no sistema...\n");
+
+                var potentialBloatware = new Dictionary<string, string>
+                {
+                    {"Microsoft.OneDrive", "OneDrive"},
+                    {"Microsoft.Edge", "Microsoft Edge"},
+                    {"Microsoft.BingNews", "Bing News"},
+                    {"Microsoft.BingWeather", "Bing Weather"},
+                    {"Microsoft.GetHelp", "Get Help"},
+                    {"Microsoft.Getstarted", "Get Started"},
+                    {"Microsoft.MicrosoftOfficeHub", "Office Hub"},
+                    {"Microsoft.MicrosoftSolitaireCollection", "Solitaire Collection"},
+                    {"Microsoft.People", "People"},
+                    {"Microsoft.WindowsFeedbackHub", "Feedback Hub"},
+                    {"Microsoft.WindowsMaps", "Windows Maps"},
+                    {"Microsoft.Xbox.TCUI", "Xbox TCUI"},
+                    {"Microsoft.XboxApp", "Xbox App"},
+                    {"Microsoft.XboxGameOverlay", "Xbox Game Overlay"},
+                    {"Microsoft.XboxGamingOverlay", "Xbox Gaming Overlay"},
+                    {"Microsoft.XboxIdentityProvider", "Xbox Identity Provider"},
+                    {"Microsoft.XboxSpeechToTextOverlay", "Xbox Speech To Text Overlay"},
+                    {"Microsoft.ZuneMusic", "Groove Music"},
+                    {"Microsoft.ZuneVideo", "Movies & TV"}
+                };
+
+                var installedApps = new Dictionary<string, string>();
+
+                await Task.Run(async () =>
+                {
+                    // Verificar OneDrive
+                    if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive")) ||
+                        Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "OneDrive")))
+                    {
+                        installedApps.Add("Microsoft.OneDrive", potentialBloatware["Microsoft.OneDrive"]);
+                        AppendProgress(progressTextBox, "Encontrado: OneDrive\n");
+                    }
+
+                    // Verificar Edge
+                    if (Directory.Exists(@"C:\Program Files (x86)\Microsoft\Edge") ||
+                        Directory.Exists(@"C:\Program Files\Microsoft\Edge"))
+                    {
+                        installedApps.Add("Microsoft.Edge", potentialBloatware["Microsoft.Edge"]);
+                        AppendProgress(progressTextBox, "Encontrado: Microsoft Edge\n");
+                    }
+
+                    // Verificar outros aplicativos usando PowerShell
+                    foreach (var app in potentialBloatware)
+                    {
+                        if (app.Key != "Microsoft.OneDrive" && app.Key != "Microsoft.Edge")
+                        {
+                            string result = await RunCommandAsync($"powershell -Command \"Get-AppxPackage {app.Key} | Select-Object -ExpandProperty Name\"");
+                            if (!string.IsNullOrEmpty(result) && result.Contains(app.Key))
+                            {
+                                installedApps.Add(app.Key, app.Value);
+                                AppendProgress(progressTextBox, $"Encontrado: {app.Value}\n");
+                            }
+                        }
+                    }
+                });
+
+                // Fechar a janela de progresso
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
+
+                if (!installedApps.Any())
+                {
+                    MessageBox.Show("Nenhum bloatware encontrado no sistema!", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
+                    button.IsEnabled = true;
+                    return;
+                }
+
+                // Criar janela de seleção apenas com os apps instalados
+                var selectionWindow = new Window
+                {
+                    Title = "Selecionar Aplicativos para Remover",
+                    Width = 500,
+                    Height = 600,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
+                    BorderThickness = new Thickness(1)
+                };
+
+                var mainGrid = new Grid();
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+                var titleText = new TextBlock
+                {
+                    Text = $"Encontrados {installedApps.Count} aplicativos que podem ser removidos:",
+                    Foreground = Brushes.White,
+                    FontSize = 16,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(10),
+                    TextWrapping = TextWrapping.Wrap
+                };
+                Grid.SetRow(titleText, 0);
+
+                var scrollViewer = new ScrollViewer
+                {
+                    Margin = new Thickness(10),
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
+                Grid.SetRow(scrollViewer, 1);
+
+                var checkBoxPanel = new StackPanel { Margin = new Thickness(10) };
+                var checkBoxes = new Dictionary<string, CheckBox>();
+
+                foreach (var app in installedApps)
+                {
+                    var checkBox = new CheckBox
+                    {
+                        Content = app.Value,
+                        Foreground = Brushes.White,
+                        Margin = new Thickness(5),
+                        Tag = app.Key
+                    };
+                    checkBoxes[app.Key] = checkBox;
+                    checkBoxPanel.Children.Add(checkBox);
+                }
+
+                scrollViewer.Content = checkBoxPanel;
+
+                var buttonPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(10)
+                };
+                Grid.SetRow(buttonPanel, 2);
+
+                var selectAllButton = new Button
+                {
+                    Content = "Selecionar Todos",
+                    Width = 120,
+                    Height = 30,
+                    Margin = new Thickness(5),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+                };
+
+                var deselectAllButton = new Button
+                {
+                    Content = "Desmarcar Todos",
+                    Width = 120,
+                    Height = 30,
+                    Margin = new Thickness(5),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+                };
+
+                var confirmButton = new Button
+                {
+                    Content = "Remover Selecionados",
+                    Width = 150,
+                    Height = 30,
+                    Margin = new Thickness(5),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+                };
+
+                selectAllButton.Click += (s, ev) =>
+                {
+                    foreach (var cb in checkBoxes.Values)
+                        cb.IsChecked = true;
+                };
+
+                deselectAllButton.Click += (s, ev) =>
+                {
+                    foreach (var cb in checkBoxes.Values)
+                        cb.IsChecked = false;
+                };
+
+                bool? dialogResult = null;
+                confirmButton.Click += (s, ev) =>
+                {
+                    dialogResult = true;
+                    selectionWindow.Close();
+                };
+
+                buttonPanel.Children.Add(selectAllButton);
+                buttonPanel.Children.Add(deselectAllButton);
+                buttonPanel.Children.Add(confirmButton);
+
+                mainGrid.Children.Add(titleText);
+                mainGrid.Children.Add(scrollViewer);
+                mainGrid.Children.Add(buttonPanel);
+
+                selectionWindow.Content = mainGrid;
+                selectionWindow.ShowDialog();
+
+                if (dialogResult != true)
+                {
+                    button.IsEnabled = true;
+                    return;
+                }
+
+                var selectedApps = checkBoxes.Where(cb => cb.Value.IsChecked == true)
+                                           .ToDictionary(cb => cb.Key, cb => installedApps[cb.Key]);
+
+                if (!selectedApps.Any())
+                {
+                    MessageBox.Show("Nenhum aplicativo selecionado para remoção.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    button.IsEnabled = true;
+                    return;
+                }
+
+                // Recriar janela de progresso para a remoção
+                (progressWindow, progressTextBox) = CreateProgressWindow("Removendo Bloatware do Windows");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando remoção de bloatware...\n");
+
+                await Task.Run(async () =>
+                {
+                    if (selectedApps.ContainsKey("Microsoft.OneDrive"))
+                    {
+                        AppendProgress(progressTextBox, "Removendo OneDrive...\n");
+                        await RunCommandAsync("taskkill /f /im OneDrive.exe");
+                        await RunCommandAsync("%SystemRoot%\\System32\\OneDriveSetup.exe /uninstall");
+                        await RunCommandAsync("%SystemRoot%\\SysWOW64\\OneDriveSetup.exe /uninstall");
+                    }
+
+                    if (selectedApps.ContainsKey("Microsoft.Edge"))
+                    {
+                        AppendProgress(progressTextBox, "Removendo Microsoft Edge...\n");
+                        string edgeUninstaller = @"C:\Program Files (x86)\Microsoft\Edge\Application\*\Installer\setup.exe";
+                        if (Directory.Exists(Path.GetDirectoryName(edgeUninstaller)))
+                        {
+                            string[] installerPaths = Directory.GetFiles(@"C:\Program Files (x86)\Microsoft\Edge\Application", "setup.exe", SearchOption.AllDirectories);
+                            foreach (string installer in installerPaths)
+                            {
+                                await RunCommandAsync($"\"{installer}\" --uninstall --system-level --verbose-logging --force-uninstall");
+                            }
+                        }
+                    }
+
+                    foreach (var app in selectedApps)
+                    {
+                        if (app.Key != "Microsoft.OneDrive" && app.Key != "Microsoft.Edge")
+                        {
+                            AppendProgress(progressTextBox, $"Removendo {app.Value}...\n");
+                            string result = await RunCommandAsync($"powershell -Command \"Get-AppxPackage *{app.Key}* | Remove-AppxPackage\"");
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                AppendProgress(progressTextBox, result + "\n");
+                            }
+                            await Task.Delay(100);
+                        }
+                    }
+
+                    // Limpar arquivos residuais dos apps selecionados
+                    AppendProgress(progressTextBox, "Limpando arquivos residuais...\n");
+                    var foldersToDelete = new List<string>();
+
+                    if (selectedApps.ContainsKey("Microsoft.Edge"))
+                    {
+                        foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\Edge");
+                        foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\EdgeUpdate");
+                    }
+
+                    if (selectedApps.ContainsKey("Microsoft.OneDrive"))
+                    {
+                        foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\OneDrive");
+                        foldersToDelete.Add(@"%PROGRAMDATA%\Microsoft\OneDrive");
+                    }
+
+                    foreach (var folder in foldersToDelete)
+                    {
+                        string expandedPath = Environment.ExpandEnvironmentVariables(folder);
+                        if (Directory.Exists(expandedPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(expandedPath, true);
+                                AppendProgress(progressTextBox, $"Pasta deletada: {expandedPath}\n");
+                            }
+                            catch (Exception ex)
+                            {
+                                AppendProgress(progressTextBox, $"Erro ao deletar {expandedPath}: {ex.Message}\n");
+                            }
+                        }
+                    }
+                });
+
+                AppendProgress(progressTextBox, "Remoção de bloatware concluída!\n");
+                AppendProgress(progressTextBox, "Recomenda-se reiniciar o computador para aplicar todas as alterações.\n");
+                
+                var result = MessageBox.Show(
+                    "Remoção de bloatware concluída! Deseja reiniciar o computador agora?",
+                    "Concluído",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    Process.Start("shutdown.exe", "/r /t 10");
+                    MessageBox.Show("O computador será reiniciado em 10 segundos.", "Reiniciando", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
+                MessageBox.Show($"Erro ao remover bloatware: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Erro em RemoveWindowsBloatware: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+            finally
+            {
+                button.IsEnabled = true;
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
+            }
+        }
+
+        [DllImport("psapi.dll")]
+        static extern int EmptyWorkingSet(IntPtr hwProc);
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetCurrentProcess();
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
+
+        private async Task<(double UsedMemory, double AvailableMemory)> GetMemoryInfo()
+        {
+            try
+            {
+                string result = await RunCommandAsync("powershell -Command \"Get-CimInstance Win32_OperatingSystem | Select-Object -Property TotalVisibleMemorySize,FreePhysicalMemory | ConvertTo-Json\"");
+                
+                // Remover caracteres inválidos e quebras de linha
+                result = result.Trim().Replace("\r", "").Replace("\n", "");
+                
+                // Extrair os valores usando índices
+                int totalIndex = result.IndexOf("TotalVisibleMemorySize") + "TotalVisibleMemorySize".Length + 2;
+                int freeIndex = result.IndexOf("FreePhysicalMemory") + "FreePhysicalMemory".Length + 2;
+                
+                string totalStr = result.Substring(totalIndex, result.IndexOf(",", totalIndex) - totalIndex);
+                string freeStr = result.Substring(freeIndex, result.IndexOf("}", freeIndex) - freeIndex);
+                
+                if (double.TryParse(totalStr, out double totalMemoryKB) && double.TryParse(freeStr, out double freeMemoryKB))
+                {
+                    double totalMemoryGB = totalMemoryKB / (1024 * 1024);
+                    double freeMemoryGB = freeMemoryKB / (1024 * 1024);
+                    double usedMemoryGB = totalMemoryGB - freeMemoryGB;
+                    
+                    return (usedMemoryGB, freeMemoryGB);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter informações da memória: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+            
+            // Se falhar, tentar método alternativo usando ComputerInfo
+            try
+            {
+                var computerInfo = new Microsoft.VisualBasic.Devices.ComputerInfo();
+                double totalMemoryGB = computerInfo.TotalPhysicalMemory / (1024.0 * 1024 * 1024);
+                double availableMemoryGB = computerInfo.AvailablePhysicalMemory / (1024.0 * 1024 * 1024);
+                double usedMemoryGB = totalMemoryGB - availableMemoryGB;
+                
+                return (usedMemoryGB, availableMemoryGB);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter informações da memória (método alternativo): {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+            
+            return (0, 0);
+        }
+
+        private async void OptimizeMemory(object sender, RoutedEventArgs e)
+        {
+            Button? button = sender as Button;
+            if (button == null) return;
+
+            button.IsEnabled = false;
+            TextBox? progressTextBox = null;
+            Window? progressWindow = null;
+
+            try
+            {
+                (progressWindow, progressTextBox) = CreateProgressWindow("Otimizando Memória do Sistema");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando otimização de memória...\n");
+
+                await Task.Run(async () =>
+                {
+                    // Obter informações iniciais da memória
+                    var initialMemoryInfo = await GetMemoryInfo();
+                    AppendProgress(progressTextBox, $"Memória em uso antes da otimização: {initialMemoryInfo.UsedMemory:N2} GB\n");
+                    AppendProgress(progressTextBox, $"Memória disponível antes da otimização: {initialMemoryInfo.AvailableMemory:N2} GB\n\n");
+
+                    // Lista de processos seguros para otimizar (adicione mais conforme necessário)
+                    var safeProcesses = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        "chrome", "firefox", "msedge", "iexplore", "opera",
+                        "notepad", "wordpad", "mspaint", "calc",
+                        "winrar", "7zg", "vlc", "wmplayer",
+                        "explorer", "powershell", "cmd"
+                    };
+
+                    // 1. Otimizar processos seguros
+                    AppendProgress(progressTextBox, "1. Otimizando processos não essenciais...\n");
+                    var processes = Process.GetProcesses();
+                    int processesOptimized = 0;
+
+                    foreach (var process in processes)
+                    {
+                        try
+                        {
+                            if (!process.HasExited && 
+                                process.Id != Process.GetCurrentProcess().Id && 
+                                safeProcesses.Contains(process.ProcessName.ToLower()))
+                            {
+                                EmptyWorkingSet(process.Handle);
+                                processesOptimized++;
+                                
+                                if (processesOptimized % 5 == 0)
+                                {
+                                    AppendProgress(progressTextBox, $"Processos otimizados: {processesOptimized}\n");
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+
+                    AppendProgress(progressTextBox, $"Total de processos otimizados: {processesOptimized}\n");
+                    await Task.Delay(1000);
+
+                    // 2. Limpar cache do sistema de arquivos
+                    AppendProgress(progressTextBox, "2. Limpando cache do sistema de arquivos...\n");
+                    await RunCommandAsync("powershell -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"");
+                    await Task.Delay(1000);
+
+                    // 3. Limpar arquivos temporários
+                    AppendProgress(progressTextBox, "3. Limpando arquivos temporários...\n");
+                    string[] tempPaths = {
+                        Path.GetTempPath(),
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp"),
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp")
+                    };
+
+                    foreach (string tempPath in tempPaths)
+                    {
+                        try
+                        {
+                            if (Directory.Exists(tempPath))
+                            {
+                                foreach (string file in Directory.GetFiles(tempPath))
+                                {
+                                    try 
+                                    { 
+                                        var fileInfo = new FileInfo(file);
+                                        if ((DateTime.Now - fileInfo.LastAccessTime).TotalDays > 1)
+                                        {
+                                            File.Delete(file);
+                                        }
+                                    }
+                                    catch { }
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                    await Task.Delay(1000);
+
+                    // 4. Executar coleta de lixo do .NET
+                    AppendProgress(progressTextBox, "4. Executando coleta de lixo...\n");
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    await Task.Delay(1000);
+
+                    // 5. Limpar cache DNS
+                    AppendProgress(progressTextBox, "5. Limpando cache DNS...\n");
+                    await RunCommandAsync("ipconfig /flushdns");
+                    await Task.Delay(1000);
+
+                    // Verificar resultados
+                    var finalMemoryInfo = await GetMemoryInfo();
+                    double memorySaved = initialMemoryInfo.UsedMemory - finalMemoryInfo.UsedMemory;
+
+                    AppendProgress(progressTextBox, "\nResultados da otimização:\n");
+                    AppendProgress(progressTextBox, $"Memória em uso após otimização: {finalMemoryInfo.UsedMemory:N2} GB\n");
+                    AppendProgress(progressTextBox, $"Memória disponível após otimização: {finalMemoryInfo.AvailableMemory:N2} GB\n");
+                    AppendProgress(progressTextBox, $"Memória liberada: {memorySaved:N2} GB\n");
+                });
+
+                MessageBox.Show("Otimização de memória concluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
+                MessageBox.Show($"Erro ao otimizar memória: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                button.IsEnabled = true;
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
             }
         }
     }

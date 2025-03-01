@@ -62,6 +62,7 @@
                 <Button Content="Modo de Alto Desempenho" Click="EnableHighPerformanceMode" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Otimizador de Inicialização" Click="ManageStartupPrograms" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Limpar Dados de Rede" Click="CleanNetworkData" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="Remover Bloatware" Click="RemoveWindowsBloatware" Style="{StaticResource ButtonStyle}" Width="200"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
@@ -72,6 +73,7 @@
                 <Button Content="Limpeza de Registro" Click="CleanRegistry" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Antivírus" Click="OpenWindowsDefender" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Space Sniffer" Click="RunSpaceSniffer" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="Otimizar Memória RAM" Click="OptimizeMemory" Style="{StaticResource ButtonStyle}" Width="200"/>
             </StackPanel>
         </Grid>
     </Grid>
