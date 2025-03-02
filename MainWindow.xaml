@@ -40,7 +40,7 @@
                     </StackPanel>
                 </Border>
 
-                <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Grid.ColumnSpan="2" Margin="75,0,0,0"/>
+                <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Grid.ColumnSpan="2" Margin="75,0,0,0" Navigated="MainFrame_Navigated"/>
             </Grid>
         </Border>
 

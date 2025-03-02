@@ -97,7 +97,6 @@ namespace DarkHub
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao navegar: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro de Navegação", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro no SetActiveButton para {clickedButton.Name}: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -130,7 +129,6 @@ namespace DarkHub
             try
             {
                 Close();
-                Debug.WriteLine("Janela fechada com sucesso.");
             }
             catch (Exception ex)
             {
@@ -140,7 +138,20 @@ namespace DarkHub
 
         private void MainFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            Debug.WriteLine($"Navegação concluída para: {e.Uri?.ToString() ?? e.Content?.GetType().Name}");
+            string pageName = e.Content.GetType().Name;
+
+            var paginasOcultas = new List<string> { "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor" };
+
+            if (paginasOcultas.Contains(pageName))
+            {
+                btnDllInjector.Visibility = Visibility.Collapsed;
+                btnCrunchyrollAcc.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                btnDllInjector.Visibility = Visibility.Visible;
+                btnCrunchyrollAcc.Visibility = Visibility.Visible;
+            }
         }
     }
 }
