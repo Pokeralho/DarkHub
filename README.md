@@ -16,7 +16,7 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - Windows 10 ou superior.
 - [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework) ou superior.
 
-## Pré-requisitos para o uso do youtube downloader (coloque ambos na pasta `assets`):
+## Pré-requisitos para o uso do youtube downloader com o source code `*Arquvios já inclusos na release *`(coloque ambos na pasta `assets`):
 - [ffmpeg.exe](https://www.gyan.dev/ffmpeg/builds/#release-builds)
 - [yt-dlp.exe](https://github.com/yt-dlp/yt-dlp/releases/)
 
