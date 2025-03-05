@@ -14,6 +14,11 @@ using System.Windows.Media;
 using Microsoft.Win32;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic.Devices;
+using System.Net;
+using System.Net.Sockets;
+using System.Windows.Data;
+using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 
 namespace DarkHub
 {
@@ -40,18 +45,15 @@ namespace DarkHub
                 var systemInfo = new StringBuilder();
                 Debug.WriteLine("Coletando informações do sistema...");
 
-                // OS Information
                 var os = Environment.OSVersion;
                 systemInfo.AppendLine($"SO: {os.VersionString}");
 
-                // CPU Information
                 var processorQuery = new ManagementObjectSearcher("SELECT Name, L2CacheSize, L3CacheSize FROM Win32_Processor");
                 var processor = processorQuery.Get().Cast<ManagementObject>().FirstOrDefault();
                 systemInfo.AppendLine($"CPU: {processor?["Name"]?.ToString() ?? "Não encontrado"}");
                 systemInfo.AppendLine($"Cache L2: {processor?["L2CacheSize"]?.ToString() ?? "Não encontrado"}");
                 systemInfo.AppendLine($"Cache L3: {processor?["L3CacheSize"]?.ToString() ?? "Não encontrado"}");
 
-                // RAM Information
                 long totalMemory = 0;
                 var memorySpeeds = new List<string>();
                 var memoryQuery = new ManagementObjectSearcher("SELECT Capacity, Speed FROM Win32_PhysicalMemory");
@@ -68,7 +70,6 @@ namespace DarkHub
                 systemInfo.AppendLine($"RAM Total: {totalMemory / (1024 * 1024 * 1024)} GB");
                 systemInfo.AppendLine($"Frequência da RAM: {memorySpeedDisplay}");
 
-                // GPU Information
                 var gpuQuery = new ManagementObjectSearcher("SELECT Name, AdapterRAM FROM Win32_VideoController");
                 var gpu = gpuQuery.Get().Cast<ManagementObject>().FirstOrDefault();
                 if (gpu != null)
@@ -84,12 +85,10 @@ namespace DarkHub
                     systemInfo.AppendLine("GPU: Não encontrada");
                 }
 
-                // Motherboard Information
                 var motherboardQuery = new ManagementObjectSearcher("SELECT Product FROM Win32_BaseBoard");
                 var motherboard = motherboardQuery.Get().Cast<ManagementObject>().FirstOrDefault();
                 systemInfo.AppendLine($"Placa Mãe: {motherboard?["Product"]?.ToString() ?? "Não encontrado"}");
 
-                // BIOS Information
                 var biosQuery = new ManagementObjectSearcher("SELECT Version FROM Win32_BIOS");
                 var bios = biosQuery.Get().Cast<ManagementObject>().FirstOrDefault();
                 systemInfo.AppendLine($"BIOS: {bios?["Version"]?.ToString() ?? "Não encontrado"}");
@@ -114,13 +113,13 @@ namespace DarkHub
                     Height = 500,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
                     WindowStyle = WindowStyle.ToolWindow,
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 14
                 };
 
-                infoWindow.BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)); // #80848e
+                infoWindow.BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142));  
                 infoWindow.BorderThickness = new Thickness(1);
 
                 var grid = new Grid();
@@ -147,12 +146,12 @@ namespace DarkHub
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)), // #2A2A2E
+                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),  
                     Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     Padding = new Thickness(10),
                     FontSize = 14,
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
                     BorderThickness = new Thickness(1)
                 };
                 Grid.SetRow(textBox, 1);
@@ -269,8 +268,8 @@ namespace DarkHub
                     Height = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
                     BorderThickness = new Thickness(1)
                 };
 
@@ -296,13 +295,13 @@ namespace DarkHub
                     Name = "ProgressTextBox",
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)), // #2A2A2E
+                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),  
                     Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     Padding = new Thickness(5),
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 12,
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
                     BorderThickness = new Thickness(1)
                 };
                 Grid.SetRow(textBox, 1);
@@ -1231,8 +1230,8 @@ namespace DarkHub
                             Width = 400,
                             Height = 300,
                             WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
-                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
                             BorderThickness = new Thickness(1)
                         };
 
@@ -1240,17 +1239,17 @@ namespace DarkHub
                         var listBox = new ListBox
                         {
                             Height = 200,
-                            Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)), // #2A2A2E
+                            Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),  
                             Foreground = Brushes.White,
-                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)) // #80848e
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))  
                         };
                         var disableButton = new Button
                         {
                             Content = "Desativar Selecionado",
                             Margin = new Thickness(0, 10, 0, 0),
-                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)), // #35373c
+                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
                             Foreground = Brushes.White,
-                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)), // #80848e
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
                             BorderThickness = new Thickness(1),
                             Padding = new Thickness(5)
                         };
@@ -1436,33 +1435,34 @@ namespace DarkHub
         {
             try
             {
-                ProcessStartInfo psi = new ProcessStartInfo
+                using var process = new Process
                 {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c {command}",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = Encoding.GetEncoding(850),
-                    StandardErrorEncoding = Encoding.GetEncoding(850)
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/c {command}",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
                 };
 
-                using (Process process = new Process { StartInfo = psi })
-                {
-                    process.Start();
-                    string output = await process.StandardOutput.ReadToEndAsync();
-                    string error = await process.StandardError.ReadToEndAsync();
-                    await Task.Run(() => process.WaitForExit());
+                process.Start();
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
 
-                    if (!string.IsNullOrEmpty(error))
-                        return $"Erro: {error}";
-                    return output.Trim();
+                if (!string.IsNullOrEmpty(error))
+                {
+                    throw new Exception(error);
                 }
+
+                return output;
             }
             catch (Exception ex)
             {
-                return $"Exceção ao executar comando: {ex.Message}";
+                throw new Exception($"Erro ao executar comando: {ex.Message}");
             }
         }
 
@@ -1580,7 +1580,6 @@ namespace DarkHub
 
             try
             {
-                // Mostrar janela de progresso durante a verificação
                 (progressWindow, progressTextBox) = CreateProgressWindow("Verificando Aplicativos Instalados");
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
                 AppendProgress(progressTextBox, "Verificando aplicativos instalados no sistema...\n");
@@ -1612,7 +1611,6 @@ namespace DarkHub
 
                 await Task.Run(async () =>
                 {
-                    // Verificar OneDrive
                     if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive")) ||
                         Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "OneDrive")))
                     {
@@ -1620,7 +1618,6 @@ namespace DarkHub
                         AppendProgress(progressTextBox, "Encontrado: OneDrive\n");
                     }
 
-                    // Verificar Edge
                     if (Directory.Exists(@"C:\Program Files (x86)\Microsoft\Edge") ||
                         Directory.Exists(@"C:\Program Files\Microsoft\Edge"))
                     {
@@ -1628,7 +1625,6 @@ namespace DarkHub
                         AppendProgress(progressTextBox, "Encontrado: Microsoft Edge\n");
                     }
 
-                    // Verificar outros aplicativos usando PowerShell
                     foreach (var app in potentialBloatware)
                     {
                         if (app.Key != "Microsoft.OneDrive" && app.Key != "Microsoft.Edge")
@@ -1643,7 +1639,6 @@ namespace DarkHub
                     }
                 });
 
-                // Fechar a janela de progresso
                 if (progressWindow != null)
                 {
                     await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
@@ -1656,7 +1651,6 @@ namespace DarkHub
                     return;
                 }
 
-                // Criar janela de seleção apenas com os apps instalados
                 var selectionWindow = new Window
                 {
                     Title = "Selecionar Aplicativos para Remover",
@@ -1796,7 +1790,6 @@ namespace DarkHub
                     return;
                 }
 
-                // Recriar janela de progresso para a remoção
                 (progressWindow, progressTextBox) = CreateProgressWindow("Removendo Bloatware do Windows");
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
                 AppendProgress(progressTextBox, "Iniciando remoção de bloatware...\n");
@@ -1839,7 +1832,6 @@ namespace DarkHub
                         }
                     }
 
-                    // Limpar arquivos residuais dos apps selecionados
                     AppendProgress(progressTextBox, "Limpando arquivos residuais...\n");
                     var foldersToDelete = new List<string>();
 
@@ -1920,10 +1912,8 @@ namespace DarkHub
             {
                 string result = await RunCommandAsync("powershell -Command \"Get-CimInstance Win32_OperatingSystem | Select-Object -Property TotalVisibleMemorySize,FreePhysicalMemory | ConvertTo-Json\"");
                 
-                // Remover caracteres inválidos e quebras de linha
                 result = result.Trim().Replace("\r", "").Replace("\n", "");
                 
-                // Extrair os valores usando índices
                 int totalIndex = result.IndexOf("TotalVisibleMemorySize") + "TotalVisibleMemorySize".Length + 2;
                 int freeIndex = result.IndexOf("FreePhysicalMemory") + "FreePhysicalMemory".Length + 2;
                 
@@ -1944,7 +1934,6 @@ namespace DarkHub
                 Debug.WriteLine($"Erro ao obter informações da memória: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             
-            // Se falhar, tentar método alternativo usando ComputerInfo
             try
             {
                 var computerInfo = new Microsoft.VisualBasic.Devices.ComputerInfo();
@@ -1979,12 +1968,10 @@ namespace DarkHub
 
                 await Task.Run(async () =>
                 {
-                    // Obter informações iniciais da memória
                     var initialMemoryInfo = await GetMemoryInfo();
                     AppendProgress(progressTextBox, $"Memória em uso antes da otimização: {initialMemoryInfo.UsedMemory:N2} GB\n");
                     AppendProgress(progressTextBox, $"Memória disponível antes da otimização: {initialMemoryInfo.AvailableMemory:N2} GB\n\n");
 
-                    // Lista de processos seguros para otimizar (adicione mais conforme necessário)
                     var safeProcesses = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                     {
                         "chrome", "firefox", "msedge", "iexplore", "opera",
@@ -1993,7 +1980,6 @@ namespace DarkHub
                         "explorer", "powershell", "cmd"
                     };
 
-                    // 1. Otimizar processos seguros
                     AppendProgress(progressTextBox, "1. Otimizando processos não essenciais...\n");
                     var processes = Process.GetProcesses();
                     int processesOptimized = 0;
@@ -2021,12 +2007,10 @@ namespace DarkHub
                     AppendProgress(progressTextBox, $"Total de processos otimizados: {processesOptimized}\n");
                     await Task.Delay(1000);
 
-                    // 2. Limpar cache do sistema de arquivos
                     AppendProgress(progressTextBox, "2. Limpando cache do sistema de arquivos...\n");
                     await RunCommandAsync("powershell -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"");
                     await Task.Delay(1000);
 
-                    // 3. Limpar arquivos temporários
                     AppendProgress(progressTextBox, "3. Limpando arquivos temporários...\n");
                     string[] tempPaths = {
                         Path.GetTempPath(),
@@ -2058,18 +2042,15 @@ namespace DarkHub
                     }
                     await Task.Delay(1000);
 
-                    // 4. Executar coleta de lixo do .NET
                     AppendProgress(progressTextBox, "4. Executando coleta de lixo...\n");
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                     await Task.Delay(1000);
 
-                    // 5. Limpar cache DNS
                     AppendProgress(progressTextBox, "5. Limpando cache DNS...\n");
                     await RunCommandAsync("ipconfig /flushdns");
                     await Task.Delay(1000);
 
-                    // Verificar resultados
                     var finalMemoryInfo = await GetMemoryInfo();
                     double memorySaved = initialMemoryInfo.UsedMemory - finalMemoryInfo.UsedMemory;
 
@@ -2093,6 +2074,722 @@ namespace DarkHub
                 {
                     await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
                 }
+            }
+        }
+
+        public class DnsResult
+        {
+            public string Name { get; set; }
+            public string Primary { get; set; }
+            public string Secondary { get; set; }
+            public double Latency { get; set; }
+        }
+
+        private async void DNSBenchmark(object sender, RoutedEventArgs e)
+        {
+            Button? button = sender as Button;
+            if (button == null)
+            {
+                Debug.WriteLine("Sender não é um botão em DNSBenchmark, evento ignorado.");
+                return;
+            }
+
+            button.IsEnabled = false;
+            TextBox? progressTextBox = null;
+            Window? progressWindow = null;
+
+            try
+            {
+                (progressWindow, progressTextBox) = CreateProgressWindow("DNS Benchmark");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando teste de DNS...\n");
+
+                var dnsList = new List<(string Name, string Primary, string Secondary)>
+                {
+                    ("Google DNS", "8.8.8.8", "8.8.4.4"),
+                    ("Cloudflare", "1.1.1.1", "1.0.0.1"),
+                    ("OpenDNS", "208.67.222.222", "208.67.220.220"),
+                    ("Quad9", "9.9.9.9", "149.112.112.112"),
+                    ("DNS Brasil 1", "177.128.247.77", "189.2.9.181"),
+                    ("DNS Brasil 2", "181.217.154.102", "186.209.180.156"),
+                    ("DNS Brasil 3", "45.65.173.61", "177.99.206.131"),
+                    ("DNS Brasil 4", "187.102.222.46", "168.195.243.35"),
+                    ("DNS Brasil 5", "181.191.162.239", "177.103.231.245"),
+                    ("DNS Brasil 6", "187.44.169.62", "186.215.192.243"),
+                    ("DNS EUA 1", "205.171.3.66", "204.9.214.118"),
+                    ("DNS EUA 2", "172.64.36.143", "75.85.76.64"),
+                    ("DNS EUA 3", "172.64.37.210", "76.72.180.231"),
+                    ("DNS EUA 4", "66.92.224.2", "8.20.247.148"),
+                    ("DNS EUA 5", "73.99.97.167", "65.220.16.3"),
+                    ("DNS EUA 6", "5.183.101.189", "209.37.92.138"),
+                    ("DNS EUA 7", "66.42.158.238", "45.90.28.108"),
+                    ("DNS EUA 8", "161.97.239.94", "198.12.71.224"),
+                    ("DNS EUA 9", "4.15.7.161", "47.32.37.109"),
+                    ("DNS EUA 10", "38.111.51.157", "12.219.147.122"),
+                    ("DNS EUA 11", "34.192.110.149", "68.106.134.45"),
+                    ("DNS EUA 12", "45.33.45.43", "50.248.90.249"),
+                    ("DNS EUA 13", "96.78.147.162", "209.244.104.183"),
+                    ("DNS EUA 14", "96.249.1.153", "66.170.134.30"),
+                    ("DNS EUA 15", "134.122.123.3", "98.43.240.178"),
+                    ("DNS EUA 16", "50.224.158.130", "63.171.232.38"),
+                    ("DNS EUA 17", "162.251.163.98", "148.77.107.17"),
+                    ("DNS EUA 18", "156.154.71.41", "8.26.56.216"),
+                    ("DNS EUA 19", "167.71.182.60", "8.8.8.8")
+                };
+
+                var results = new List<DnsResult>();
+
+                foreach (var dns in dnsList)
+                {
+                    AppendProgress(progressTextBox, $"Testando {dns.Name}...\n");
+                    double latency = await TestDNSLatency(dns.Primary);
+                    results.Add(new DnsResult
+                    {
+                        Name = dns.Name,
+                        Primary = dns.Primary,
+                        Secondary = dns.Secondary,
+                        Latency = latency
+                    });
+                    AppendProgress(progressTextBox, $"Latência: {latency:F2}ms\n");
+                }
+
+                results = results.OrderBy(r => r.Latency).ToList();
+
+                var resultsWindow = new Window
+                {
+                    Title = "Resultados do DNS Benchmark",
+                    Width = 600,
+                    Height = 500,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+                };
+
+                var grid = new Grid();
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+                var dataGrid = new DataGrid
+                {
+                    AutoGenerateColumns = false,
+                    IsReadOnly = true,
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
+                    GridLinesVisibility = DataGridGridLinesVisibility.Horizontal,
+                    HorizontalGridLinesBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
+                    VerticalGridLinesBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
+                    AlternatingRowBackground = new SolidColorBrush(Color.FromRgb(63, 65, 70)),
+                    RowBackground = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    ItemsSource = results,
+                    CanUserSortColumns = true,
+                    CanUserResizeColumns = true,
+                    HeadersVisibility = DataGridHeadersVisibility.Column,
+                    RowHeaderWidth = 0,
+                    SelectionMode = DataGridSelectionMode.Single,
+                    SelectionUnit = DataGridSelectionUnit.FullRow,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+                };
+
+                var headerStyle = new Style(typeof(DataGridColumnHeader));
+                headerStyle.Setters.Add(new Setter(BackgroundProperty, new SolidColorBrush(Color.FromRgb(63, 65, 70))));
+                headerStyle.Setters.Add(new Setter(ForegroundProperty, Brushes.White));
+                headerStyle.Setters.Add(new Setter(TextElement.FontWeightProperty, FontWeights.Bold));
+                headerStyle.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(10, 5, 10, 5)));
+                dataGrid.ColumnHeaderStyle = headerStyle;
+
+                var cellStyle = new Style(typeof(DataGridCell));
+                cellStyle.Setters.Add(new Setter(BackgroundProperty, new SolidColorBrush(Color.FromRgb(53, 55, 60))));
+                cellStyle.Setters.Add(new Setter(ForegroundProperty, Brushes.White));
+                cellStyle.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(10, 5, 10, 5)));
+                dataGrid.CellStyle = cellStyle;
+
+                var rowStyle = new Style(typeof(DataGridRow));
+                rowStyle.Setters.Add(new Setter(BackgroundProperty, new SolidColorBrush(Color.FromRgb(53, 55, 60))));
+                var trigger = new Trigger { Property = DataGridRow.IsSelectedProperty, Value = true };
+                trigger.Setters.Add(new Setter(BackgroundProperty, new SolidColorBrush(Color.FromRgb(73, 75, 80))));
+                rowStyle.Triggers.Add(trigger);
+                dataGrid.RowStyle = rowStyle;
+
+                var nameColumn = new DataGridTextColumn
+                {
+                    Header = "Nome",
+                    Binding = new Binding("Name"),
+                    Width = 150
+                };
+                dataGrid.Columns.Add(nameColumn);
+
+                var primaryColumn = new DataGridTextColumn
+                {
+                    Header = "DNS Primário",
+                    Binding = new Binding("Primary"),
+                    Width = 150
+                };
+                dataGrid.Columns.Add(primaryColumn);
+
+                var secondaryColumn = new DataGridTextColumn
+                {
+                    Header = "DNS Secundário",
+                    Binding = new Binding("Secondary"),
+                    Width = 150
+                };
+                dataGrid.Columns.Add(secondaryColumn);
+
+                var latencyColumn = new DataGridTextColumn
+                {
+                    Header = "Latência (ms)",
+                    Binding = new Binding("Latency") { StringFormat = "F2" },
+                    Width = 100
+                };
+                dataGrid.Columns.Add(latencyColumn);
+
+                dataGrid.ItemsSource = null;
+                dataGrid.ItemsSource = results;
+
+                var buttonPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(10)
+                };
+
+                var configureButton = new Button
+                {
+                    Content = "Configurar DNS Selecionado",
+                    Style = (Style)Application.Current.Resources["ButtonStyle"],
+                    Width = 200,
+                    Margin = new Thickness(5)
+                };
+
+                configureButton.Click += async (s, e) =>
+                {
+                    var selectedItem = dataGrid.SelectedItem as DnsResult;
+                    if (selectedItem != null)
+                    {
+                        await ConfigureDNS(selectedItem.Primary, selectedItem.Secondary);
+                    }
+                };
+
+                buttonPanel.Children.Add(configureButton);
+                Grid.SetRow(buttonPanel, 0);
+                Grid.SetRow(dataGrid, 1);
+
+                grid.Children.Add(buttonPanel);
+                grid.Children.Add(dataGrid);
+
+                resultsWindow.Content = grid;
+                resultsWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
+                MessageBox.Show($"Erro ao executar DNS Benchmark: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Erro em DNSBenchmark: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+            finally
+            {
+                button.IsEnabled = true;
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
+            }
+        }
+
+private async Task<double> TestDNSLatency(string dnsServer)
+{
+    try
+    {
+        using var client = new UdpClient();
+        var endpoint = new IPEndPoint(IPAddress.Parse(dnsServer), 53);
+        var query = new byte[] { 0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x77, 0x77, 0x77, 0x06, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x03, 0x63, 0x6f, 0x6d, 0x00, 0x00, 0x01, 0x00, 0x01 };
+        
+        var sw = Stopwatch.StartNew();
+        await client.SendAsync(query, query.Length, endpoint);
+        var response = await client.ReceiveAsync();
+        sw.Stop();
+
+        return sw.ElapsedMilliseconds;
+    }
+    catch
+    {
+        return double.MaxValue;
+    }
+}
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern int GetAdaptersInfo(IntPtr pAdapterInfo, ref int pOutBufLen);
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern int SetInterfaceDnsSettings(string adapterName, string primaryDNS, string secondaryDNS);
+
+        private async Task ConfigureDNS(string primaryDNS, string secondaryDNS)
+        {
+            try
+            {
+                string command = "netsh interface show interface";
+                string output = await RunCommandAsync(command);
+                Debug.WriteLine($"Saída do comando netsh:\n{output}");
+
+                string adapterName = "";
+                string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                
+                foreach (string line in lines)
+                {
+                    Debug.WriteLine($"Analisando linha: '{line}'");
+                    
+                    if (line.Contains("Enabled") || line.Contains("Conectado"))
+                    {
+                        string[] parts = line.Split(new[] { "  ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (parts.Length >= 2)
+                        {
+                            string name = parts[1].Trim();
+                            Debug.WriteLine($"Adaptador encontrado: '{name}'");
+                            
+                            if (name.Contains("Wi-Fi") || 
+                                name.Contains("Ethernet") || 
+                                name.Contains("Wireless") || 
+                                name.Contains("Rede") || 
+                                name.Contains("Network") ||
+                                name.Contains("Conectado"))
+                            {
+                                adapterName = name;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(adapterName))
+                {
+                    throw new Exception($"Não foi possível encontrar um adaptador de rede ativo.\nSaída do comando:\n{output}");
+                }
+
+                Debug.WriteLine($"Adaptador selecionado: {adapterName}");
+
+                command = $"netsh interface ip set address name=\"{adapterName}\" dhcp";
+                Debug.WriteLine($"Executando comando: {command}");
+                await RunCommandAsync(command);
+
+                command = $"netsh interface ip set dns name=\"{adapterName}\" dhcp";
+                Debug.WriteLine($"Executando comando: {command}");
+                await RunCommandAsync(command);
+
+                await Task.Delay(2000);
+
+                command = $"netsh interface ip set dns name=\"{adapterName}\" static {primaryDNS}";
+                Debug.WriteLine($"Executando comando: {command}");
+                await RunCommandAsync(command);
+
+                await Task.Delay(2000);
+
+                command = $"netsh interface ip add dns name=\"{adapterName}\" {secondaryDNS} index=2";
+                Debug.WriteLine($"Executando comando: {command}");
+                await RunCommandAsync(command);
+
+                await Task.Delay(2000);
+
+                command = "ipconfig /flushdns";
+                Debug.WriteLine($"Executando comando: {command}");
+                await RunCommandAsync(command);
+
+                command = $"netsh interface ip show dns name=\"{adapterName}\"";
+                output = await RunCommandAsync(command);
+                Debug.WriteLine($"Verificação das configurações DNS:\n{output}");
+
+                command = "ipconfig /all";
+                output = await RunCommandAsync(command);
+                Debug.WriteLine($"Verificação com ipconfig:\n{output}");
+
+                if (!output.Contains(primaryDNS) || !output.Contains(secondaryDNS))
+                {
+                    string registryPath = @"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces";
+                    using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryPath, true))
+                    {
+                        if (key != null)
+                        {
+                            foreach (string subKeyName in key.GetSubKeyNames())
+                            {
+                                using (RegistryKey subKey = key.OpenSubKey(subKeyName, true))
+                                {
+                                    if (subKey != null)
+                                    {
+                                        string nameServer = $"{primaryDNS},{secondaryDNS}";
+                                        subKey.SetValue("NameServer", nameServer, RegistryValueKind.String);
+                                        Debug.WriteLine($"Configuração DNS aplicada via registro: {nameServer}");
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    command = "ipconfig /flushdns";
+                    await RunCommandAsync(command);
+                }
+
+                MessageBox.Show($"DNS configurado com sucesso!\nAdaptador: {adapterName}\nPrimário: {primaryDNS}\nSecundário: {secondaryDNS}", 
+                    "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = $"Erro ao configurar DNS: {ex.Message}\n\n" +
+                    "Verifique se:\n" +
+                    "1. O programa está sendo executado como administrador\n" +
+                    "2. Você está conectado a uma rede\n" +
+                    "3. O adaptador de rede está habilitado\n" +
+                    "4. Não há outros programas interferindo nas configurações de rede";
+                
+                MessageBox.Show(errorMessage, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Erro ao configurar DNS: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct IP_ADAPTER_INFO
+        {
+            public IntPtr Next;
+            public int ComboIndex;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string AdapterName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 132)]
+            public string Description;
+            public uint AddressLength;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+            public byte[] Address;
+            public int Index;
+            public uint Type;
+            public uint DhcpEnabled;
+            public IntPtr CurrentIpAddress;
+            public IP_ADDR_STRING IpAddressList;
+            public IP_ADDR_STRING GatewayList;
+            public IP_ADDR_STRING DhcpServer;
+            public bool HaveWins;
+            public IP_ADDR_STRING PrimaryWinsServer;
+            public IP_ADDR_STRING SecondaryWinsServer;
+            public int LeaseObtained;
+            public int LeaseExpires;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct IP_ADDR_STRING
+        {
+            public IntPtr Next;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
+            public string IpAddress;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
+            public string IpMask;
+            public int Context;
+        }
+
+        private async void OptimizeGameRoute(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dialogWindow = new Window
+                {
+                    Title = "IP do Servidor do Jogo",
+                    Width = 400,
+                    Height = 180,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    WindowStyle = WindowStyle.ToolWindow,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                var dialogGrid = new Grid
+                {
+                    Margin = new Thickness(15)
+                };
+                dialogGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                dialogGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                dialogGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+                var label = new TextBlock
+                {
+                    Text = "Digite o IP do servidor do jogo:",
+                    Foreground = Brushes.White,
+                    Margin = new Thickness(0, 0, 0, 10),
+                    FontSize = 14
+                };
+
+                var textBox = new TextBox
+                {
+                    Height = 30,
+                    FontSize = 14,
+                    Background = new SolidColorBrush(Color.FromRgb(45, 47, 52)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+                    Margin = new Thickness(0, 0, 0, 15)
+                };
+
+                var dialogButtonPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(0, 5, 0, 0)
+                };
+
+                var okButton = new Button
+                {
+                    Content = "OK",
+                    Width = 80,
+                    Height = 30,
+                    Margin = new Thickness(5),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))
+                };
+
+                var cancelButton = new Button
+                {
+                    Content = "Cancelar",
+                    Width = 80,
+                    Height = 30,
+                    Margin = new Thickness(5),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))
+                };
+
+                dialogButtonPanel.Children.Add(okButton);
+                dialogButtonPanel.Children.Add(cancelButton);
+
+                Grid.SetRow(label, 0);
+                Grid.SetRow(textBox, 1);
+                Grid.SetRow(dialogButtonPanel, 2);
+
+                dialogGrid.Children.Add(label);
+                dialogGrid.Children.Add(textBox);
+                dialogGrid.Children.Add(dialogButtonPanel);
+
+                dialogWindow.Content = dialogGrid;
+
+                bool? result = null;
+                string gameServerIP = "";
+
+                okButton.Click += (s, args) =>
+                {
+                    gameServerIP = textBox.Text.Trim();
+                    if (string.IsNullOrEmpty(gameServerIP))
+                    {
+                        MessageBox.Show("Por favor, digite um IP válido.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    result = true;
+                    dialogWindow.Close();
+                };
+
+                cancelButton.Click += (s, args) =>
+                {
+                    result = false;
+                    dialogWindow.Close();
+                };
+
+                dialogWindow.ShowDialog();
+
+                if (result != true)
+                {
+                    return;
+                }
+
+                var (progressWindow, progressTextBox) = CreateProgressWindow("Otimizando Rota para Jogos");
+                progressWindow.Show();
+
+                var dnsList = new[]
+                {
+                    new { Name = "Cloudflare Gaming", Primary = "1.1.1.1", Secondary = "1.0.0.1" },
+                    new { Name = "Google DNS", Primary = "8.8.8.8", Secondary = "8.8.4.4" },
+                    new { Name = "OpenDNS Gaming", Primary = "208.67.222.222", Secondary = "208.67.220.220" },
+                    new { Name = "Quad9 Gaming", Primary = "9.9.9.9", Secondary = "149.112.112.112" },
+                    new { Name = "Level3 Gaming", Primary = "209.244.0.3", Secondary = "209.244.0.4" },
+                    new { Name = "Verisign DNS", Primary = "64.6.64.6", Secondary = "64.6.65.6" },
+                    new { Name = "DNS.Watch", Primary = "84.200.69.80", Secondary = "84.200.70.40" },
+                    new { Name = "Comodo Secure DNS", Primary = "8.26.56.26", Secondary = "8.20.247.20" },
+                    new { Name = "Norton ConnectSafe", Primary = "199.85.126.10", Secondary = "199.85.127.10" },
+                    new { Name = "GreenTeamDNS", Primary = "81.218.119.11", Secondary = "209.88.198.133" },
+                    new { Name = "SafeDNS", Primary = "195.46.39.39", Secondary = "195.46.39.40" },
+                    new { Name = "OpenNIC", Primary = "69.195.152.204", Secondary = "23.94.18.178" },
+                    new { Name = "SmartViper", Primary = "208.76.50.50", Secondary = "208.76.51.51" },
+                    new { Name = "Dyn", Primary = "216.146.35.35", Secondary = "216.146.36.36" },
+                    new { Name = "FreeDNS", Primary = "37.235.1.174", Secondary = "37.235.1.177" },
+                    new { Name = "Alternate DNS", Primary = "198.101.242.72", Secondary = "23.253.163.53" },
+                    new { Name = "Yandex.DNS", Primary = "77.88.8.8", Secondary = "77.88.8.1" },
+                    new { Name = "UncensoredDNS", Primary = "91.239.100.100", Secondary = "89.233.43.71" },
+                    new { Name = "Hurricane Electric", Primary = "74.82.42.42", Secondary = "204.9.214.118" },
+                    new { Name = "puntCAT", Primary = "109.69.8.51", Secondary = "205.171.3.66" },
+                    new { Name = "Neustar", Primary = "156.154.70.1", Secondary = "156.154.71.1" },
+                    new { Name = "DNS Brasil 1", Primary = "177.128.247.77", Secondary = "189.2.9.181" },
+                    new { Name = "DNS Brasil 2", Primary = "181.217.154.102", Secondary = "186.209.180.156" },
+                    new { Name = "DNS Brasil 3", Primary = "45.65.173.61", Secondary = "177.99.206.131" },
+                    new { Name = "DNS Brasil 4", Primary = "187.102.222.46", Secondary = "168.195.243.35" },
+                    new { Name = "DNS Brasil 5", Primary = "181.191.162.239", Secondary = "177.103.231.245" },
+                    new { Name = "DNS Brasil 6", Primary = "187.44.169.62", Secondary = "186.215.192.243" },
+                    new { Name = "DNS EUA 1", Primary = "172.64.36.143", Secondary = "75.85.76.64" },
+                    new { Name = "DNS EUA 2", Primary = "172.64.37.210", Secondary = "76.72.180.231" },
+                    new { Name = "DNS EUA 3", Primary = "66.92.224.2", Secondary = "8.20.247.148" },
+                    new { Name = "DNS EUA 4", Primary = "73.99.97.167", Secondary = "65.220.16.3" },
+                    new { Name = "DNS EUA 5", Primary = "5.183.101.189", Secondary = "209.37.92.138" },
+                    new { Name = "DNS EUA 6", Primary = "66.42.158.238", Secondary = "45.90.28.108" },
+                    new { Name = "DNS EUA 7", Primary = "161.97.239.94", Secondary = "198.12.71.224" },
+                    new { Name = "DNS EUA 8", Primary = "4.15.7.161", Secondary = "47.32.37.109" },
+                    new { Name = "DNS EUA 9", Primary = "38.111.51.157", Secondary = "12.219.147.122" },
+                    new { Name = "DNS EUA 10", Primary = "34.192.110.149", Secondary = "68.106.134.45" },
+                    new { Name = "DNS EUA 11", Primary = "45.33.45.43", Secondary = "50.248.90.249" },
+                    new { Name = "DNS EUA 12", Primary = "96.78.147.162", Secondary = "209.244.104.183" },
+                    new { Name = "DNS EUA 13", Primary = "96.249.1.153", Secondary = "66.170.134.30" },
+                    new { Name = "DNS EUA 14", Primary = "134.122.123.3", Secondary = "98.43.240.178" },
+                    new { Name = "DNS EUA 15", Primary = "50.224.158.130", Secondary = "63.171.232.38" },
+                    new { Name = "DNS EUA 16", Primary = "162.251.163.98", Secondary = "148.77.107.17" },
+                    new { Name = "DNS EUA 17", Primary = "156.154.71.41", Secondary = "8.26.56.216" },
+                    new { Name = "DNS EUA 18", Primary = "167.71.182.60", Secondary = "8.8.8.8" }
+                };
+
+                var results = new List<DnsResult>();
+                AppendProgress(progressTextBox, "Iniciando teste de DNSs otimizados para jogos...\n");
+
+                foreach (var dns in dnsList)
+                {
+                    AppendProgress(progressTextBox, $"Testando {dns.Name}...\n");
+                    double latency = await TestDNSLatency(dns.Primary);
+                    results.Add(new DnsResult
+                    {
+                        Name = dns.Name,
+                        Primary = dns.Primary,
+                        Secondary = dns.Secondary,
+                        Latency = latency
+                    });
+                }
+
+                progressWindow.Close();
+
+                var resultsWindow = new Window
+                {
+                    Title = "Resultados do Teste de DNS",
+                    Width = 800,
+                    Height = 600,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60))
+                };
+
+                var resultsGrid = new Grid();
+                resultsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                resultsGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                resultsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+                var resultsLabel = new TextBlock
+                {
+                    Text = "DNSs ordenados por latência (menor para maior):",
+                    Foreground = Brushes.White,
+                    Margin = new Thickness(10),
+                    FontSize = 14
+                };
+
+                var dataGrid = new DataGrid
+                {
+                    AutoGenerateColumns = false,
+                    IsReadOnly = true,
+                    Background = new SolidColorBrush(Color.FromRgb(45, 47, 52)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+                    GridLinesVisibility = DataGridGridLinesVisibility.All,
+                    HorizontalGridLinesBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+                    VerticalGridLinesBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+                    RowBackground = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    AlternatingRowBackground = new SolidColorBrush(Color.FromRgb(45, 47, 52))
+                };
+
+                dataGrid.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "Nome",
+                    Binding = new Binding("Name"),
+                    Width = 200
+                });
+
+                dataGrid.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "DNS Primário",
+                    Binding = new Binding("Primary"),
+                    Width = 150
+                });
+
+                dataGrid.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "DNS Secundário",
+                    Binding = new Binding("Secondary"),
+                    Width = 150
+                });
+
+                dataGrid.Columns.Add(new DataGridTextColumn
+                {
+                    Header = "Latência (ms)",
+                    Binding = new Binding("Latency"),
+                    Width = 100
+                });
+
+                var resultsButtonPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Margin = new Thickness(10)
+                };
+
+                var configureButton = new Button
+                {
+                    Content = "Configurar DNS Selecionado",
+                    Width = 200,
+                    Height = 30,
+                    Margin = new Thickness(5),
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    Foreground = Brushes.White,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100))
+                };
+
+                resultsButtonPanel.Children.Add(configureButton);
+
+                Grid.SetRow(resultsLabel, 0);
+                Grid.SetRow(dataGrid, 1);
+                Grid.SetRow(resultsButtonPanel, 2);
+
+                resultsGrid.Children.Add(resultsLabel);
+                resultsGrid.Children.Add(dataGrid);
+                resultsGrid.Children.Add(resultsButtonPanel);
+
+                resultsWindow.Content = resultsGrid;
+
+                var sortedResults = results.OrderBy(r => r.Latency).ToList();
+                dataGrid.ItemsSource = sortedResults;
+
+                configureButton.Click += async (s, args) =>
+                {
+                    var selectedItem = dataGrid.SelectedItem as DnsResult;
+                    if (selectedItem == null)
+                    {
+                        MessageBox.Show("Por favor, selecione um DNS da lista.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    await ConfigureDNS(selectedItem.Primary, selectedItem.Secondary);
+                };
+
+                resultsWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao otimizar rota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenSystemMonitor(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var systemMonitor = new SystemMonitor();
+                NavigationService.Navigate(systemMonitor);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao abrir o monitor do sistema: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

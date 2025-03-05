@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;   
+using System.Windows.Controls;
 using Microsoft.Win32;
 using Tesseract;
 using System.Drawing;
@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace DarkHub
 {
-    public partial class ImageTextExtractor : System.Windows.Controls.Page    
+    public partial class ImageTextExtractor : System.Windows.Controls.Page
     {
         private string? selectedImagePath;
         private readonly Dictionary<string, string> languageMap = new();

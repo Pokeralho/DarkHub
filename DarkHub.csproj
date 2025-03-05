@@ -12,6 +12,7 @@
 
 	<ItemGroup>
 		<None Remove="assets\baixar.png" />
+		<None Remove="assets\bench-info.png" />
 		<None Remove="assets\clicker.png" />
 		<None Remove="assets\converter.png" />
 		<None Remove="assets\crunchyroll.png" />
@@ -55,6 +56,9 @@
 
 	<ItemGroup>
 		<Content Include="assets\baixar.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\bench-info.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\clicker.png">
