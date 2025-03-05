@@ -48,21 +48,22 @@
             Otimizador de PC
         </TextBlock>
 
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="600" Height="400">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="600" Height="450" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Height="400" VerticalAlignment="Top">
+            <StackPanel Grid.Column="0" Height="449" VerticalAlignment="Center">
                 <Button Content="Informações do Sistema" Click="SystemInfo" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Ativar Windows" Click="AtivarWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Reparar Windows" Click="RepairWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Limpar Arquivos Temporários" Click="ClearTempFilesAndLogs" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Modo de Alto Desempenho" Click="EnableHighPerformanceMode" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Otimizador de Inicialização" Click="ManageStartupPrograms" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Limpar Dados de Rede" Click="CleanNetworkData" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="cleanNetworkDataButton" Content="Limpar Dados de Rede" Click="CleanNetworkData" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Remover Bloatware" Click="RemoveWindowsBloatware" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="optimizeGameRouteButton" Content="Otimizar Rota para Jogos" Click="OptimizeGameRoute" Style="{StaticResource ButtonStyle}" Width="200"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
@@ -74,6 +75,8 @@
                 <Button Content="Antivírus" Click="OpenWindowsDefender" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Space Sniffer" Click="RunSpaceSniffer" Style="{StaticResource ButtonStyle}" Width="200"/>
                 <Button Content="Otimizar Memória RAM" Click="OptimizeMemory" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="dnsBenchmarkButton" Content="DNS Benchmark" Click="DNSBenchmark" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="systemMonitorButton" Content="Monitor do Sistema" Click="OpenSystemMonitor" Style="{StaticResource ButtonStyle}" Width="200"/>
             </StackPanel>
         </Grid>
     </Grid>

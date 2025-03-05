@@ -72,6 +72,7 @@ namespace DarkHub
                 btnExtrairTexto.Tag = null;
                 btnDllInjector.Tag = null;
                 btnCrunchyrollAcc.Tag = null;
+                btnSystemMonitor.Tag = null;
 
                 clickedButton.Tag = "Active";
 
@@ -93,6 +94,8 @@ namespace DarkHub
                     await NavigateToPageAsync(new DllInjector());
                 else if (clickedButton == btnCrunchyrollAcc)
                     await NavigateToPageAsync(new CrunchyrollAcc());
+                else if (clickedButton == btnSystemMonitor)
+                    await NavigateToPageAsync(new SystemMonitor());
             }
             catch (Exception ex)
             {
@@ -140,7 +143,7 @@ namespace DarkHub
         {
             string pageName = e.Content.GetType().Name;
 
-            var paginasOcultas = new List<string> { "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor" };
+            var paginasOcultas = new List<string> { "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
 
             if (paginasOcultas.Contains(pageName))
             {
@@ -151,6 +154,18 @@ namespace DarkHub
             {
                 btnDllInjector.Visibility = Visibility.Visible;
                 btnCrunchyrollAcc.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void MenuScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            ScrollViewer scrollViewer = sender as ScrollViewer;
+            Border scrollIndicator = ScrollIndicator;
+
+            if (scrollViewer != null && scrollIndicator != null)
+            {
+                bool hasMoreContentBelow = scrollViewer.VerticalOffset + scrollViewer.ViewportHeight < scrollViewer.ExtentHeight;
+                scrollIndicator.Visibility = hasMoreContentBelow ? Visibility.Visible : Visibility.Collapsed;
             }
         }
     }
