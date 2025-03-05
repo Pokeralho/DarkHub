@@ -11,6 +11,7 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - **Extrator de Texto de Imagens**: Utilize OCR para extrair texto de imagens, perfeito para digitalizar documentos ou capturas de tela.
 - **Downloader de Vídeos do YouTube**: Baixe vídeos ou playlists do YouTube em formato MP4 com suporte a H.264 e AAC.
 - **Editor de Texto com Interpretador Python**: Escreva, edite e execute scripts Python em tempo real, com suporte a depuração integrado.
+- **Monitor de Recursos**: Informações e métricas em tempo real sobre hardware e software. Além de um Benchmark para avaliação de desempenho.
 
 ## Pré-requisitos
 - Windows 10 ou superior.
