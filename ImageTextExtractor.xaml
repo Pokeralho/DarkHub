@@ -3,9 +3,11 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DarkHub"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Image Text Extractor" Background="{x:Null}">
+      Title="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ImageTextExtractorTitle}" 
+      Background="{x:Null}">
 
     <Page.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
@@ -60,16 +62,18 @@
 
         <Border Grid.Row="0" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="btnSelectImage" Click="SelectImage_Click" Style="{StaticResource MenuButtonStyle}" Width="135" ToolTip="Selecionar Imagem">
+                <Button x:Name="btnSelectImage" Click="SelectImage_Click" Style="{StaticResource MenuButtonStyle}" Width="135" 
+                        ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SelectImageButtonToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/selectimg.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Selecionar Imagem"/>
+                        <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SelectImageButtonText}"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="btnExtractText" Click="ExtractText_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Margin="10,0,0,0" ToolTip="Extrair Texto">
+                <Button x:Name="btnExtractText" Click="ExtractText_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Margin="10,0,0,0" 
+                        ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ExtractTextButtonToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/extrairtxtinv.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Extrair Texto"/>
+                        <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ExtractTextButtonText}"/>
                     </StackPanel>
                 </Button>
             </StackPanel>

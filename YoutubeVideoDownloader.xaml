@@ -3,9 +3,11 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DarkHub"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Youtube Video Downloader" Background="{x:Null}">
+      Title="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=YoutubeDownloaderTitle}" 
+      Background="{x:Null}">
 
     <Page.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
@@ -75,7 +77,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Novo estilo para a ComboBox -->
         <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
             <Setter Property="Background" Value="#2A2A2E"/>
             <Setter Property="Foreground" Value="White"/>
@@ -163,7 +164,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" 
-                   Text="YouTube Downloader" 
+                   Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=YoutubeDownloaderHeader}" 
                    FontFamily="{StaticResource JetBrainsMono}" 
                    FontSize="20" 
                    FontWeight="Bold" 
@@ -174,17 +175,18 @@
         <Border Grid.Row="1" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal">
                 <TextBox x:Name="urlTextBox" Width="550" Height="30" Margin="0,0,10,0" 
-                         Text="Insira a URL do vídeo ou playlist" 
+                         Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=UrlPlaceholder, Mode=OneTime}" 
                          GotFocus="UrlTextBox_GotFocus"/>
                 <ComboBox x:Name="formatComboBox" Width="100" Style="{StaticResource ComboBoxStyle}" Margin="0,0,10,0" SelectedIndex="0">
-                    <ComboBoxItem Content="MP4"/>
-                    <ComboBoxItem Content="MP3"/>
-                    <ComboBoxItem Content="MKV"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMP4}"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMP3}"/>
+                    <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMKV}"/>
                 </ComboBox>
-                <Button x:Name="btnDownload" Click="Download_Click" Style="{StaticResource MenuButtonStyle}" Width="120" ToolTip="Baixar Vídeo">
+                <Button x:Name="btnDownload" Click="Download_Click" Style="{StaticResource MenuButtonStyle}" Width="120" 
+                        ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=DownloadButtonToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/baixar.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Baixar"/>
+                        <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=DownloadButtonText}"/>
                     </StackPanel>
                 </Button>
             </StackPanel>

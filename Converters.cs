@@ -11,14 +11,16 @@ namespace DarkHub
         {
             if (value is string status)
             {
-                if (status.Contains("sucesso"))
+                if (status == ResourceManagerHelper.Instance.InjectionSuccessStatus)
                     return new SolidColorBrush(Colors.Green);
-                if (status.Contains("Erro") || status.Contains("Falha"))
-                    return new SolidColorBrush(Colors.Red);
-                if (status.Contains("Injetando"))
+                if (status == ResourceManagerHelper.Instance.InjectingStatus)
                     return new SolidColorBrush(Colors.Blue);
+                if (status == ResourceManagerHelper.Instance.ProcessNotFoundStatus ||
+                    status.Contains(ResourceManagerHelper.Instance.InjectionFailedStatus) ||
+                    status.Contains(ResourceManagerHelper.Instance.ErrorStatus.Split(':')[0]))
+                    return new SolidColorBrush(Colors.Red);
             }
-            return new SolidColorBrush(Colors.Black);
+            return new SolidColorBrush(Colors.White);           
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -43,4 +45,4 @@ namespace DarkHub
             return value;
         }
     }
-} 
+}

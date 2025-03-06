@@ -13,13 +13,16 @@
 	<ItemGroup>
 		<None Remove="assets\baixar.png" />
 		<None Remove="assets\bench-info.png" />
+		<None Remove="assets\brasil.png" />
 		<None Remove="assets\clicker.png" />
 		<None Remove="assets\converter.png" />
 		<None Remove="assets\crunchyroll.png" />
 		<None Remove="assets\DarkHub.ico" />
 		<None Remove="assets\DarkHub.pfx" />
 		<None Remove="assets\delete.png" />
+		<None Remove="assets\discord.png" />
 		<None Remove="assets\DllInjection.png" />
+		<None Remove="assets\estados-unidos.png" />
 		<None Remove="assets\exif.png" />
 		<None Remove="assets\extrairtxt.png" />
 		<None Remove="assets\extrairtxtinv.png" />
@@ -51,6 +54,7 @@
 		<PackageReference Include="System.Drawing.Common" Version="9.0.2" />
 		<PackageReference Include="System.Management" Version="9.0.2" />
 		<PackageReference Include="Tesseract" Version="5.2.0" />
+		<PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
 		<PackageReference Include="YoutubeDLSharp" Version="1.1.1" />
 	</ItemGroup>
 
@@ -59,6 +63,9 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\bench-info.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\brasil.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\clicker.png">
@@ -73,7 +80,13 @@
 		<Content Include="assets\DarkHub.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="assets\discord.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\DllInjection.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\estados-unidos.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\SpaceSniffer.exe">
@@ -139,6 +152,21 @@
 	  <Content Include="tessdata\por.traineddata">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Properties\AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AppResources.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Properties\AppResources.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>

@@ -35,7 +35,8 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao inicializar YoutubeVideoDownloader: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorInitializingYoutubeDownloader, ex.Message),
+                                ResourceManagerHelper.Instance.CriticalErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro ao inicializar YoutubeVideoDownloader: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 ytdl = null;
             }
@@ -43,7 +44,7 @@ namespace DarkHub
 
         private void UrlTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (sender is TextBox textBox && textBox.Text == "Insira a URL do vídeo ou playlist")
+            if (sender is TextBox textBox && textBox.Text == ResourceManagerHelper.Instance.UrlPlaceholder)
             {
                 textBox.Text = string.Empty;
             }
@@ -56,7 +57,7 @@ namespace DarkHub
                 if (ytdl == null)
                 {
                     await Dispatcher.InvokeAsync(() =>
-                        statusTextBox.Text = "Erro: YoutubeDL não foi inicializado corretamente.");
+                        statusTextBox.Text = ResourceManagerHelper.Instance.YoutubeDLNotInitializedError);
                     return;
                 }
 
@@ -65,7 +66,7 @@ namespace DarkHub
                 if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out _))
                 {
                     await Dispatcher.InvokeAsync(() =>
-                        statusTextBox.Text = "Por favor, insira uma URL válida do YouTube.");
+                        statusTextBox.Text = ResourceManagerHelper.Instance.InvalidUrlError);
                     Debug.WriteLine("URL inválida fornecida.");
                     return;
                 }
@@ -74,7 +75,7 @@ namespace DarkHub
                 if (formatComboBox.SelectedItem is not ComboBoxItem selectedItem)
                 {
                     await Dispatcher.InvokeAsync(() =>
-                        statusTextBox.Text = "Por favor, selecione um formato de saída.");
+                        statusTextBox.Text = ResourceManagerHelper.Instance.NoFormatSelectedError);
                     return;
                 }
 
@@ -82,9 +83,9 @@ namespace DarkHub
 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    statusTextBox.Text = "Iniciando download...";
+                    statusTextBox.Text = ResourceManagerHelper.Instance.StartingDownload;
                     downloadListBox.Items.Clear();
-                    downloadListBox.Items.Add("Progresso: 0% - 0 KB/s");
+                    downloadListBox.Items.Add(ResourceManagerHelper.Instance.InitialProgress);
                 });
 
                 var progress = new Progress<DownloadProgress>(p =>
@@ -93,7 +94,7 @@ namespace DarkHub
                     {
                         if (downloadListBox.Items.Count > 0)
                         {
-                            downloadListBox.Items[0] = $"Progresso: {p.Progress:P0} - {p.DownloadSpeed}";
+                            downloadListBox.Items[0] = string.Format(ResourceManagerHelper.Instance.ProgressUpdate, p.Progress.ToString("P0"), p.DownloadSpeed);
                         }
                     });
                 });
@@ -135,9 +136,9 @@ namespace DarkHub
                         {
                             await Dispatcher.InvokeAsync(() =>
                             {
-                                statusTextBox.Text = $"Download concluído: {fetch.Data}";
+                                statusTextBox.Text = string.Format(ResourceManagerHelper.Instance.DownloadCompleted, fetch.Data);
                                 if (downloadListBox.Items.Count > 0)
-                                    downloadListBox.Items[0] = "Progresso: 100% - Concluído";
+                                    downloadListBox.Items[0] = ResourceManagerHelper.Instance.ProgressCompleted;
                             });
                             Debug.WriteLine($"Download concluído: {fetch.Data}");
                         }
@@ -146,9 +147,9 @@ namespace DarkHub
                             string errorDetails = string.Join("\n", fetch.ErrorOutput);
                             await Dispatcher.InvokeAsync(() =>
                             {
-                                statusTextBox.Text = $"Erro durante o download: {errorDetails}";
+                                statusTextBox.Text = string.Format(ResourceManagerHelper.Instance.DownloadError, errorDetails);
                                 if (downloadListBox.Items.Count > 0)
-                                    downloadListBox.Items[0] = "Progresso: Erro";
+                                    downloadListBox.Items[0] = ResourceManagerHelper.Instance.ProgressError;
                             });
                             Debug.WriteLine($"Erro no download reportado pelo YoutubeDL: {errorDetails}");
                         }
@@ -157,9 +158,9 @@ namespace DarkHub
                     {
                         await Dispatcher.InvokeAsync(() =>
                         {
-                            statusTextBox.Text = $"Erro ao baixar vídeo: {ex.Message}\nCertifique-se de que yt-dlp.exe e ffmpeg.exe estão em 'assets'.";
+                            statusTextBox.Text = string.Format(ResourceManagerHelper.Instance.DownloadFailed, ex.Message);
                             if (downloadListBox.Items.Count > 0)
-                                downloadListBox.Items[0] = "Progresso: Erro";
+                                downloadListBox.Items[0] = ResourceManagerHelper.Instance.ProgressError;
                         });
                         Debug.WriteLine($"Erro interno ao baixar vídeo: {ex.Message}\nStackTrace: {ex.StackTrace}");
                     }
@@ -169,9 +170,9 @@ namespace DarkHub
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    statusTextBox.Text = $"Erro geral ao baixar vídeo: {ex.Message}";
+                    statusTextBox.Text = string.Format(ResourceManagerHelper.Instance.GeneralDownloadError, ex.Message);
                     if (downloadListBox.Items.Count > 0)
-                        downloadListBox.Items[0] = "Progresso: Erro";
+                        downloadListBox.Items[0] = ResourceManagerHelper.Instance.ProgressError;
                 });
                 Debug.WriteLine($"Erro em Download_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }

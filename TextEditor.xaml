@@ -4,9 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+      xmlns:local="clr-namespace:DarkHub"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Text Editor" Background="{x:Null}">
+      Title="Text Editor" Background="{x:Null}"
+      DataContext="{Binding Source={x:Static local:ResourceManagerHelper.Instance}}">
 
     <Page.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
@@ -129,41 +131,41 @@
 
         <Border Grid.Row="0" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,110,10">
             <StackPanel Orientation="Horizontal">
-                <Button x:Name="btnNewTab" Click="NewTab_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="Nova Aba">
+                <Button x:Name="btnNewTab" Click="NewTab_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="{Binding NewTabToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/newtab.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Nova Aba"/>
+                        <TextBlock Text="{Binding NewTabButton}"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="btnSave" Click="Save_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="Salvar">
+                <Button x:Name="btnSave" Click="Save_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="{Binding SaveToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/save.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Salvar"/>
+                        <TextBlock Text="{Binding SaveButton}"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="btnRename" Click="Rename_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="Renomear">
+                <Button x:Name="btnRename" Click="Rename_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="{Binding RenameToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/rename.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Renomear"/>
+                        <TextBlock Text="{Binding RenameButton}"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="btnDelete" Click="Delete_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="Excluir">
+                <Button x:Name="btnDelete" Click="Delete_Click" Style="{StaticResource MenuButtonStyle}" Width="100" ToolTip="{Binding DeleteToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/delete.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Excluir"/>
+                        <TextBlock Text="{Binding DeleteButton}"/>
                     </StackPanel>
                 </Button>
-                <Button x:Name="btnRunPython" Click="RunPython_Click" Style="{StaticResource MenuButtonStyle}" Width="120" ToolTip="Executar Python">
+                <Button x:Name="btnRunPython" Click="RunPython_Click" Style="{StaticResource MenuButtonStyle}" Width="120" ToolTip="{Binding RunPythonToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/run.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                        <TextBlock Text="Executar"/>
+                        <TextBlock Text="{Binding RunPythonButton}"/>
                     </StackPanel>
                 </Button>
-                <ComboBox x:Name="docTypeComboBox" Width="55" Margin="10,0,0,0" Foreground="black" SelectionChanged="DocTypeComboBox_SelectionChanged" ToolTip="Tipo de Documento" Height="27">
-                    <ComboBoxItem Content="Texto Simples" IsSelected="True"/>
-                    <ComboBoxItem Content="Python"/>
+                <ComboBox x:Name="docTypeComboBox" Width="55" Margin="10,0,0,0" Foreground="black" SelectionChanged="DocTypeComboBox_SelectionChanged" ToolTip="{Binding DocTypeToolTip}" Height="27">
+                    <ComboBoxItem Content="{Binding PlainTextOption}" IsSelected="True"/>
+                    <ComboBoxItem Content="{Binding PythonOption}"/>
                 </ComboBox>
-                <ComboBox x:Name="fontSizeComboBox" Width="44" Margin="10,0,0,0" Foreground="black" SelectionChanged="FontSizeComboBox_SelectionChanged" ToolTip="Tamanho da Fonte" Height="28">
+                <ComboBox x:Name="fontSizeComboBox" Width="44" Margin="10,0,0,0" Foreground="black" SelectionChanged="FontSizeComboBox_SelectionChanged" ToolTip="{Binding FontSizeToolTip}" Height="28">
                     <ComboBoxItem Content="10"/>
                     <ComboBoxItem Content="12"/>
                     <ComboBoxItem Content="14" IsSelected="True"/>
@@ -173,14 +175,12 @@
             </StackPanel>
         </Border>
 
-        <!-- Editor de Texto -->
         <TabControl x:Name="tabControl" Grid.Row="1" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="Novo Documento">
+            <TabItem Header="{Binding NewDocumentHeader}">
                 <RichTextBox x:Name="richTextEditor"/>
             </TabItem>
         </TabControl>
 
-        <!-- Saída -->
         <Border Grid.Row="2" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,10,0,0">
             <TextBox x:Name="outputBox" Height="100" IsReadOnly="True"/>
         </Border>

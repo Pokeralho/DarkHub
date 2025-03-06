@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using Tesseract;
 using System.Drawing;
-using System.Drawing.Imaging;   
+using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,7 +29,8 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao inicializar ImageTextExtractor: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorInitializingImageTextExtractor, ex.Message),
+                                ResourceManagerHelper.Instance.CriticalErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro ao inicializar: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -45,8 +46,8 @@ namespace DarkHub
                 {
                     Debug.WriteLine("Pasta tessdata não encontrada. Criando...");
                     Directory.CreateDirectory(tessDataPath);
-                    MessageBox.Show("A pasta 'tessdata' foi criada.\nAdicione os arquivos eng.traineddata e por.traineddata.",
-                        "Pasta Criada", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(ResourceManagerHelper.Instance.TessdataFolderCreated,
+                                    ResourceManagerHelper.Instance.FolderCreatedTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -71,8 +72,8 @@ namespace DarkHub
 
                 if (availableLanguages.Count == 0)
                 {
-                    MessageBox.Show("Nenhum arquivo .traineddata encontrado.\nBaixe de: https://github.com/tesseract-ocr/tessdata",
-                        "Arquivos Ausentes", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(ResourceManagerHelper.Instance.NoTrainedDataFilesFound,
+                                    ResourceManagerHelper.Instance.FilesMissingTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
 
                 Debug.WriteLine($"Total de idiomas carregados: {availableLanguages.Count}");
@@ -80,7 +81,8 @@ namespace DarkHub
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro ao carregar idiomas: {ex.Message}\nStackTrace: {ex.StackTrace}");
-                MessageBox.Show($"Erro ao carregar idiomas: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorLoadingLanguages, ex.Message),
+                                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -124,14 +126,14 @@ namespace DarkHub
                     g.DrawImage(originalImage, 0, 0, width, height);
                 }
 
-                using var grayscaleImage = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);   
+                using var grayscaleImage = new Bitmap(width, height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(grayscaleImage))
                 {
                     g.DrawImage(processedImage, 0, 0);
                 }
 
                 var imageData = grayscaleImage.LockBits(new Rectangle(0, 0, width, height),
-                    ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);   
+                    ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 
                 int bytes = Math.Abs(imageData.Stride) * height;
                 byte[] rgbValues = new byte[bytes];
@@ -140,7 +142,7 @@ namespace DarkHub
                 for (int i = 0; i < rgbValues.Length - 2; i += 3)
                 {
                     byte gray = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
-                    byte value = gray < 128 ? (byte)0 : (byte)255;   
+                    byte value = gray < 128 ? (byte)0 : (byte)255;
                     rgbValues[i] = rgbValues[i + 1] = rgbValues[i + 2] = value;
                 }
 
@@ -161,24 +163,24 @@ namespace DarkHub
             try
             {
                 Debug.WriteLine("ExtractText_Click iniciado.");
-                await Dispatcher.InvokeAsync(() => extractedTextBox.Text = "Iniciando processamento...");
+                await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.StartingProcessing);
 
                 if (string.IsNullOrEmpty(selectedImagePath) || !File.Exists(selectedImagePath))
                 {
-                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = "Selecione uma imagem válida.");
+                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.SelectValidImage);
                     return;
                 }
 
-                if (new FileInfo(selectedImagePath).Length > 50 * 1024 * 1024)  
+                if (new FileInfo(selectedImagePath).Length > 50 * 1024 * 1024)
                 {
-                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = "Imagem muito grande (máx. 50MB).");
+                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.ImageTooLarge);
                     return;
                 }
 
                 string tessDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata");
                 if (!Directory.Exists(tessDataPath) || availableLanguages.Count == 0)
                 {
-                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = "Arquivos de treinamento ausentes em 'tessdata'.");
+                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.MissingTrainingFiles);
                     return;
                 }
 
@@ -187,30 +189,30 @@ namespace DarkHub
                     Debug.WriteLine("Processando imagem em background...");
                     using var processedImage = PreProcessImage(selectedImagePath);
                     using var stream = new MemoryStream();
-                    processedImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png);    
+                    processedImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png);   
                     stream.Position = 0;
 
                     using var pix = Pix.LoadFromMemory(stream.ToArray());
                     using var engine = new TesseractEngine(tessDataPath, "por+eng", EngineMode.Default);
                     ConfigureEngine(engine);
 
-                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = "Extraindo texto...");
-                    using var page = engine.Process(pix);
+                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.ExtractingText);
+                    using Tesseract.Page page = engine.Process(pix);   
                     string text = page.GetText()?.Trim() ?? "";
                     float confidence = page.GetMeanConfidence();
 
                     await Dispatcher.InvokeAsync(() =>
                     {
                         extractedTextBox.Text = string.IsNullOrWhiteSpace(text)
-                            ? "Nenhum texto detectado."
-                            : $"Texto extraído (Confiança: {confidence:P}):\n\n{text}";
+                            ? ResourceManagerHelper.Instance.NoTextDetected
+                            : string.Format(ResourceManagerHelper.Instance.TextExtracted, confidence.ToString("P"), text);
                     });
                     Debug.WriteLine("Extração concluída com sucesso.");
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => extractedTextBox.Text = $"Erro ao extrair texto: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => extractedTextBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorExtractingText, ex.Message));
                 Debug.WriteLine($"Erro em ExtractText_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -220,8 +222,8 @@ namespace DarkHub
             try
             {
                 Debug.WriteLine("Configurando engine Tesseract...");
-                engine.SetVariable("tessedit_pageseg_mode", "3");  
-                engine.SetVariable("tessedit_ocr_engine_mode", "3");    
+                engine.SetVariable("tessedit_pageseg_mode", "3");
+                engine.SetVariable("tessedit_ocr_engine_mode", "3");
                 engine.SetVariable("tessedit_char_whitelist",
                     "0123456789abcdefghijklmnopqrstuvwxyzáàâãéèêíìîóòôõúùûçABCDEFGHIJKLMNOPQRSTUVWXYZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ.,!?()-_:;/\\[]{}@#$%&*+=<>|\"' ");
                 Debug.WriteLine("Engine configurada com sucesso.");
@@ -239,21 +241,21 @@ namespace DarkHub
                 Debug.WriteLine("SelectImage_Click iniciado.");
                 OpenFileDialog openFileDialog = new()
                 {
-                    Filter = "Arquivos de Imagem (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|Todos os Arquivos (*.*)|*.*",
-                    Title = "Selecionar Imagem para Extrair Texto"
+                    Filter = ResourceManagerHelper.Instance.ImageFileFilter,
+                    Title = ResourceManagerHelper.Instance.SelectImageDialogTitle
                 };
 
                 if (openFileDialog.ShowDialog() == true)
                 {
                     selectedImagePath = openFileDialog.FileName;
                     await Dispatcher.InvokeAsync(() =>
-                        extractedTextBox.Text = $"Imagem selecionada: {selectedImagePath}\nClique em 'Extrair Texto' para processar.");
+                        extractedTextBox.Text = string.Format(ResourceManagerHelper.Instance.ImageSelected, selectedImagePath));
                     Debug.WriteLine($"Imagem selecionada: {selectedImagePath}");
                 }
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => extractedTextBox.Text = $"Erro ao selecionar imagem: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => extractedTextBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSelectingImage, ex.Message));
                 Debug.WriteLine($"Erro em SelectImage_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }

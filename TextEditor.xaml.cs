@@ -26,7 +26,8 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao construir a página: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorBuildingPage, ex.Message),
+                                ResourceManagerHelper.Instance.CriticalErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro ao inicializar TextEditor: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -38,14 +39,15 @@ namespace DarkHub
                 Debug.WriteLine("TextEditor_Loaded iniciado.");
                 EnsureDocsFolderExists();
                 await LoadSavedFilesAsync();
-                await Dispatcher.InvokeAsync(() => outputBox.Text = "Página carregada com sucesso.");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.PageLoadedSuccess);
                 isLoaded = true;
                 SyncComboBoxWithSelectedTab();
                 Debug.WriteLine("TextEditor inicializado com sucesso.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar TextEditor: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorLoadingTextEditor, ex.Message),
+                                ResourceManagerHelper.Instance.CriticalErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro em TextEditor_Loaded: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -66,7 +68,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = $"Erro ao criar pasta DarkHubDocs: {ex.Message}");
+                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorCreatingDocsFolder, ex.Message));
                 Debug.WriteLine($"Erro em EnsureDocsFolderExists: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -88,19 +90,19 @@ namespace DarkHub
                     string extension = Path.GetExtension(file).ToLower();
                     await Dispatcher.InvokeAsync(() =>
                     {
-                        AddTab(fileName, content, extension == ".py" ? "Python" : "Texto Simples");
+                        AddTab(fileName, content, extension == ".py" ? ResourceManagerHelper.Instance.PythonOption : ResourceManagerHelper.Instance.PlainTextOption);
                     });
                 }
 
                 if (tabControl.Items.Count == 0)
                 {
-                    await Dispatcher.InvokeAsync(() => AddTab("Novo Documento", "", "Texto Simples"));
+                    await Dispatcher.InvokeAsync(() => AddTab(ResourceManagerHelper.Instance.NewDocumentHeader, "", ResourceManagerHelper.Instance.PlainTextOption));
                 }
                 Debug.WriteLine($"Arquivos carregados: {files.Length}");
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = $"Erro ao carregar arquivos: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorLoadingFiles, ex.Message));
                 Debug.WriteLine($"Erro em LoadSavedFilesAsync: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
@@ -120,7 +122,7 @@ namespace DarkHub
                 TabItem newTab = new() { Header = header };
                 object? editorContent = null;
 
-                if (docType == "Python")
+                if (docType == ResourceManagerHelper.Instance.PythonOption)
                 {
                     editorContent = new ICSharpCode.AvalonEdit.TextEditor
                     {
@@ -162,7 +164,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = $"Erro ao adicionar aba: {ex.Message}");
+                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorAddingTab, ex.Message));
                 Debug.WriteLine($"Erro em AddTab: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -178,16 +180,16 @@ namespace DarkHub
                     throw new InvalidOperationException("docTypeComboBox não foi inicializado.");
                 }
 
-                string docType = (docTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Texto Simples";
+                string docType = (docTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? ResourceManagerHelper.Instance.PlainTextOption;
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    AddTab($"Novo Documento {tabControl.Items.Count + 1}", "", docType);
+                    AddTab($"{ResourceManagerHelper.Instance.NewDocumentHeader} {tabControl.Items.Count + 1}", "", docType);
                     tabControl.SelectedIndex = tabControl.Items.Count - 1;
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = $"Erro ao criar nova aba: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorCreatingNewTab, ex.Message));
                 Debug.WriteLine($"Erro em NewTab_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -205,19 +207,19 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = "Nenhum editor selecionado para salvar.");
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoEditorSelectedToSave);
                     Debug.WriteLine("Nenhuma aba selecionada em Save_Click.");
                     return;
                 }
 
                 if (selectedTab.Tag == null)
                 {
-                    selectedTab.Tag = "Texto Simples";
+                    selectedTab.Tag = ResourceManagerHelper.Instance.PlainTextOption;
                     Debug.WriteLine("selectedTab.Tag era nulo e foi definido como 'Texto Simples' em Save_Click.");
                 }
 
-                string fileName = selectedTab.Header?.ToString() ?? "Novo Documento";
-                string extension = selectedTab.Tag.ToString() == "Python" ? ".py" : ".txt";
+                string fileName = selectedTab.Header?.ToString() ?? ResourceManagerHelper.Instance.NewDocumentHeader;
+                string extension = selectedTab.Tag.ToString() == ResourceManagerHelper.Instance.PythonOption ? ".py" : ".txt";
                 if (!fileName.EndsWith(extension)) fileName += extension;
                 string filePath = Path.Combine(docsFolder, fileName);
 
@@ -241,14 +243,14 @@ namespace DarkHub
                             Debug.WriteLine("selectedTab.Content é nulo ou de tipo inesperado em Save_Click!");
                             throw new InvalidOperationException("Conteúdo da aba não é um editor válido.");
                         }
-                        outputBox.Text = $"Arquivo salvo em: {filePath}";
+                        outputBox.Text = string.Format(ResourceManagerHelper.Instance.FileSavedAt, filePath);
                     });
                     Debug.WriteLine($"Arquivo salvo: {filePath}");
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = $"Erro ao salvar arquivo: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSavingFile, ex.Message));
                 Debug.WriteLine($"Erro em Save_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -266,22 +268,25 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = "Nenhum editor selecionado para renomear.");
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoEditorSelectedToRename);
                     Debug.WriteLine("Nenhuma aba selecionada em Rename_Click.");
                     return;
                 }
 
                 if (selectedTab.Tag == null)
                 {
-                    selectedTab.Tag = "Texto Simples";
+                    selectedTab.Tag = ResourceManagerHelper.Instance.PlainTextOption;
                     Debug.WriteLine("selectedTab.Tag era nulo e foi definido como 'Texto Simples' em Rename_Click.");
                 }
 
-                string oldFileName = selectedTab.Header?.ToString() ?? "Novo Documento";
-                string extension = selectedTab.Tag.ToString() == "Python" ? ".py" : ".txt";
+                string oldFileName = selectedTab.Header?.ToString() ?? ResourceManagerHelper.Instance.NewDocumentHeader;
+                string extension = selectedTab.Tag.ToString() == ResourceManagerHelper.Instance.PythonOption ? ".py" : ".txt";
                 string oldFilePath = Path.Combine(docsFolder, oldFileName + extension);
 
-                string? newName = await Dispatcher.InvokeAsync(() => Microsoft.VisualBasic.Interaction.InputBox("Digite o novo nome do documento:", "Renomear Documento", oldFileName));
+                string? newName = await Dispatcher.InvokeAsync(() => Microsoft.VisualBasic.Interaction.InputBox(
+                    ResourceManagerHelper.Instance.EnterNewDocumentNamePrompt,
+                    ResourceManagerHelper.Instance.RenameDocumentTitle,
+                    oldFileName));
                 if (string.IsNullOrWhiteSpace(newName))
                 {
                     Debug.WriteLine("Novo nome não fornecido em Rename_Click.");
@@ -323,14 +328,14 @@ namespace DarkHub
                     await Dispatcher.InvokeAsync(() =>
                     {
                         selectedTab.Header = newName;
-                        outputBox.Text = $"Arquivo renomeado para: {newFilePath}";
+                        outputBox.Text = string.Format(ResourceManagerHelper.Instance.FileRenamedTo, newFilePath);
                     });
                     Debug.WriteLine($"Arquivo renomeado: {oldFilePath} -> {newFilePath}");
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = $"Erro ao renomear arquivo: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorRenamingFile, ex.Message));
                 Debug.WriteLine($"Erro em Rename_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -348,20 +353,23 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = "Nenhuma aba selecionada para excluir.");
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoTabSelectedToDelete);
                     Debug.WriteLine("Nenhuma aba selecionada em Delete_Click.");
                     return;
                 }
 
-                string fileName = selectedTab.Header?.ToString() ?? "Novo Documento";
-                string extension = selectedTab.Tag?.ToString() == "Python" ? ".py" : ".txt";
+                string fileName = selectedTab.Header?.ToString() ?? ResourceManagerHelper.Instance.NewDocumentHeader;
+                string extension = selectedTab.Tag?.ToString() == ResourceManagerHelper.Instance.PythonOption ? ".py" : ".txt";
                 if (!fileName.EndsWith(extension)) fileName += extension;
                 string filePath = Path.Combine(docsFolder, fileName);
 
-                bool confirm = await Dispatcher.InvokeAsync(() => MessageBox.Show($"Tem certeza que deseja excluir '{fileName}'?", "Confirmar Exclusão", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes);
+                bool confirm = await Dispatcher.InvokeAsync(() => MessageBox.Show(
+                    string.Format(ResourceManagerHelper.Instance.ConfirmDeleteMessage, fileName),
+                    ResourceManagerHelper.Instance.ConfirmDeleteTitle,
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes);
                 if (!confirm)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = "Exclusão cancelada.");
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.DeleteCancelled);
                     Debug.WriteLine("Exclusão cancelada pelo usuário em Delete_Click.");
                     return;
                 }
@@ -374,7 +382,7 @@ namespace DarkHub
                         await Dispatcher.InvokeAsync(() =>
                         {
                             tabControl.Items.Remove(selectedTab);
-                            outputBox.Text = $"Arquivo '{fileName}' excluído com sucesso.";
+                            outputBox.Text = string.Format(ResourceManagerHelper.Instance.FileDeletedSuccess, fileName);
                         });
                         Debug.WriteLine($"Arquivo excluído: {filePath}");
                     }
@@ -383,7 +391,7 @@ namespace DarkHub
                         await Dispatcher.InvokeAsync(() =>
                         {
                             tabControl.Items.Remove(selectedTab);
-                            outputBox.Text = $"Aba '{fileName}' fechada (arquivo não existia no sistema).";
+                            outputBox.Text = string.Format(ResourceManagerHelper.Instance.TabClosedNoFile, fileName);
                         });
                         Debug.WriteLine($"Aba fechada (arquivo não existia): {fileName}");
                     }
@@ -391,7 +399,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = $"Erro ao excluir arquivo: {ex.Message}");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorDeletingFile, ex.Message));
                 Debug.WriteLine($"Erro em Delete_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -409,20 +417,20 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab || selectedTab.Content is not ICSharpCode.AvalonEdit.TextEditor editor)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = "Nenhum editor selecionado para executar ou tipo de documento inválido.");
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoEditorSelectedToRun);
                     Debug.WriteLine("Nenhuma aba válida selecionada em RunPython_Click.");
                     return;
                 }
 
-                if (selectedTab.Tag?.ToString() != "Python")
+                if (selectedTab.Tag?.ToString() != ResourceManagerHelper.Instance.PythonOption)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = "Este documento não é um arquivo Python.");
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NotPythonDocument);
                     Debug.WriteLine("Documento não é Python em RunPython_Click.");
                     return;
                 }
 
                 string pythonCode = editor.Text;
-                await Dispatcher.InvokeAsync(() => outputBox.Text = "Executando código Python...\n");
+                await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode);
 
                 string tempFilePath = Path.Combine(Path.GetTempPath(), "temp_script.py");
                 await File.WriteAllTextAsync(tempFilePath, pythonCode);
@@ -451,10 +459,10 @@ namespace DarkHub
                     }
                     else
                     {
-                        outputBox.Text += $"Erro ao executar:\n{error}";
+                        outputBox.Text += string.Format(ResourceManagerHelper.Instance.PythonExecutionError, error);
                         if (error.Contains("is not recognized") || string.IsNullOrEmpty(error))
                         {
-                            outputBox.Text += "\nPython não está instalado ou não foi encontrado no sistema. Por favor, instale o Python para executar scripts.";
+                            outputBox.Text += "\n" + ResourceManagerHelper.Instance.PythonNotInstalled;
                         }
                     }
                 });
@@ -466,8 +474,8 @@ namespace DarkHub
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    outputBox.Text += $"Erro ao tentar executar o Python: {ex.Message}\n";
-                    outputBox.Text += "Verifique se o Python está instalado e adicionado ao PATH. Você pode baixá-lo em python.org.";
+                    outputBox.Text += string.Format(ResourceManagerHelper.Instance.ErrorRunningPython, ex.Message);
+                    outputBox.Text += ResourceManagerHelper.Instance.PythonInstallInstructions;
                 });
                 Debug.WriteLine($"Erro em RunPython_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
@@ -493,7 +501,7 @@ namespace DarkHub
                 if (string.IsNullOrEmpty(selectedType))
                     return;
 
-                if (selectedType == "Python")
+                if (selectedType == ResourceManagerHelper.Instance.PythonOption)
                 {
                     if (selectedTab.Content is RichTextBox currentRichEditor)
                     {
@@ -512,7 +520,7 @@ namespace DarkHub
                         selectedTab.Content = codeEditor;
                         SyncFontSizeComboBox(codeEditor);
                     }
-                    selectedTab.Tag = "Python";
+                    selectedTab.Tag = ResourceManagerHelper.Instance.PythonOption;
                 }
                 else
                 {
@@ -531,14 +539,14 @@ namespace DarkHub
                         selectedTab.Content = richEditor;
                         SyncFontSizeComboBox(richEditor);
                     }
-                    selectedTab.Tag = "Texto Simples";
+                    selectedTab.Tag = ResourceManagerHelper.Instance.PlainTextOption;
                 }
                 fontSizeComboBox.Visibility = Visibility.Visible;
                 Debug.WriteLine($"Tipo de documento alterado para: {selectedType}");
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = $"Erro ao alterar tipo de documento: {ex.Message}");
+                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorChangingDocType, ex.Message));
                 Debug.WriteLine($"Erro em DocTypeComboBox_SelectionChanged: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -558,7 +566,7 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is TabItem selectedTab)
                 {
-                    string docType = selectedTab.Tag?.ToString() ?? "Texto Simples";
+                    string docType = selectedTab.Tag?.ToString() ?? ResourceManagerHelper.Instance.PlainTextOption;
                     docTypeComboBox.SelectedItem = docTypeComboBox.Items.Cast<ComboBoxItem>().FirstOrDefault(item => item.Content.ToString() == docType);
 
                     fontSizeComboBox.Visibility = Visibility.Visible;
@@ -575,7 +583,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = $"Erro ao mudar aba: {ex.Message}");
+                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSwitchingTab, ex.Message));
                 Debug.WriteLine($"Erro em TabControl_SelectionChanged: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -596,7 +604,7 @@ namespace DarkHub
                     ICSharpCode.AvalonEdit.TextEditor? codeEditor = selectedTab.Content as ICSharpCode.AvalonEdit.TextEditor;
                     RichTextBox? richEditor = selectedTab.Content as RichTextBox;
 
-                    string docType = selectedTab.Tag?.ToString() ?? "Texto Simples";
+                    string docType = selectedTab.Tag?.ToString() ?? ResourceManagerHelper.Instance.PlainTextOption;
                     docTypeComboBox.SelectedItem = docTypeComboBox.Items.Cast<ComboBoxItem>().FirstOrDefault(item => item.Content.ToString() == docType);
 
                     fontSizeComboBox.Visibility = Visibility.Visible;
@@ -616,7 +624,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = $"Erro ao sincronizar ComboBox: {ex.Message}");
+                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSyncingComboBox, ex.Message));
                 Debug.WriteLine($"Erro em SyncComboBoxWithSelectedTab: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -657,7 +665,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = $"Erro ao alterar tamanho da fonte: {ex.Message}");
+                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorChangingFontSize, ex.Message));
                 Debug.WriteLine($"Erro em FontSizeComboBox_SelectionChanged: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }

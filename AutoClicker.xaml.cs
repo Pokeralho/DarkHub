@@ -20,7 +20,7 @@ namespace DarkHub
         private IntPtr _hWnd;
         private HwndSource? _hwndSource;
         private const int HOTKEY_ID = 9000;
-        private const int WM_HOTKEY = 0x0312; 
+        private const int WM_HOTKEY = 0x0312;
         private const int DEBOUNCE_DELAY_MS = 500;
         private Key _currentActivationKey = Key.F6;
 
@@ -42,7 +42,7 @@ namespace DarkHub
             SetupUIComponents();
             SetupTimers();
             Loaded += AutoClicker_Loaded;
-            Log("AutoClicker inicializado com sucesso.");
+            Log(ResourceManagerHelper.Instance.AutoClickerInitialized);
         }
 
         private void SetupUIComponents()
@@ -59,7 +59,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao configurar componentes da UI", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorSettingUpUIComponents, ex);
             }
         }
 
@@ -75,7 +75,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao configurar timers", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorSettingUpTimers, ex);
             }
         }
 
@@ -90,11 +90,11 @@ namespace DarkHub
                     _hwndSource.AddHook(HwndHook);
                     RegisterHotkey();
                 }
-                Log("Hotkey registrado com sucesso.");
+                Log(ResourceManagerHelper.Instance.HotkeyRegisteredSuccess);
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao configurar hotkey", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorSettingUpHotkey, ex);
             }
         }
 
@@ -109,7 +109,7 @@ namespace DarkHub
                     ValidateAndUpdateInterval();
                     if (_clickIntervalMs <= 0)
                     {
-                        ShowWarning("O intervalo deve ser maior que 0!");
+                        ShowWarning("IntervalMustBeGreaterThanZero");    
                         return;
                     }
 
@@ -120,12 +120,12 @@ namespace DarkHub
                         _clickTimer.Start();
                     }
                     UpdateUIStatus();
-                    Log("AutoClicker iniciado.");
+                    Log(ResourceManagerHelper.Instance.AutoClickerStarted);
                 }
                 catch (Exception ex)
                 {
                     _isClicking = false;
-                    HandleError("Erro ao iniciar o AutoClicker", ex);
+                    HandleError(ResourceManagerHelper.Instance.ErrorStartingAutoClicker, ex);
                 }
             }
         }
@@ -141,11 +141,11 @@ namespace DarkHub
                     _isClicking = false;
                     _clickTimer?.Stop();
                     UpdateUIStatus();
-                    Log("AutoClicker parado.");
+                    Log(ResourceManagerHelper.Instance.AutoClickerStopped);
                 }
                 catch (Exception ex)
                 {
-                    HandleError("Erro ao parar o AutoClicker", ex);
+                    HandleError(ResourceManagerHelper.Instance.ErrorStoppingAutoClicker, ex);
                 }
             }
         }
@@ -164,12 +164,12 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao realizar clique", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorPerformingClick, ex);
                 StopClicking(null, null);
             }
         }
 
-        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) //por algum motivo estava apresentando crashs
+        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             try
             {
@@ -183,12 +183,12 @@ namespace DarkHub
                             StartClicking(null, null);
                     }
                     handled = true;
-                    Log($"Hotkey {_currentActivationKey} ativado.");
+                    Log(string.Format(ResourceManagerHelper.Instance.HotkeyActivated, _currentActivationKey));
                 }
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao processar hotkey", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorProcessingHotkey, ex);
             }
             return IntPtr.Zero;
         }
@@ -208,12 +208,12 @@ namespace DarkHub
                     if (!RegisterHotKey(_hWnd, HOTKEY_ID, 0, vk))
                         throw new System.ComponentModel.Win32Exception(Marshal.GetLastWin32Error(), "Falha ao registrar hotkey.");
                     _currentActivationKey = activationKey;
-                    Log($"Hotkey registrado: {_currentActivationKey}");
+                    Log(string.Format(ResourceManagerHelper.Instance.HotkeyRegistered, _currentActivationKey));
                 }
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao registrar hotkey", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorRegisteringHotkey, ex);
             }
         }
 
@@ -225,7 +225,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao trocar tecla de ativação", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorChangingActivationKey, ex);
             }
         }
 
@@ -245,7 +245,7 @@ namespace DarkHub
                     int newInterval = ValidateAndUpdateInterval();
                     if (newInterval <= 0)
                     {
-                        ShowWarning("O intervalo deve ser maior que 0!");
+                        ShowWarning("IntervalMustBeGreaterThanZero");    
                         return;
                     }
 
@@ -257,13 +257,13 @@ namespace DarkHub
                             _clickTimer.Interval = TimeSpan.FromMilliseconds(_clickIntervalMs);
                         }
                         UpdateUIStatus();
-                        Log($"Intervalo atualizado para {_clickIntervalMs}ms.");
+                        Log(string.Format(ResourceManagerHelper.Instance.IntervalUpdated, _clickIntervalMs));
                     }
                 }
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao processar mudança de intervalo", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorProcessingIntervalChange, ex);
             }
         }
 
@@ -274,12 +274,12 @@ namespace DarkHub
                 if (int.TryParse(txtInterval.Text, out int value) && value > 0)
                     return value;
 
-                ShowWarning("Por favor, insira um valor válido maior que 0!");
+                ShowWarning("IntervalMustBeGreaterThanZero");    
                 return _clickIntervalMs;
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao validar intervalo", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorValidatingInterval, ex);
                 return _clickIntervalMs;
             }
         }
@@ -291,12 +291,12 @@ namespace DarkHub
                 if (cmbActivationKey.SelectedItem is ComboBoxItem item && item.Content is string keyName)
                     return (Key)Enum.Parse(typeof(Key), keyName);
 
-                ShowWarning("Selecione uma tecla de ativação válida!");
+                ShowWarning(ResourceManagerHelper.Instance.SelectValidActivationKey);
                 return Key.None;
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao obter tecla de ativação", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorGettingActivationKey, ex);
                 return Key.None;
             }
         }
@@ -307,32 +307,50 @@ namespace DarkHub
             {
                 Dispatcher.Invoke(() =>
                 {
-                    lblStatus.Text = _isClicking ? "Status: Clicando!" : "Status: Parado";
+                    lblStatus.Text = _isClicking ? ResourceManagerHelper.Instance.ClickerStatusOn : ResourceManagerHelper.Instance.ClickerStatusOff;
                     btnStart.IsEnabled = !_isClicking;
                     btnStop.IsEnabled = _isClicking;
                     double cps = _clickIntervalMs > 0 ? 1000.0 / _clickIntervalMs : 0;
-                    lblClicksPerSecond.Text = $"Cliques por segundo: {cps:F2}";
+                    lblClicksPerSecond.Text = string.Format(ResourceManagerHelper.Instance.ClicksPerSecondLabel, cps);
                 });
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao atualizar status da UI", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorUpdatingUIStatus, ex);
             }
         }
 
-        private void ShowWarning(string message)
+        private void ShowWarning(string messageKey)
         {
+            string translatedMessage = messageKey;
+            try
+            {
+                translatedMessage = typeof(ResourceManagerHelper).GetProperty(messageKey)?.GetValue(ResourceManagerHelper.Instance) as string ?? messageKey;
+            }
+            catch
+            {
+            }
+
             Dispatcher.Invoke(() =>
-                MessageBox.Show(message, "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning)
+                MessageBox.Show(translatedMessage, ResourceManagerHelper.Instance.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning)
             );
         }
 
-        private void HandleError(string context, Exception ex)
+        private void HandleError(string contextKey, Exception ex)
         {
-            string errorMessage = $"{context}: {ex.Message}\nStackTrace: {ex.StackTrace}";
+            string translatedContext = contextKey;
+            try
+            {
+                translatedContext = typeof(ResourceManagerHelper).GetProperty(contextKey)?.GetValue(ResourceManagerHelper.Instance) as string ?? contextKey;
+            }
+            catch
+            {
+            }
+
+            string errorMessage = $"{translatedContext}: {ex.Message}\nStackTrace: {ex.StackTrace}";
             Log(errorMessage);
             Dispatcher.Invoke(() =>
-                MessageBox.Show(errorMessage, "Erro", MessageBoxButton.OK, MessageBoxImage.Error)
+                MessageBox.Show(errorMessage, ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error)
             );
         }
 
@@ -352,7 +370,7 @@ namespace DarkHub
                         _clickTimer.Stop();
                         _clickTimer.Tick -= PerformClick;
                         _clickTimer = null;
-                        Log("Timer de cliques descartado.");
+                        Log(ResourceManagerHelper.Instance.TimerDisposed);
                     }
 
                     if (_debounceTimer != null)
@@ -360,23 +378,23 @@ namespace DarkHub
                         _debounceTimer.Stop();
                         _debounceTimer.Tick -= ProcessIntervalChange;
                         _debounceTimer = null;
-                        Log("Timer de debounce descartado.");
+                        Log(ResourceManagerHelper.Instance.DebounceTimerDisposed);
                     }
                 }
 
                 if (_hWnd != IntPtr.Zero)
                 {
                     if (!UnregisterHotKey(_hWnd, HOTKEY_ID))
-                        Log($"Falha ao remover hotkey: {Marshal.GetLastWin32Error()}");
+                        Log(string.Format(ResourceManagerHelper.Instance.HotkeyUnregisterFailed, Marshal.GetLastWin32Error()));
                     else
-                        Log("Hotkey removido com sucesso.");
+                        Log(ResourceManagerHelper.Instance.HotkeyUnregisteredSuccess);
                     _hwndSource?.RemoveHook(HwndHook);
                     _hWnd = IntPtr.Zero;
                 }
             }
             catch (Exception ex)
             {
-                HandleError("Erro ao descartar recursos do AutoClicker", ex);
+                HandleError(ResourceManagerHelper.Instance.ErrorDisposingAutoClickerResources, ex);
             }
         }
     }

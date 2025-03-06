@@ -29,12 +29,11 @@ namespace DarkHub
             try
             {
                 InitializeComponent();
-                Debug.WriteLine("Optimizer inicializado com sucesso.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao inicializar Optimizer: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao inicializar Optimizer: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorInitializingOptimizer, ex.Message + "\nStackTrace: " + ex.StackTrace),
+                ResourceManagerHelper.Instance.CriticalErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -42,8 +41,7 @@ namespace DarkHub
         {
             try
             {
-                var systemInfo = new StringBuilder();
-                Debug.WriteLine("Coletando informações do sistema...");
+                var systemInfo = new StringBuilder();   
 
                 var os = Environment.OSVersion;
                 systemInfo.AppendLine($"SO: {os.VersionString}");
@@ -97,8 +95,8 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao obter informações do sistema: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em SystemInfo: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorGettingSystemInfo, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -108,7 +106,7 @@ namespace DarkHub
             {
                 var infoWindow = new Window
                 {
-                    Title = "Informações do Sistema",
+                    Title = ResourceManagerHelper.Instance.SystemInfoTitle,
                     Width = 600,
                     Height = 500,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -128,7 +126,7 @@ namespace DarkHub
 
                 var titleBlock = new TextBlock
                 {
-                    Text = "Informações do Sistema",
+                    Text = ResourceManagerHelper.Instance.SystemInfoTitle,
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 20,
                     FontWeight = FontWeights.Bold,
@@ -142,7 +140,7 @@ namespace DarkHub
 
                 var textBox = new TextBox
                 {
-                    Text = systemInfo ?? "Nenhum dado disponível",
+                    Text = systemInfo ?? ResourceManagerHelper.Instance.NoDataAvailable,
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -167,12 +165,11 @@ namespace DarkHub
                 infoWindow.Content = border;
 
                 await Task.Run(() => infoWindow.Dispatcher.Invoke(() => infoWindow.ShowDialog()));
-                Debug.WriteLine("Janela de informações do sistema exibida com sucesso.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao exibir janela de informações: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em ShowSystemInfoWindowAsync: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorShowingInfoWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -181,7 +178,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em ClearTempFilesAndLogs, evento ignorado.");
                 return;
             }
 
@@ -191,14 +187,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Progresso da Limpeza");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.CleaningProgressTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando limpeza...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingCleanup);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em ClearTempFilesAndLogs: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -214,38 +210,39 @@ namespace DarkHub
 
                     var tasks = new List<(string Description, Action Action)>
                     {
-                        ("Limpando Windows Temp...", () => ClearDirectory($"{windows}\\temp", progressTextBox)),
-                        ("Limpando Prefetch (*.exe)...", () => ClearFilesByExtension($"{windows}\\Prefetch", "*.exe", progressTextBox)),
-                        ("Limpando Prefetch (*.dll)...", () => ClearFilesByExtension($"{windows}\\Prefetch", "*.dll", progressTextBox)),
-                        ("Limpando Prefetch (*.pf)...", () => ClearFilesByExtension($"{windows}\\Prefetch", "*.pf", progressTextBox)),
-                        ("Limpando dllcache...", () => ClearDirectory($"{windows}\\system32\\dllcache", progressTextBox)),
-                        ("Limpando SystemDrive Temp...", () => ClearDirectory($"{systemDrive}\\Temp", progressTextBox)),
-                        ("Limpando %TEMP%...", () => ClearDirectory(temp, progressTextBox)),
-                        ("Limpando History...", () => ClearDirectory(Path.Combine(userProfile, "Local Settings", "History"), progressTextBox)),
-                        ("Limpando Temporary Internet Files...", () => ClearDirectory(Path.Combine(userProfile, "Local Settings", "Temporary Internet Files"), progressTextBox)),
-                        ("Limpando Local Temp...", () => ClearDirectory(Path.Combine(userProfile, "Local Settings", "Temp"), progressTextBox)),
-                        ("Limpando Recent...", () => ClearDirectory(Path.Combine(userProfile, "Recent"), progressTextBox)),
-                        ("Limpando Cookies...", () => ClearDirectory(Path.Combine(userProfile, "Cookies"), progressTextBox)),
-                        ("Limpando registros de eventos...", () => ClearEventLogsWithWevtutil(progressTextBox))
+                        (ResourceManagerHelper.Instance.CleaningWindowsTemp, () => ClearDirectory($"{windows}\\temp", progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningPrefetchExe, () => ClearFilesByExtension($"{windows}\\Prefetch", "*.exe", progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningPrefetchDll, () => ClearFilesByExtension($"{windows}\\Prefetch", "*.dll", progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningPrefetchPf, () => ClearFilesByExtension($"{windows}\\Prefetch", "*.pf", progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningDllCache, () => ClearDirectory($"{windows}\\system32\\dllcache", progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningSystemDriveTemp, () => ClearDirectory($"{systemDrive}\\Temp", progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningUserTemp, () => ClearDirectory(temp, progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningHistory, () => ClearDirectory(Path.Combine(userProfile, "Local Settings", "History"), progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningTempInternetFiles, () => ClearDirectory(Path.Combine(userProfile, "Local Settings", "Temporary Internet Files"), progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningLocalTemp, () => ClearDirectory(Path.Combine(userProfile, "Local Settings", "Temp"), progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningRecent, () => ClearDirectory(Path.Combine(userProfile, "Recent"), progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningCookies, () => ClearDirectory(Path.Combine(userProfile, "Cookies"), progressTextBox)),
+                        (ResourceManagerHelper.Instance.CleaningEventLogs, () => ClearEventLogsWithWevtutil(progressTextBox))
                     };
 
                     foreach (var task in tasks)
                     {
                         AppendProgress(progressTextBox, task.Description);
                         await Task.Run(task.Action);
-                        AppendProgress(progressTextBox, "Concluído.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                         await Task.Delay(100);
                     }
                 });
 
-                AppendProgress(progressTextBox, "Limpeza concluída com sucesso!");
-                await Task.Run(() => MessageBox.Show("Limpeza concluída!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.CleanupCompletedSuccess);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.CleanupCompleted,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral: {ex.Message}");
-                MessageBox.Show($"Erro geral ao limpar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em ClearTempFilesAndLogs: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.GeneralCleanupError, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.GeneralCleanupError, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -319,7 +316,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao criar janela de progresso: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -328,7 +324,7 @@ namespace DarkHub
         {
             if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
             {
-                AppendProgress(progressTextBox, "Diretório não existe ou é inválido, pulando...");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.DirectoryNotFoundOrInvalid);
                 return;
             }
 
@@ -344,15 +340,15 @@ namespace DarkHub
                     }
                     catch (UnauthorizedAccessException ex)
                     {
-                        AppendProgress(progressTextBox, $"Acesso negado ao arquivo {file.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.AccessDeniedToFile, file.FullName, ex.Message));
                     }
                     catch (IOException ex)
                     {
-                        AppendProgress(progressTextBox, $"Arquivo em uso {file.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.FileInUse, file.FullName, ex.Message));
                     }
                     catch (Exception ex)
                     {
-                        AppendProgress(progressTextBox, $"Erro ao deletar {file.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorDeletingFile, file.FullName, ex.Message));
                     }
                 }
 
@@ -364,14 +360,13 @@ namespace DarkHub
                     }
                     catch (Exception ex)
                     {
-                        AppendProgress(progressTextBox, $"Falha ao deletar subdiretório {dir.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorDeletingSubdirectory, dir.FullName, ex.Message));
                     }
                 }
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro ao limpar {directoryPath}: {ex.Message}");
-                Debug.WriteLine($"Erro em ClearDirectory {directoryPath}: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorCleaningDirectory, directoryPath, ex.Message));
             }
         }
 
@@ -379,7 +374,7 @@ namespace DarkHub
         {
             if (string.IsNullOrEmpty(directoryPath) || !Directory.Exists(directoryPath))
             {
-                AppendProgress(progressTextBox, "Diretório não existe ou é inválido, pulando...");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.DirectoryNotFoundOrInvalid);
                 return;
             }
 
@@ -395,22 +390,21 @@ namespace DarkHub
                     }
                     catch (UnauthorizedAccessException ex)
                     {
-                        AppendProgress(progressTextBox, $"Acesso negado ao arquivo {file.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.AccessDeniedToFile, file.FullName, ex.Message));
                     }
                     catch (IOException ex)
                     {
-                        AppendProgress(progressTextBox, $"Arquivo em uso {file.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.FileInUse, file.FullName, ex.Message));
                     }
                     catch (Exception ex)
                     {
-                        AppendProgress(progressTextBox, $"Erro ao deletar {file.FullName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorDeletingFile, file.FullName, ex.Message));
                     }
                 }
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro ao limpar arquivos {extension} em {directoryPath}: {ex.Message}");
-                Debug.WriteLine($"Erro em ClearFilesByExtension {directoryPath}: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorCleaningFilesByExtension, extension, directoryPath, ex.Message));
             }
         }
 
@@ -437,7 +431,7 @@ namespace DarkHub
                 foreach (string log in logs.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     string logName = log.Trim();
-                    AppendProgress(progressTextBox, $"Limpando {logName}...");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CleaningLog, logName));
                     try
                     {
                         var clearProcess = new Process
@@ -456,20 +450,19 @@ namespace DarkHub
                         string error = clearProcess.StandardError.ReadToEnd();
                         clearProcess.WaitForExit();
                         if (!string.IsNullOrEmpty(error))
-                            AppendProgress(progressTextBox, $"Erro: {error}");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.LogError, error));
                         else
-                            AppendProgress(progressTextBox, "Concluído.");
+                            AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                     }
                     catch (Exception ex)
                     {
-                        AppendProgress(progressTextBox, $"Erro ao limpar {logName}: {ex.Message}");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorCleaningLog, logName, ex.Message));
                     }
                 }
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral ao limpar logs: {ex.Message}");
-                Debug.WriteLine($"Erro em ClearEventLogsWithWevtutil: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorCleaningLogs, ex.Message));
             }
         }
 
@@ -488,7 +481,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao atualizar ProgressTextBox: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -526,13 +518,13 @@ namespace DarkHub
                     SystemParametersInfo(0x200, 0, IntPtr.Zero, 0x2);
                 });
 
-                MessageBox.Show("Efeitos visuais desabilitados para máxima otimização!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-                Debug.WriteLine("Efeitos visuais desabilitados com sucesso.");
+                MessageBox.Show(ResourceManagerHelper.Instance.VisualEffectsDisabledSuccess,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao desabilitar efeitos visuais: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em DisableVisualEffects: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorDisablingVisualEffects, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -554,7 +546,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao configurar {name} em {keyPath}: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -567,7 +558,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em RepairWindows, evento ignorado.");
                 return;
             }
 
@@ -577,14 +567,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Reparando o Windows");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.RepairingWindowsTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando reparação do Windows...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingWindowsRepair);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em RepairWindows: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -595,9 +585,9 @@ namespace DarkHub
                 {
                     var commands = new List<(string Description, string Command)>
                     {
-                        ("Executando Verificador de Arquivos do Sistema (SFC)...", "sfc /scannow"),
-                        ("Executando DISM para restaurar a saúde do sistema...", "dism /online /cleanup-image /restorehealth"),
-                        ("Agendando verificação de disco (CHKDSK) para a próxima reinicialização...", "chkdsk /f /r")
+                        (ResourceManagerHelper.Instance.RunningSFC, "sfc /scannow"),
+                        (ResourceManagerHelper.Instance.RunningDISM, "dism /online /cleanup-image /restorehealth"),
+                        (ResourceManagerHelper.Instance.SchedulingCHKDSK, "chkdsk /f /r")
                     };
 
                     foreach (var (description, command) in commands)
@@ -605,21 +595,22 @@ namespace DarkHub
                         AppendProgress(progressTextBox, description);
                         string result = await Task.Run(() => ExecuteCommandWithOutput(command, progressTextBox));
                         if (command.Contains("chkdsk") && result.Contains("agendada"))
-                            AppendProgress(progressTextBox, "Verificação agendada para a próxima reinicialização.\n");
+                            AppendProgress(progressTextBox, ResourceManagerHelper.Instance.CheckScheduled);
                         else
-                            AppendProgress(progressTextBox, "Concluído.\n");
+                            AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                         await Task.Delay(100);
                     }
                 });
 
-                AppendProgress(progressTextBox, "Reparos concluídos. Reinicie o sistema para aplicar todas as alterações.");
-                await Task.Run(() => MessageBox.Show("Os comandos de reparo foram executados. Reinicie o sistema para aplicar todas as alterações.", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RepairsCompleted);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.RepairCommandsExecuted,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral: {ex.Message}");
-                MessageBox.Show($"Erro geral ao reparar o Windows: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em RepairWindows: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.GeneralRepairError, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.GeneralRepairError, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -676,7 +667,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em EnableHighPerformanceMode, evento ignorado.");
                 return;
             }
 
@@ -686,14 +676,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Ativando Modo de Alto Desempenho");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.HighPerformanceModeTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando ativação do modo de alto desempenho...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingHighPerformanceMode);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em EnableHighPerformanceMode: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -702,24 +692,25 @@ namespace DarkHub
             {
                 await Task.Run(async () =>
                 {
-                    AppendProgress(progressTextBox, "Ativando plano de energia de alto desempenho...");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ActivatingPowerPlan);
                     string result = ExecuteCommandWithOutput("powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c", progressTextBox);
                     if (result.Contains("sucesso") || string.IsNullOrEmpty(result))
-                        AppendProgress(progressTextBox, "Concluído.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                     else
-                        AppendProgress(progressTextBox, "Plano já ativo ou não encontrado.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.PowerPlanAlreadyActive);
 
                     await Task.Delay(100);
                 });
 
-                AppendProgress(progressTextBox, "Modo de alto desempenho ativado com sucesso!");
-                await Task.Run(() => MessageBox.Show("Modo de alto desempenho ativado!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.HighPerformanceModeSuccess);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.HighPerformanceModeActivated,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
-                MessageBox.Show($"Erro ao ativar modo de alto desempenho: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em EnableHighPerformanceMode: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorActivatingHighPerformanceMode, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorActivatingHighPerformanceMode, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -736,7 +727,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em AdjustTimerResolution, evento ignorado.");
                 return;
             }
 
@@ -746,14 +736,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Ajustando Resolução do Temporizador");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.TimerResolutionTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando ajuste da resolução do temporizador...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingTimerAdjustment);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em AdjustTimerResolution: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -762,33 +752,34 @@ namespace DarkHub
             {
                 await Task.Run(async () =>
                 {
-                    AppendProgress(progressTextBox, "Tentando ajustar resolução do timer para 0.5ms...");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.AdjustingTimer);
                     try
                     {
                         uint currentResolution, desiredResolution = 5000, actualResolution;
                         NtQueryTimerResolution(out currentResolution, out _, out _);
                         NtSetTimerResolution(desiredResolution, true, out actualResolution);
-                        AppendProgress(progressTextBox, $"Resolução ajustada para {(actualResolution / 10000f):F2}ms.\n");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TimerAdjusted, (actualResolution / 10000f).ToString("F2")));
                     }
                     catch (Exception ex)
                     {
-                        AppendProgress(progressTextBox, $"Erro ao ajustar timer via API: {ex.Message}\n");
-                        AppendProgress(progressTextBox, "Executando fallback com powercfg...");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorAdjustingTimerAPI, ex.Message));
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RunningPowercfgFallback);
                         ExecuteCommandWithOutput("powercfg /energy", progressTextBox);
-                        AppendProgress(progressTextBox, "Fallback concluído.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.FallbackCompleted);
                     }
 
                     await Task.Delay(100);
                 });
 
-                AppendProgress(progressTextBox, "Ajuste da resolução do temporizador concluído!");
-                await Task.Run(() => MessageBox.Show("Resolução do temporizador ajustada!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TimerAdjustmentCompleted);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.TimerResolutionAdjusted,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral: {ex.Message}");
-                MessageBox.Show($"Erro ao ajustar resolução do temporizador: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em AdjustTimerResolution: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorAdjustingTimerResolution, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorAdjustingTimerResolution, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -811,7 +802,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em ChangePriority, evento ignorado.");
                 return;
             }
 
@@ -824,7 +814,7 @@ namespace DarkHub
                 var fileDialog = new OpenFileDialog
                 {
                     Filter = "Executáveis (*.exe)|*.exe",
-                    Title = "Selecionar Executável para Alterar Prioridade"
+                    Title = ResourceManagerHelper.Instance.SelectExecutableForPriority
                 };
 
                 if (fileDialog.ShowDialog() != true)
@@ -836,38 +826,39 @@ namespace DarkHub
                 string filePath = fileDialog.FileName;
                 string processName = Path.GetFileName(filePath);
 
-                (progressWindow, progressTextBox) = CreateProgressWindow("Alterando Prioridade do Processo");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.ChangingProcessPriorityTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, $"Iniciando alteração de prioridade para {processName}...\n");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.StartingPriorityChange, processName));
 
                 await Task.Run(async () =>
                 {
-                    AppendProgress(progressTextBox, $"Verificando se o processo '{processName}' está em execução...");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingProcessRunning, processName));
                     string checkResult = ExecuteCommandWithOutput($"wmic process where name='{processName}' get processid", progressTextBox);
                     if (string.IsNullOrEmpty(checkResult) || !checkResult.Contains("ProcessId"))
                     {
-                        AppendProgress(progressTextBox, "Processo não encontrado.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ProcessNotFound);
                         return;
                     }
 
-                    AppendProgress(progressTextBox, "Alterando prioridade para 'Alta' (256)...");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ChangingPriorityToHigh);
                     string result = ExecuteCommandWithOutput($"wmic process where name='{processName}' CALL setpriority 256", progressTextBox);
                     if (result.Contains("ReturnValue = 0"))
-                        AppendProgress(progressTextBox, "Concluído.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                     else
-                        AppendProgress(progressTextBox, "Falha ao alterar prioridade.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.PriorityChangeFailed);
 
                     await Task.Delay(100);
                 });
 
-                AppendProgress(progressTextBox, "Alteração de prioridade concluída!");
-                await Task.Run(() => MessageBox.Show("Prioridade do processo alterada para 'Alta'!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.PriorityChangeCompleted);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.PriorityChangedToHigh,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
-                MessageBox.Show($"Erro ao alterar prioridade: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em ChangePriority: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorChangingPriority, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorChangingPriority, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -884,7 +875,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em UninstallProgram, evento ignorado.");
                 return;
             }
 
@@ -897,7 +887,7 @@ namespace DarkHub
                 var fileDialog = new OpenFileDialog
                 {
                     Filter = "Aplicativos (*.exe)|*.exe",
-                    Title = "Selecionar Programa para Desinstalar"
+                    Title = ResourceManagerHelper.Instance.SelectProgramToUninstall
                 };
 
                 if (fileDialog.ShowDialog() != true)
@@ -911,46 +901,48 @@ namespace DarkHub
 
                 if (!File.Exists(programPath))
                 {
-                    MessageBox.Show("O programa não foi encontrado!", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(ResourceManagerHelper.Instance.ProgramNotFound,
+                    ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                     button.IsEnabled = true;
                     return;
                 }
 
-                (progressWindow, progressTextBox) = CreateProgressWindow("Desinstalando Programa");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.UninstallingProgramTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, $"Iniciando desinstalação de {programName}...\n");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.StartingUninstallation, programName));
 
                 await Task.Run(async () =>
                 {
-                    AppendProgress(progressTextBox, $"Verificando se '{programName}' está registrado...");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingProgramRegistered, programName));
                     string checkResult = ExecuteCommandWithOutput($"wmic product where \"Name like '%{programName}%'\" get Name", progressTextBox);
                     if (string.IsNullOrEmpty(checkResult) || !checkResult.Contains(programName, StringComparison.OrdinalIgnoreCase))
                     {
-                        AppendProgress(progressTextBox, "Programa não encontrado no registro de produtos instalados.\n");
-                        AppendProgress(progressTextBox, "Tentando remover o arquivo diretamente...");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ProgramNotRegistered);
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RemovingFileDirectly);
                         File.Delete(programPath);
-                        AppendProgress(progressTextBox, "Arquivo removido com sucesso.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.FileRemovedSuccess);
                         return;
                     }
 
-                    AppendProgress(progressTextBox, "Desinstalando via WMIC...");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.UninstallingViaWMIC);
                     string result = ExecuteCommandWithOutput($"wmic product where \"Name like '%{programName}%'\" call uninstall", progressTextBox);
                     if (result.Contains("ReturnValue = 0"))
-                        AppendProgress(progressTextBox, "Concluído.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                     else
-                        AppendProgress(progressTextBox, "Falha na desinstalação.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.UninstallationFailed);
 
                     await Task.Delay(100);
                 });
 
-                AppendProgress(progressTextBox, "Desinstalação concluída!");
-                await Task.Run(() => MessageBox.Show("O programa foi desinstalado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.UninstallationCompleted);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.ProgramUninstalledSuccess,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
-                MessageBox.Show($"Erro ao desinstalar programa: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em UninstallProgram: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorUninstallingProgram, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorUninstallingProgram, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -977,12 +969,11 @@ namespace DarkHub
                 };
 
                 await Task.Run(() => Process.Start(psi));
-                Debug.WriteLine("Comando de ativação do Windows executado com sucesso.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao executar o comando de ativação: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em AtivarWindows: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorActivatingWindows, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -991,7 +982,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em CleanRegistry, evento ignorado.");
                 return;
             }
 
@@ -1001,14 +991,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Limpando Registro");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.CleaningRegistryTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando limpeza do registro...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingRegistryCleanup);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em CleanRegistry: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -1023,7 +1013,7 @@ namespace DarkHub
                         @"Software\Microsoft\Windows\CurrentVersion\RunOnce"
                     };
 
-                    AppendProgress(progressTextBox, "Escaneando registro por entradas inválidas...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ScanningRegistry);
 
                     List<(string KeyPath, string Name, string Value)> invalidEntries = new();
                     foreach (var path in registryPaths)
@@ -1035,14 +1025,14 @@ namespace DarkHub
                             {
                                 if (key != null)
                                 {
-                                    AppendProgress(progressTextBox, $"Verificando {fullPath}...\n");
+                                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingRegistryPath, fullPath));
                                     foreach (var valueName in key.GetValueNames())
                                     {
                                         string? value = key.GetValue(valueName)?.ToString();
                                         if (!string.IsNullOrEmpty(value) && value.Contains(".exe") && !File.Exists(value))
                                         {
                                             invalidEntries.Add((fullPath, valueName, value));
-                                            AppendProgress(progressTextBox, $"Entrada inválida encontrada: {valueName} -> {value}\n");
+                                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingRegistryPath, fullPath));
                                         }
                                     }
                                 }
@@ -1060,15 +1050,16 @@ namespace DarkHub
                         return;
                     }
 
-                    AppendProgress(progressTextBox, $"Encontradas {invalidEntries.Count} entradas inválidas:\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.InvalidEntriesFound, invalidEntries.Count));
                     foreach (var entry in invalidEntries)
                     {
-                        AppendProgress(progressTextBox, $" - {entry.KeyPath}\\{entry.Name}: {entry.Value}\n");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.InvalidEntryDetail, entry.KeyPath, entry.Name, entry.Value));
                     }
 
                     bool confirmed = await progressTextBox.Dispatcher.InvokeAsync(() =>
                     {
-                        var result = MessageBox.Show($"Deseja remover {invalidEntries.Count} entradas inválidas?", "Confirmação", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        var result = MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ConfirmRemoveInvalidEntries, invalidEntries.Count),
+                        ResourceManagerHelper.Instance.ConfirmationTitle, MessageBoxButton.YesNo, MessageBoxImage.Question);
                         return result == MessageBoxResult.Yes;
                     });
 
@@ -1085,7 +1076,7 @@ namespace DarkHub
                                     if (key != null)
                                     {
                                         key.DeleteValue(entry.Name);
-                                        AppendProgress(progressTextBox, $"Removido: {entry.KeyPath}\\{entry.Name}\n");
+                                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.EntryRemoved, entry.KeyPath, entry.Name));
                                     }
                                     else
                                     {
@@ -1095,30 +1086,31 @@ namespace DarkHub
                             }
                             catch (UnauthorizedAccessException)
                             {
-                                AppendProgress(progressTextBox, $"Permissão negada ao remover {entry.KeyPath}\\{entry.Name}. Execute como administrador.\n");
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.PermissionDeniedRemovingEntry, entry.KeyPath, entry.Name));
                             }
                             catch (Exception ex)
                             {
-                                AppendProgress(progressTextBox, $"Erro ao remover {entry.KeyPath}\\{entry.Name}: {ex.Message}\n");
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorRemovingEntry, entry.KeyPath, entry.Name, ex.Message));
                             }
                         }
                     }
                     else
                     {
-                        AppendProgress(progressTextBox, "Limpeza cancelada pelo usuário.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.CleanupCancelledByUser);
                     }
 
                     await Task.Delay(100);
                 });
 
-                AppendProgress(progressTextBox, "Limpeza do registro concluída!");
-                await Task.Run(() => MessageBox.Show("Limpeza do registro concluída!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RegistryCleanupCompleted);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.RegistryCleanupCompleted,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral: {ex.Message}");
-                MessageBox.Show($"Erro ao limpar registro: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em CleanRegistry: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorCleaningRegistry, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCleaningRegistry, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -1135,7 +1127,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em ManageStartupPrograms, evento ignorado.");
                 return;
             }
 
@@ -1145,14 +1136,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Gerenciando Programas de Inicialização");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.ManagingStartupProgramsTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando gerenciamento de inicialização...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingStartupManagement);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em ManageStartupPrograms: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -1171,7 +1162,7 @@ namespace DarkHub
                     string userStartupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
                     string allUsersStartupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @"Microsoft\Windows\Start Menu\Programs\Startup");
 
-                    AppendProgress(progressTextBox, "Listando programas de inicialização...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ListingStartupPrograms);
                     Dictionary<string, (string Path, string Source, bool IsRegistry, RegistryKey? Root)> startupItems = new();
 
                     foreach (var path in startupPaths)
@@ -1183,14 +1174,14 @@ namespace DarkHub
                             {
                                 if (key != null)
                                 {
-                                    AppendProgress(progressTextBox, $"Verificando {fullPath}...\n");
+                                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingStartupPath, fullPath));
                                     foreach (var name in key.GetValueNames())
                                     {
                                         string? value = key.GetValue(name)?.ToString();
                                         if (!string.IsNullOrEmpty(value))
                                         {
                                             startupItems[name] = (value, fullPath, true, root);
-                                            AppendProgress(progressTextBox, $"Encontrado em {fullPath}: {name} -> {value}\n");
+                                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.StartupItemFound, fullPath, name, value));
                                         }
                                     }
                                 }
@@ -1202,7 +1193,7 @@ namespace DarkHub
                     {
                         if (Directory.Exists(folder))
                         {
-                            AppendProgress(progressTextBox, $"Verificando pasta de inicialização: {folder}...\n");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingStartupFolder, folder));
                             foreach (var file in Directory.EnumerateFiles(folder, "*.lnk", SearchOption.TopDirectoryOnly))
                             {
                                 string name = Path.GetFileNameWithoutExtension(file);
@@ -1210,7 +1201,7 @@ namespace DarkHub
                                 if (!string.IsNullOrEmpty(targetPath))
                                 {
                                     startupItems[name] = (targetPath, folder, false, null);
-                                    AppendProgress(progressTextBox, $"Encontrado em {folder}: {name} -> {targetPath}\n");
+                                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.StartupFolderItemFound, folder, name, targetPath));
                                 }
                             }
                         }
@@ -1218,7 +1209,7 @@ namespace DarkHub
 
                     if (startupItems.Count == 0)
                     {
-                        AppendProgress(progressTextBox, "Nenhum programa de inicialização encontrado.\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.NoStartupProgramsFound);
                         return;
                     }
 
@@ -1226,7 +1217,7 @@ namespace DarkHub
                     {
                         var selectionWindow = new Window
                         {
-                            Title = "Selecionar Programa para Desativar",
+                            Title = ResourceManagerHelper.Instance.SelectProgramToDisableTitle,
                             Width = 400,
                             Height = 300,
                             WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -1245,7 +1236,7 @@ namespace DarkHub
                         };
                         var disableButton = new Button
                         {
-                            Content = "Desativar Selecionado",
+                            Content = ResourceManagerHelper.Instance.DisableSelectedButton,
                             Margin = new Thickness(0, 10, 0, 0),
                             Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
                             Foreground = Brushes.White,
@@ -1276,11 +1267,11 @@ namespace DarkHub
                                                 if (key != null)
                                                 {
                                                     key.DeleteValue(selectedName);
-                                                    AppendProgress(progressTextBox, $"Programa '{selectedName}' desativado no registro.\n");
+                                                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProgramDisabledInRegistry, selectedName));
                                                 }
                                                 else
                                                 {
-                                                    AppendProgress(progressTextBox, $"Erro: Não foi possível abrir {item.Source}.\n");
+                                                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorOpeningStartupSource, item.Source));
                                                 }
                                             }
                                         }
@@ -1290,7 +1281,7 @@ namespace DarkHub
                                             if (File.Exists(shortcutPath))
                                             {
                                                 File.Delete(shortcutPath);
-                                                AppendProgress(progressTextBox, $"Programa '{selectedName}' removido da pasta de inicialização.\n");
+                                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProgramRemovedFromStartupFolder, selectedName));
                                             }
                                             else
                                             {
@@ -1301,11 +1292,11 @@ namespace DarkHub
                                     }
                                     catch (UnauthorizedAccessException)
                                     {
-                                        AppendProgress(progressTextBox, $"Permissão negada ao desativar '{selectedName}'. Execute como administrador.\n");
+                                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.PermissionDeniedDisablingProgram, selectedName));
                                     }
                                     catch (Exception ex)
                                     {
-                                        AppendProgress(progressTextBox, $"Erro ao desativar '{selectedName}': {ex.Message}\n");
+                                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorDisablingProgram, selectedName, ex.Message));
                                     }
                                 }
                             }
@@ -1318,13 +1309,13 @@ namespace DarkHub
                     });
                 });
 
-                AppendProgress(progressTextBox, "Gerenciamento concluído!\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartupManagementCompleted);
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral: {ex.Message}\n");
-                MessageBox.Show($"Erro ao gerenciar programas de inicialização: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em ManageStartupPrograms: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorManagingStartupPrograms, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorManagingStartupPrograms, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -1356,7 +1347,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter alvo do atalho {shortcutPath}: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return string.Empty;
             }
         }
@@ -1366,7 +1356,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em CleanNetworkData, evento ignorado.");
                 return;
             }
 
@@ -1376,14 +1365,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Limpando Dados de Rede");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.CleaningNetworkDataTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando limpeza de dados de rede...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingNetworkDataCleanup);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em CleanNetworkData: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -1412,14 +1401,15 @@ namespace DarkHub
                     }
                 });
 
-                AppendProgress(progressTextBox, "Limpeza de dados de rede concluída!");
-                await Task.Run(() => MessageBox.Show("Limpeza de dados de rede concluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.NetworkDataCleanupCompleted);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.NetworkDataCleanupSuccess,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro geral: {ex.Message}");
-                MessageBox.Show($"Erro ao limpar dados de rede: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em CleanNetworkData: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorCleaningNetworkData, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCleaningNetworkData, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -1471,7 +1461,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em RunSpaceSniffer, evento ignorado.");
                 return;
             }
 
@@ -1481,14 +1470,14 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Executando SpaceSniffer");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.RunningSpaceSnifferTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando SpaceSniffer...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingSpaceSniffer);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao criar janela de progresso: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao criar janela de progresso em RunSpaceSniffer: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorCreatingProgressWindow, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 button.IsEnabled = true;
                 return;
             }
@@ -1502,17 +1491,17 @@ namespace DarkHub
 
                     if (!Directory.Exists(assetsFolder))
                     {
-                        AppendProgress(progressTextBox, $"Pasta 'assets' não encontrada em {AppDomain.CurrentDomain.BaseDirectory}.\n");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.AssetsFolderNotFound, AppDomain.CurrentDomain.BaseDirectory));
                         throw new DirectoryNotFoundException("Pasta 'assets' não encontrada.");
                     }
 
                     if (!File.Exists(executablePath))
                     {
-                        AppendProgress(progressTextBox, $"Executável 'SpaceSniffer.exe' não encontrado em {assetsFolder}.\n");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.SpaceSnifferNotFound, assetsFolder));
                         throw new FileNotFoundException($"Executável 'SpaceSniffer.exe' não encontrado em {assetsFolder}.");
                     }
 
-                    AppendProgress(progressTextBox, $"Executando: {executablePath}...\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ExecutingSpaceSniffer, executablePath));
 
                     ProcessStartInfo psi = new ProcessStartInfo
                     {
@@ -1525,23 +1514,23 @@ namespace DarkHub
                     {
                         if (process == null)
                         {
-                            AppendProgress(progressTextBox, "Falha ao iniciar o processo.\n");
+                            AppendProgress(progressTextBox, ResourceManagerHelper.Instance.FailedToStartProcess);
                             return;
                         }
 
                         await Task.Run(() => process.WaitForExit());
                         int exitCode = process.ExitCode;
-                        AppendProgress(progressTextBox, $"Processo concluído com código de saída: {exitCode}.\n");
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProcessCompletedWithExitCode, exitCode));
                     }
                 });
 
-                AppendProgress(progressTextBox, "SpaceSniffer executado com sucesso!");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.SpaceSnifferExecutedSuccess);
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro ao executar o programa: {ex.Message}");
-                MessageBox.Show($"Erro ao executar o SpaceSniffer: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em RunSpaceSniffer: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorRunningSpaceSniffer, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorRunningSpaceSniffer, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -1561,7 +1550,8 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao tentar abrir o MRT: " + ex.Message);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorOpeningMRT, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1570,7 +1560,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em RemoveWindowsBloatware, evento ignorado.");
                 return;
             }
 
@@ -1580,9 +1569,9 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Verificando Aplicativos Instalados");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.CheckingInstalledAppsTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Verificando aplicativos instalados no sistema...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.CheckingInstalledApps);
 
                 var potentialBloatware = new Dictionary<string, string>
                 {
@@ -1633,7 +1622,7 @@ namespace DarkHub
                             if (!string.IsNullOrEmpty(result) && result.Contains(app.Key))
                             {
                                 installedApps.Add(app.Key, app.Value);
-                                AppendProgress(progressTextBox, $"Encontrado: {app.Value}\n");
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.AppFound, app.Value));
                             }
                         }
                     }
@@ -1646,14 +1635,15 @@ namespace DarkHub
 
                 if (!installedApps.Any())
                 {
-                    MessageBox.Show("Nenhum bloatware encontrado no sistema!", "Informação", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(ResourceManagerHelper.Instance.NoBloatwareFound,
+                    ResourceManagerHelper.Instance.InfoTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                     button.IsEnabled = true;
                     return;
                 }
 
                 var selectionWindow = new Window
                 {
-                    Title = "Selecionar Aplicativos para Remover",
+                    Title = ResourceManagerHelper.Instance.SelectAppsToRemoveTitle,
                     Width = 500,
                     Height = 600,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -1669,7 +1659,7 @@ namespace DarkHub
 
                 var titleText = new TextBlock
                 {
-                    Text = $"Encontrados {installedApps.Count} aplicativos que podem ser removidos:",
+                    Text = string.Format(ResourceManagerHelper.Instance.AppsFoundToRemove, installedApps.Count),
                     Foreground = Brushes.White,
                     FontSize = 16,
                     FontWeight = FontWeights.Bold,
@@ -1713,7 +1703,7 @@ namespace DarkHub
 
                 var selectAllButton = new Button
                 {
-                    Content = "Selecionar Todos",
+                    Content = ResourceManagerHelper.Instance.SelectAllButton,
                     Width = 120,
                     Height = 30,
                     Margin = new Thickness(5),
@@ -1724,7 +1714,7 @@ namespace DarkHub
 
                 var deselectAllButton = new Button
                 {
-                    Content = "Desmarcar Todos",
+                    Content = ResourceManagerHelper.Instance.DeselectAllButton,
                     Width = 120,
                     Height = 30,
                     Margin = new Thickness(5),
@@ -1735,7 +1725,7 @@ namespace DarkHub
 
                 var confirmButton = new Button
                 {
-                    Content = "Remover Selecionados",
+                    Content = ResourceManagerHelper.Instance.RemoveSelectedButton,
                     Width = 150,
                     Height = 30,
                     Margin = new Thickness(5),
@@ -1785,20 +1775,21 @@ namespace DarkHub
 
                 if (!selectedApps.Any())
                 {
-                    MessageBox.Show("Nenhum aplicativo selecionado para remoção.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(ResourceManagerHelper.Instance.NoAppsSelectedForRemoval,
+                    ResourceManagerHelper.Instance.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                     button.IsEnabled = true;
                     return;
                 }
 
-                (progressWindow, progressTextBox) = CreateProgressWindow("Removendo Bloatware do Windows");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.RemovingBloatwareTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando remoção de bloatware...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingBloatwareRemoval);
 
                 await Task.Run(async () =>
                 {
                     if (selectedApps.ContainsKey("Microsoft.OneDrive"))
                     {
-                        AppendProgress(progressTextBox, "Removendo OneDrive...\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RemovingOneDrive);
                         await RunCommandAsync("taskkill /f /im OneDrive.exe");
                         await RunCommandAsync("%SystemRoot%\\System32\\OneDriveSetup.exe /uninstall");
                         await RunCommandAsync("%SystemRoot%\\SysWOW64\\OneDriveSetup.exe /uninstall");
@@ -1806,7 +1797,7 @@ namespace DarkHub
 
                     if (selectedApps.ContainsKey("Microsoft.Edge"))
                     {
-                        AppendProgress(progressTextBox, "Removendo Microsoft Edge...\n");
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RemovingMicrosoftEdge);
                         string edgeUninstaller = @"C:\Program Files (x86)\Microsoft\Edge\Application\*\Installer\setup.exe";
                         if (Directory.Exists(Path.GetDirectoryName(edgeUninstaller)))
                         {
@@ -1822,7 +1813,7 @@ namespace DarkHub
                     {
                         if (app.Key != "Microsoft.OneDrive" && app.Key != "Microsoft.Edge")
                         {
-                            AppendProgress(progressTextBox, $"Removendo {app.Value}...\n");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.RemovingApp, app.Value));
                             string result = await RunCommandAsync($"powershell -Command \"Get-AppxPackage *{app.Key}* | Remove-AppxPackage\"");
                             if (!string.IsNullOrEmpty(result))
                             {
@@ -1832,7 +1823,7 @@ namespace DarkHub
                         }
                     }
 
-                    AppendProgress(progressTextBox, "Limpando arquivos residuais...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.CleaningResidualFiles);
                     var foldersToDelete = new List<string>();
 
                     if (selectedApps.ContainsKey("Microsoft.Edge"))
@@ -1855,37 +1846,34 @@ namespace DarkHub
                             try
                             {
                                 Directory.Delete(expandedPath, true);
-                                AppendProgress(progressTextBox, $"Pasta deletada: {expandedPath}\n");
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.FolderDeleted, expandedPath));
                             }
                             catch (Exception ex)
                             {
-                                AppendProgress(progressTextBox, $"Erro ao deletar {expandedPath}: {ex.Message}\n");
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorDeletingFolder, expandedPath, ex.Message));
                             }
                         }
                     }
                 });
 
-                AppendProgress(progressTextBox, "Remoção de bloatware concluída!\n");
-                AppendProgress(progressTextBox, "Recomenda-se reiniciar o computador para aplicar todas as alterações.\n");
-                
-                var result = MessageBox.Show(
-                    "Remoção de bloatware concluída! Deseja reiniciar o computador agora?",
-                    "Concluído",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question
-                );
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.BloatwareRemovalCompleted);
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RestartRecommended);
+
+                var result = await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.BloatwareRemovalDone,
+                ResourceManagerHelper.Instance.CompletedTitle, MessageBoxButton.YesNo, MessageBoxImage.Question));
 
                 if (result == MessageBoxResult.Yes)
                 {
                     Process.Start("shutdown.exe", "/r /t 10");
-                    MessageBox.Show("O computador será reiniciado em 10 segundos.", "Reiniciando", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(ResourceManagerHelper.Instance.RestartingIn10Seconds,
+                    ResourceManagerHelper.Instance.RestartingTitle, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
-                MessageBox.Show($"Erro ao remover bloatware: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em RemoveWindowsBloatware: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorRemovingBloatware, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorRemovingBloatware, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -1931,7 +1919,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter informações da memória: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             
             try
@@ -1945,7 +1932,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter informações da memória (método alternativo): {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             
             return (0, 0);
@@ -1962,15 +1948,15 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("Otimizando Memória do Sistema");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.OptimizingMemoryTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando otimização de memória...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingMemoryOptimization);
 
                 await Task.Run(async () =>
                 {
                     var initialMemoryInfo = await GetMemoryInfo();
-                    AppendProgress(progressTextBox, $"Memória em uso antes da otimização: {initialMemoryInfo.UsedMemory:N2} GB\n");
-                    AppendProgress(progressTextBox, $"Memória disponível antes da otimização: {initialMemoryInfo.AvailableMemory:N2} GB\n\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.MemoryUsageBefore, initialMemoryInfo.UsedMemory.ToString("N2")));
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.MemoryAvailableBefore, initialMemoryInfo.AvailableMemory.ToString("N2")));
 
                     var safeProcesses = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                     {
@@ -1980,7 +1966,7 @@ namespace DarkHub
                         "explorer", "powershell", "cmd"
                     };
 
-                    AppendProgress(progressTextBox, "1. Otimizando processos não essenciais...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.OptimizingNonEssentialProcesses);
                     var processes = Process.GetProcesses();
                     int processesOptimized = 0;
 
@@ -1997,21 +1983,21 @@ namespace DarkHub
                                 
                                 if (processesOptimized % 5 == 0)
                                 {
-                                    AppendProgress(progressTextBox, $"Processos otimizados: {processesOptimized}\n");
+                                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProcessesOptimized, processesOptimized));
                                 }
                             }
                         }
                         catch { }
                     }
 
-                    AppendProgress(progressTextBox, $"Total de processos otimizados: {processesOptimized}\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TotalProcessesOptimized, processesOptimized));
                     await Task.Delay(1000);
 
-                    AppendProgress(progressTextBox, "2. Limpando cache do sistema de arquivos...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ClearingFileSystemCache);
                     await RunCommandAsync("powershell -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"");
                     await Task.Delay(1000);
 
-                    AppendProgress(progressTextBox, "3. Limpando arquivos temporários...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ClearingTempFiles);
                     string[] tempPaths = {
                         Path.GetTempPath(),
                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Temp"),
@@ -2042,30 +2028,32 @@ namespace DarkHub
                     }
                     await Task.Delay(1000);
 
-                    AppendProgress(progressTextBox, "4. Executando coleta de lixo...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RunningGarbageCollection);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                     await Task.Delay(1000);
 
-                    AppendProgress(progressTextBox, "5. Limpando cache DNS...\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ClearingDNSCacheMemory);
                     await RunCommandAsync("ipconfig /flushdns");
                     await Task.Delay(1000);
 
                     var finalMemoryInfo = await GetMemoryInfo();
                     double memorySaved = initialMemoryInfo.UsedMemory - finalMemoryInfo.UsedMemory;
 
-                    AppendProgress(progressTextBox, "\nResultados da otimização:\n");
-                    AppendProgress(progressTextBox, $"Memória em uso após otimização: {finalMemoryInfo.UsedMemory:N2} GB\n");
-                    AppendProgress(progressTextBox, $"Memória disponível após otimização: {finalMemoryInfo.AvailableMemory:N2} GB\n");
-                    AppendProgress(progressTextBox, $"Memória liberada: {memorySaved:N2} GB\n");
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.OptimizationResults);
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.MemoryUsageAfter, finalMemoryInfo.UsedMemory.ToString("N2")));
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.MemoryAvailableAfter, finalMemoryInfo.AvailableMemory.ToString("N2")));
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.MemoryFreed, memorySaved.ToString("N2")));
                 });
 
-                MessageBox.Show("Otimização de memória concluída com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(ResourceManagerHelper.Instance.MemoryOptimizationSuccess,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
-                MessageBox.Show($"Erro ao otimizar memória: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorOptimizingMemory, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorOptimizingMemory, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -2090,7 +2078,6 @@ namespace DarkHub
             Button? button = sender as Button;
             if (button == null)
             {
-                Debug.WriteLine("Sender não é um botão em DNSBenchmark, evento ignorado.");
                 return;
             }
 
@@ -2100,9 +2087,9 @@ namespace DarkHub
 
             try
             {
-                (progressWindow, progressTextBox) = CreateProgressWindow("DNS Benchmark");
+                (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.DNSBenchmarkTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
-                AppendProgress(progressTextBox, "Iniciando teste de DNS...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingDNSTest);
 
                 var dnsList = new List<(string Name, string Primary, string Secondary)>
                 {
@@ -2141,7 +2128,7 @@ namespace DarkHub
 
                 foreach (var dns in dnsList)
                 {
-                    AppendProgress(progressTextBox, $"Testando {dns.Name}...\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TestingDNS, dns.Name));
                     double latency = await TestDNSLatency(dns.Primary);
                     results.Add(new DnsResult
                     {
@@ -2150,14 +2137,14 @@ namespace DarkHub
                         Secondary = dns.Secondary,
                         Latency = latency
                     });
-                    AppendProgress(progressTextBox, $"Latência: {latency:F2}ms\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.LatencyResult, latency.ToString("F2")));
                 }
 
                 results = results.OrderBy(r => r.Latency).ToList();
 
                 var resultsWindow = new Window
                 {
-                    Title = "Resultados do DNS Benchmark",
+                    Title = ResourceManagerHelper.Instance.DNSBenchmarkResultsTitle,
                     Width = 600,
                     Height = 500,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -2214,7 +2201,7 @@ namespace DarkHub
 
                 var nameColumn = new DataGridTextColumn
                 {
-                    Header = "Nome",
+                    Header = ResourceManagerHelper.Instance.DNSNameColumn,
                     Binding = new Binding("Name"),
                     Width = 150
                 };
@@ -2222,7 +2209,7 @@ namespace DarkHub
 
                 var primaryColumn = new DataGridTextColumn
                 {
-                    Header = "DNS Primário",
+                    Header = ResourceManagerHelper.Instance.DNSPrimaryColumn,
                     Binding = new Binding("Primary"),
                     Width = 150
                 };
@@ -2230,7 +2217,7 @@ namespace DarkHub
 
                 var secondaryColumn = new DataGridTextColumn
                 {
-                    Header = "DNS Secundário",
+                    Header = ResourceManagerHelper.Instance.DNSSecondaryColumn,
                     Binding = new Binding("Secondary"),
                     Width = 150
                 };
@@ -2238,7 +2225,7 @@ namespace DarkHub
 
                 var latencyColumn = new DataGridTextColumn
                 {
-                    Header = "Latência (ms)",
+                    Header = ResourceManagerHelper.Instance.DNSLatencyColumn,
                     Binding = new Binding("Latency") { StringFormat = "F2" },
                     Width = 100
                 };
@@ -2256,7 +2243,7 @@ namespace DarkHub
 
                 var configureButton = new Button
                 {
-                    Content = "Configurar DNS Selecionado",
+                    Content = ResourceManagerHelper.Instance.ConfigureSelectedDNSButton,
                     Style = (Style)Application.Current.Resources["ButtonStyle"],
                     Width = 200,
                     Margin = new Thickness(5)
@@ -2283,9 +2270,9 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                AppendProgress(progressTextBox, $"Erro: {ex.Message}");
-                MessageBox.Show($"Erro ao executar DNS Benchmark: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro em DNSBenchmark: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorRunningDNSBenchmark, ex.Message));
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorRunningDNSBenchmark, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -2330,14 +2317,12 @@ private async Task<double> TestDNSLatency(string dnsServer)
             {
                 string command = "netsh interface show interface";
                 string output = await RunCommandAsync(command);
-                Debug.WriteLine($"Saída do comando netsh:\n{output}");
 
                 string adapterName = "";
                 string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 
                 foreach (string line in lines)
                 {
-                    Debug.WriteLine($"Analisando linha: '{line}'");
                     
                     if (line.Contains("Enabled") || line.Contains("Conectado"))
                     {
@@ -2345,7 +2330,6 @@ private async Task<double> TestDNSLatency(string dnsServer)
                         if (parts.Length >= 2)
                         {
                             string name = parts[1].Trim();
-                            Debug.WriteLine($"Adaptador encontrado: '{name}'");
                             
                             if (name.Contains("Wi-Fi") || 
                                 name.Contains("Ethernet") || 
@@ -2366,41 +2350,32 @@ private async Task<double> TestDNSLatency(string dnsServer)
                     throw new Exception($"Não foi possível encontrar um adaptador de rede ativo.\nSaída do comando:\n{output}");
                 }
 
-                Debug.WriteLine($"Adaptador selecionado: {adapterName}");
-
                 command = $"netsh interface ip set address name=\"{adapterName}\" dhcp";
-                Debug.WriteLine($"Executando comando: {command}");
                 await RunCommandAsync(command);
 
                 command = $"netsh interface ip set dns name=\"{adapterName}\" dhcp";
-                Debug.WriteLine($"Executando comando: {command}");
                 await RunCommandAsync(command);
 
                 await Task.Delay(2000);
 
                 command = $"netsh interface ip set dns name=\"{adapterName}\" static {primaryDNS}";
-                Debug.WriteLine($"Executando comando: {command}");
                 await RunCommandAsync(command);
 
                 await Task.Delay(2000);
 
                 command = $"netsh interface ip add dns name=\"{adapterName}\" {secondaryDNS} index=2";
-                Debug.WriteLine($"Executando comando: {command}");
                 await RunCommandAsync(command);
 
                 await Task.Delay(2000);
 
                 command = "ipconfig /flushdns";
-                Debug.WriteLine($"Executando comando: {command}");
                 await RunCommandAsync(command);
 
                 command = $"netsh interface ip show dns name=\"{adapterName}\"";
                 output = await RunCommandAsync(command);
-                Debug.WriteLine($"Verificação das configurações DNS:\n{output}");
 
                 command = "ipconfig /all";
                 output = await RunCommandAsync(command);
-                Debug.WriteLine($"Verificação com ipconfig:\n{output}");
 
                 if (!output.Contains(primaryDNS) || !output.Contains(secondaryDNS))
                 {
@@ -2417,7 +2392,6 @@ private async Task<double> TestDNSLatency(string dnsServer)
                                     {
                                         string nameServer = $"{primaryDNS},{secondaryDNS}";
                                         subKey.SetValue("NameServer", nameServer, RegistryValueKind.String);
-                                        Debug.WriteLine($"Configuração DNS aplicada via registro: {nameServer}");
                                     }
                                 }
                             }
@@ -2428,20 +2402,13 @@ private async Task<double> TestDNSLatency(string dnsServer)
                     await RunCommandAsync(command);
                 }
 
-                MessageBox.Show($"DNS configurado com sucesso!\nAdaptador: {adapterName}\nPrimário: {primaryDNS}\nSecundário: {secondaryDNS}", 
-                    "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.DNSConfiguredSuccess, adapterName, primaryDNS, secondaryDNS),
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                string errorMessage = $"Erro ao configurar DNS: {ex.Message}\n\n" +
-                    "Verifique se:\n" +
-                    "1. O programa está sendo executado como administrador\n" +
-                    "2. Você está conectado a uma rede\n" +
-                    "3. O adaptador de rede está habilitado\n" +
-                    "4. Não há outros programas interferindo nas configurações de rede";
-                
-                MessageBox.Show(errorMessage, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao configurar DNS: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                string errorMessage = string.Format(ResourceManagerHelper.Instance.ErrorConfiguringDNS, ex.Message);
+                MessageBox.Show(errorMessage, ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -2488,7 +2455,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
             {
                 var dialogWindow = new Window
                 {
-                    Title = "IP do Servidor do Jogo",
+                    Title = ResourceManagerHelper.Instance.GameServerIPTitle,
                     Width = 400,
                     Height = 180,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -2507,7 +2474,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 var label = new TextBlock
                 {
-                    Text = "Digite o IP do servidor do jogo:",
+                    Text = ResourceManagerHelper.Instance.EnterGameServerIP,
                     Foreground = Brushes.White,
                     Margin = new Thickness(0, 0, 0, 10),
                     FontSize = 14
@@ -2532,7 +2499,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 var okButton = new Button
                 {
-                    Content = "OK",
+                    Content = ResourceManagerHelper.Instance.OKButton,
                     Width = 80,
                     Height = 30,
                     Margin = new Thickness(5),
@@ -2543,7 +2510,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 var cancelButton = new Button
                 {
-                    Content = "Cancelar",
+                    Content = ResourceManagerHelper.Instance.CancelButton,
                     Width = 80,
                     Height = 30,
                     Margin = new Thickness(5),
@@ -2573,7 +2540,8 @@ private async Task<double> TestDNSLatency(string dnsServer)
                     gameServerIP = textBox.Text.Trim();
                     if (string.IsNullOrEmpty(gameServerIP))
                     {
-                        MessageBox.Show("Por favor, digite um IP válido.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(ResourceManagerHelper.Instance.InvalidIPWarning,
+                        ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
                     result = true;
@@ -2593,7 +2561,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
                     return;
                 }
 
-                var (progressWindow, progressTextBox) = CreateProgressWindow("Otimizando Rota para Jogos");
+                var (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.OptimizingGameRouteTitle);
                 progressWindow.Show();
 
                 var dnsList = new[]
@@ -2646,11 +2614,11 @@ private async Task<double> TestDNSLatency(string dnsServer)
                 };
 
                 var results = new List<DnsResult>();
-                AppendProgress(progressTextBox, "Iniciando teste de DNSs otimizados para jogos...\n");
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingGameDNSOptimization);
 
                 foreach (var dns in dnsList)
                 {
-                    AppendProgress(progressTextBox, $"Testando {dns.Name}...\n");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TestingDNS, dns.Name));
                     double latency = await TestDNSLatency(dns.Primary);
                     results.Add(new DnsResult
                     {
@@ -2665,7 +2633,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 var resultsWindow = new Window
                 {
-                    Title = "Resultados do Teste de DNS",
+                    Title = ResourceManagerHelper.Instance.DNSResultsTitle,
                     Width = 800,
                     Height = 600,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -2679,7 +2647,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 var resultsLabel = new TextBlock
                 {
-                    Text = "DNSs ordenados por latência (menor para maior):",
+                    Text = ResourceManagerHelper.Instance.DNSResultsLabel,
                     Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     FontSize = 14
@@ -2701,28 +2669,28 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 dataGrid.Columns.Add(new DataGridTextColumn
                 {
-                    Header = "Nome",
+                    Header = ResourceManagerHelper.Instance.DNSNameColumn,
                     Binding = new Binding("Name"),
                     Width = 200
                 });
 
                 dataGrid.Columns.Add(new DataGridTextColumn
                 {
-                    Header = "DNS Primário",
+                    Header = ResourceManagerHelper.Instance.DNSPrimaryColumn,
                     Binding = new Binding("Primary"),
                     Width = 150
                 });
 
                 dataGrid.Columns.Add(new DataGridTextColumn
                 {
-                    Header = "DNS Secundário",
+                    Header = ResourceManagerHelper.Instance.DNSSecondaryColumn,
                     Binding = new Binding("Secondary"),
                     Width = 150
                 });
 
                 dataGrid.Columns.Add(new DataGridTextColumn
                 {
-                    Header = "Latência (ms)",
+                    Header = ResourceManagerHelper.Instance.DNSLatencyColumn,
                     Binding = new Binding("Latency"),
                     Width = 100
                 });
@@ -2736,7 +2704,7 @@ private async Task<double> TestDNSLatency(string dnsServer)
 
                 var configureButton = new Button
                 {
-                    Content = "Configurar DNS Selecionado",
+                    Content = ResourceManagerHelper.Instance.ConfigureSelectedDNSButton,
                     Width = 200,
                     Height = 30,
                     Margin = new Thickness(5),
@@ -2765,7 +2733,8 @@ private async Task<double> TestDNSLatency(string dnsServer)
                     var selectedItem = dataGrid.SelectedItem as DnsResult;
                     if (selectedItem == null)
                     {
-                        MessageBox.Show("Por favor, selecione um DNS da lista.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show(ResourceManagerHelper.Instance.SelectDNSWarning,
+                        ResourceManagerHelper.Instance.WarningTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -2776,20 +2745,8 @@ private async Task<double> TestDNSLatency(string dnsServer)
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao otimizar rota: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void OpenSystemMonitor(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var systemMonitor = new SystemMonitor();
-                NavigationService.Navigate(systemMonitor);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Erro ao abrir o monitor do sistema: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorOptimizingGameRoute, ex.Message),
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

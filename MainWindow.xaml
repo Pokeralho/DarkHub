@@ -90,5 +90,18 @@
                 <Image Source="Assets/Crunchyroll.png"/>
             </Button>
         </StackPanel>
+
+        <StackPanel Margin="815,145,0,0">
+            <Button x:Name="btnEua" Click="ChangeToEnglish" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32">
+                <Image Source="/assets/estados-unidos.png"/>
+            </Button>
+            <Button x:Name="btnBr" Click="ChangeToPortuguese" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32">
+                <Image Source="/assets/brasil.png"/>
+            </Button>
+            <Button x:Name="btnDiscord" Click="DiscordServer" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32">
+                <Image Source="/assets/discord.png"/>
+            </Button>
+        </StackPanel>
+        
     </Grid>
 </Window>
