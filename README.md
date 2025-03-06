@@ -1,6 +1,5 @@
 # DarkHub
 
-## 🇧🇷 Português  
 [Leia o README em Português](README.pt.md)
 
 DarkHub is a powerful and versatile WPF application designed to maximize your PC's performance and simplify everyday tasks. Combining optimization tools,
