@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:DarkHub"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="FileConverter">
+      Title="FileConverter"
+      DataContext="{Binding Source={x:Static local:ResourceManagerHelper.Instance}}">
 
     <Page.Resources>
         <ControlTemplate x:Key="NoHoverBtn" TargetType="Button">
@@ -42,21 +43,27 @@
 
     <Grid Background="{x:Null}">
         <StackPanel VerticalAlignment="top" HorizontalAlignment="Center" Width="400">
-            <TextBlock FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White">
-                Conversor de Arquivos
-            </TextBlock>
+            <TextBlock Text="{Binding FileConverterTitle}" 
+                       FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" 
+                       HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White"/>
 
-            <Button Content="Selecionar Arquivos" Width="200" Click="SelectFiles_Click" Margin="0,0,0,10"/>
-            <TextBlock x:Name="SelectedFilesText" Text="Nenhum arquivo selecionado!" Foreground="White" 
-                       FontFamily="{StaticResource JetBrainsMono}" HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap"/>
+            <Button Content="{Binding SelectFilesButton}" 
+                    Width="200" Click="SelectFiles_Click" Margin="0,0,0,10"/>
+            <TextBlock x:Name="SelectedFilesText" Text="{Binding NoFilesSelected}" 
+                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}" 
+                       HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap"/>
 
-            <Button Content="Escolher Diretório de Saída" Width="200" Click="SelectOutputDir_Click" Margin="0,0,0,10"/>
-            <TextBlock x:Name="OutputDirText" Text="Saída: Mesmo diretório dos arquivos" Foreground="White" 
-                       FontFamily="{StaticResource JetBrainsMono}" HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap"/>
+            <Button Content="{Binding ChooseOutputDirButton}" 
+                    Width="200" Click="SelectOutputDir_Click" Margin="0,0,0,10"/>
+            <TextBlock x:Name="OutputDirText" Text="{Binding DefaultOutputDir}" 
+                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}" 
+                       HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap"/>
 
-            <TextBlock Text="Formato de Saída:" Foreground="White" FontSize="14" FontFamily="{StaticResource JetBrainsMono}" 
+            <TextBlock Text="{Binding OutputFormatLabel}" 
+                       Foreground="White" FontSize="14" FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center" Margin="0,0,0,5"/>
-            <ComboBox x:Name="OutputFormatCombo" Width="200" Margin="0,0,0,20" FontFamily="{StaticResource JetBrainsMono}">
+            <ComboBox x:Name="OutputFormatCombo" Width="200" Margin="0,0,0,20" 
+                      FontFamily="{StaticResource JetBrainsMono}">
                 <ComboBoxItem Content="PNG"/>
                 <ComboBoxItem Content="JPG"/>
                 <ComboBoxItem Content="WEBP"/>
@@ -71,7 +78,8 @@
                 <ComboBoxItem Content="AAC"/>
             </ComboBox>
 
-            <Button Content="Converter" Width="200" Click="ConvertFiles_Click"/>
+            <Button Content="{Binding ConvertButton}" 
+                    Width="200" Click="ConvertFiles_Click"/>
         </StackPanel>
     </Grid>
 </Page>

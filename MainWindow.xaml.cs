@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,10 +12,14 @@ namespace DarkHub
 {
     public partial class MainWindow : Window
     {
+        private Type _currentPageType;
+
         public MainWindow()
         {
             try
             {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-BR");
+
                 InitializeComponent();
 
                 if (MainFrame == null)
@@ -22,13 +28,29 @@ namespace DarkHub
                 }
 
                 NavigateToPageAsync(new Optimizer()).ConfigureAwait(false);
-                Debug.WriteLine("MainWindow inicializado com sucesso.");
+                _currentPageType = typeof(Optimizer);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao inicializar MainWindow: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao inicializar MainWindow: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 Close();
+            }
+        }
+
+        private void DiscordServer(object sender, RoutedEventArgs e)
+        {
+            string inviteLink = "https://discord.gg/x7F25Xz8Qk";
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = inviteLink,
+                    UseShellExecute = true
+                });
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Erro ao tentar abrir o link: " + ex.Message);
             }
         }
 
@@ -39,7 +61,7 @@ namespace DarkHub
                 if (MainFrame != null)
                 {
                     await Task.Run(() => MainFrame.Dispatcher.Invoke(() => MainFrame.Navigate(page)));
-                    Debug.WriteLine($"Navegado para {page.GetType().Name}");
+                    _currentPageType = page.GetType();
                 }
                 else
                 {
@@ -49,7 +71,46 @@ namespace DarkHub
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao navegar para página: {ex.Message}", "Erro de Navegação", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao navegar para {page?.GetType().Name}: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+        private void ChangeToEnglish(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+
+                ResourceManagerHelper.Instance.NotifyCultureChanged();
+
+                if (_currentPageType != null)
+                {
+                    Page newPage = (Page)Activator.CreateInstance(_currentPageType);
+                    NavigateToPageAsync(newPage).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao mudar para inglês: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ChangeToPortuguese(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-BR");
+
+                ResourceManagerHelper.Instance.NotifyCultureChanged();
+
+                if (_currentPageType != null)
+                {
+                    Page newPage = (Page)Activator.CreateInstance(_currentPageType);
+                    NavigateToPageAsync(newPage).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao mudar para português: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -58,7 +119,6 @@ namespace DarkHub
             Button clickedButton = sender as Button;
             if (clickedButton == null)
             {
-                Debug.WriteLine("Botão clicado é nulo, evento ignorado.");
                 return;
             }
 
@@ -149,11 +209,17 @@ namespace DarkHub
             {
                 btnDllInjector.Visibility = Visibility.Collapsed;
                 btnCrunchyrollAcc.Visibility = Visibility.Collapsed;
+                btnBr.Visibility = Visibility.Collapsed;
+                btnEua.Visibility = Visibility.Collapsed;
+                btnDiscord.Visibility = Visibility.Collapsed;
             }
             else
             {
                 btnDllInjector.Visibility = Visibility.Visible;
                 btnCrunchyrollAcc.Visibility = Visibility.Visible;
+                btnBr.Visibility = Visibility.Visible;
+                btnEua.Visibility = Visibility.Visible;
+                btnDiscord.Visibility = Visibility.Visible;
             }
         }
 

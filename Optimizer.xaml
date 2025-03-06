@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:DarkHub"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="900"
-      Title="Optimizer">
+      Title="Optimizer"
+      DataContext="{Binding Source={x:Static local:ResourceManagerHelper.Instance}}">
 
     <Page.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
@@ -44,9 +45,9 @@
     </Page.Resources>
 
     <Grid Background="{x:Null}">
-        <TextBlock FontFamily="JetBrains Mono" Foreground="White" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20">
-            Otimizador de PC
-        </TextBlock>
+        <TextBlock FontFamily="JetBrains Mono" Foreground="White" FontSize="20" FontWeight="Bold" 
+                   HorizontalAlignment="Center" Margin="0,0,0,20"
+                   Text="{Binding OptimizerTitle}"/>
 
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="600" Height="450" Margin="0,0,0,0">
             <Grid.ColumnDefinitions>
@@ -55,28 +56,48 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Height="449" VerticalAlignment="Center">
-                <Button Content="Informações do Sistema" Click="SystemInfo" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Ativar Windows" Click="AtivarWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Reparar Windows" Click="RepairWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Limpar Arquivos Temporários" Click="ClearTempFilesAndLogs" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Modo de Alto Desempenho" Click="EnableHighPerformanceMode" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Otimizador de Inicialização" Click="ManageStartupPrograms" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="cleanNetworkDataButton" Content="Limpar Dados de Rede" Click="CleanNetworkData" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Remover Bloatware" Click="RemoveWindowsBloatware" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="optimizeGameRouteButton" Content="Otimizar Rota para Jogos" Click="OptimizeGameRoute" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding SystemInfoButton}" 
+                        Click="SystemInfo" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding ActivateWindowsButton}" 
+                        Click="AtivarWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding RepairWindowsButton}" 
+                        Click="RepairWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding ClearTempFilesButton}" 
+                        Click="ClearTempFilesAndLogs" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding HighPerformanceModeButton}" 
+                        Click="EnableHighPerformanceMode" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding StartupOptimizerButton}" 
+                        Click="ManageStartupPrograms" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="cleanNetworkDataButton" 
+                        Content="{Binding CleanNetworkDataButton}" 
+                        Click="CleanNetworkData" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding RemoveBloatwareButton}" 
+                        Click="RemoveWindowsBloatware" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="optimizeGameRouteButton" 
+                        Content="{Binding OptimizeGameRouteButton}" 
+                        Click="OptimizeGameRoute" Style="{StaticResource ButtonStyle}" Width="200"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                <Button Content="Ajustar Temporizador" Click="AdjustTimerResolution" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Desativar Belezas Visuais" Click="DisableVisualEffects" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Alterar Prioridade de Aplicação" Click="ChangePriority" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Desinstalar Programa" Click="UninstallProgram" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Limpeza de Registro" Click="CleanRegistry" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Antivírus" Click="OpenWindowsDefender" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Space Sniffer" Click="RunSpaceSniffer" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="Otimizar Memória RAM" Click="OptimizeMemory" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="dnsBenchmarkButton" Content="DNS Benchmark" Click="DNSBenchmark" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="systemMonitorButton" Content="Monitor do Sistema" Click="OpenSystemMonitor" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding AdjustTimerButton}" 
+                        Click="AdjustTimerResolution" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding DisableVisualEffectsButton}" 
+                        Click="DisableVisualEffects" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding ChangePriorityButton}" 
+                        Click="ChangePriority" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding UninstallProgramButton}" 
+                        Click="UninstallProgram" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding CleanRegistryButton}" 
+                        Click="CleanRegistry" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding AntivirusButton}" 
+                        Click="OpenWindowsDefender" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding SpaceSnifferButton}" 
+                        Click="RunSpaceSniffer" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button Content="{Binding OptimizeMemoryButton}" 
+                        Click="OptimizeMemory" Style="{StaticResource ButtonStyle}" Width="200"/>
+                <Button x:Name="dnsBenchmarkButton" 
+                        Content="{Binding DNSBenchmarkButton}" 
+                        Click="DNSBenchmark" Style="{StaticResource ButtonStyle}" Width="200"/>
             </StackPanel>
         </Grid>
     </Grid>

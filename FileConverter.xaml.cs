@@ -21,11 +21,12 @@ namespace DarkHub
             {
                 InitializeComponent();
                 OutputFormatCombo.SelectedIndex = 0;
-                Debug.WriteLine("FileConverter inicializado com sucesso.");
+                Debug.WriteLine(ResourceManagerHelper.Instance.FileConverterInitialized);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao inicializar FileConverter: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorInitializingFileConverter, ex.Message),
+                                ResourceManagerHelper.Instance.CriticalErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro ao inicializar FileConverter: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -37,18 +38,19 @@ namespace DarkHub
                 OpenFileDialog openFileDialog = new()
                 {
                     Multiselect = true,
-                    Title = "Selecionar Arquivos para Conversão"
+                    Title = "Selecionar Arquivos para Conversão"      
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
                     inputFiles = new List<string>(openFileDialog.FileNames);
-                    SelectedFilesText.Text = $"Arquivos selecionados: {inputFiles.Count}";
-                    Debug.WriteLine($"Selecionados {inputFiles.Count} arquivos.");
+                    SelectedFilesText.Text = string.Format(ResourceManagerHelper.Instance.SelectedFilesText, inputFiles.Count);
+                    Debug.WriteLine(string.Format(ResourceManagerHelper.Instance.FilesSelectedLog, inputFiles.Count));
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao selecionar arquivos: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorSelectingFiles, ex.Message),
+                                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro em SelectFiles_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -60,18 +62,19 @@ namespace DarkHub
                 OpenFolderDialog folderDialog = new()
                 {
                     Multiselect = false,
-                    Title = "Escolher Diretório de Saída"
+                    Title = "Escolher Diretório de Saída"      
                 };
                 if (folderDialog.ShowDialog() == true)
                 {
                     outputDir = folderDialog.FolderName;
-                    OutputDirText.Text = $"Saída: {outputDir}";
-                    Debug.WriteLine($"Diretório de saída selecionado: {outputDir}");
+                    OutputDirText.Text = string.Format(ResourceManagerHelper.Instance.OutputDirText, outputDir);
+                    Debug.WriteLine(string.Format(ResourceManagerHelper.Instance.OutputDirSelectedLog, outputDir));
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao selecionar diretório de saída: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorSelectingOutputDir, ex.Message),
+                                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                 Debug.WriteLine($"Erro em SelectOutputDir_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -83,14 +86,16 @@ namespace DarkHub
             {
                 if (inputFiles.Count == 0 || OutputFormatCombo.SelectedItem == null)
                 {
-                    Dispatcher.Invoke(() => MessageBox.Show("Selecione pelo menos um arquivo e um formato de saída!", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning));
+                    Dispatcher.Invoke(() => MessageBox.Show(ResourceManagerHelper.Instance.SelectFilesAndFormatWarning,
+                                                            ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning));
                     return;
                 }
 
                 string? outputFormat = ((ComboBoxItem)OutputFormatCombo.SelectedItem)?.Content?.ToString()?.ToLower();
                 if (string.IsNullOrEmpty(outputFormat))
                 {
-                    Dispatcher.Invoke(() => MessageBox.Show("Formato de saída inválido!", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning));
+                    Dispatcher.Invoke(() => MessageBox.Show(ResourceManagerHelper.Instance.InvalidOutputFormatWarning,
+                                                            ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning));
                     return;
                 }
 
@@ -106,34 +111,41 @@ namespace DarkHub
                         try
                         {
                             string outputFile = GetOutputFilePath(inputFile, outputFormat);
-                            AppendProgress(progressTextBox, $"Convertendo {Path.GetFileName(inputFile)} para {outputFormat}...\n");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ConvertingFileProgress,
+                                                                          Path.GetFileName(inputFile), outputFormat));
 
                             if (IsImageFormat(outputFormat))
                                 ConvertImage(inputFile, outputFile);
                             else if (IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat))
                                 ConvertMedia(inputFile, outputFile, outputFormat);
 
-                            AppendProgress(progressTextBox, $"Concluído: {Path.GetFileName(outputFile)}\n");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CompletedFileProgress,
+                                                                          Path.GetFileName(outputFile)));
                         }
                         catch (Exception ex)
                         {
-                            AppendProgress(progressTextBox, $"Erro ao converter {Path.GetFileName(inputFile)}: {ex.Message}\n");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorConvertingFileProgress,
+                                                                          Path.GetFileName(inputFile), ex.Message));
                             Debug.WriteLine($"Erro na conversão de {inputFile}: {ex.Message}\nStackTrace: {ex.StackTrace}");
                         }
                         finally
                         {
                             Interlocked.Increment(ref completed);
-                            AppendProgress(progressTextBox, $"Progresso: {completed}/{inputFiles.Count}\n");
+                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProgressUpdateText,
+                                                                          completed, inputFiles.Count));
                         }
                     });
                 });
 
-                AppendProgress(progressTextBox, "Conversão concluída!");
-                await Task.Run(() => Dispatcher.Invoke(() => MessageBox.Show("Conversão concluída!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information)));
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ConversionCompleted);
+                await Task.Run(() => Dispatcher.Invoke(() => MessageBox.Show(ResourceManagerHelper.Instance.ConversionCompleted,
+                                                                             ResourceManagerHelper.Instance.SuccessTitle,
+                                                                             MessageBoxButton.OK, MessageBoxImage.Information)));
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => MessageBox.Show($"Erro geral durante a conversão: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
+                Dispatcher.Invoke(() => MessageBox.Show(string.Format(ResourceManagerHelper.Instance.GeneralConversionError, ex.Message),
+                                                        ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error));
                 Debug.WriteLine($"Erro em ConvertFiles_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             finally
@@ -272,7 +284,7 @@ namespace DarkHub
             {
                 var window = new Window
                 {
-                    Title = "Progresso da Conversão",
+                    Title = ResourceManagerHelper.Instance.ConversionProgressTitle,
                     Width = 400,
                     Height = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
@@ -288,7 +300,7 @@ namespace DarkHub
 
                 var title = new TextBlock
                 {
-                    Text = "Convertendo Arquivos",
+                    Text = ResourceManagerHelper.Instance.ConvertingFilesTitle,
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 20,
                     FontWeight = FontWeights.Bold,
@@ -310,7 +322,7 @@ namespace DarkHub
                     Padding = new Thickness(5),
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 12,
-                    Text = $"Progresso: 0/{totalFiles}"
+                    Text = string.Format(ResourceManagerHelper.Instance.ProgressInitialText, totalFiles)
                 };
                 Grid.SetRow(textBox, 1);
                 grid.Children.Add(textBox);
@@ -323,7 +335,7 @@ namespace DarkHub
                     Margin = new Thickness(2)
                 };
 
-                Debug.WriteLine("Janela de progresso criada com sucesso.");
+                Debug.WriteLine(ResourceManagerHelper.Instance.ProgressWindowCreated);
                 return window;
             }
             catch (Exception ex)

@@ -28,12 +28,10 @@ namespace DarkHub
             {
                 InitializeComponent();
                 InitializeImageMetadataProperties();
-                Debug.WriteLine("MetaDataEditor inicializado com sucesso.");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao inicializar MetaDataEditor: {ex.Message}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
-                Debug.WriteLine($"Erro ao inicializar MetaDataEditor: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -41,7 +39,6 @@ namespace DarkHub
         {
             try
             {
-                // IDs EXIF completos para metadados de imagens
                 imageMetadataProperties.Add(0x00FE, "New Subfile Type");
                 imageMetadataProperties.Add(0x00FF, "Subfile Type");
                 imageMetadataProperties.Add(0x0100, "Image Width");
@@ -168,11 +165,9 @@ namespace DarkHub
                 imageMetadataProperties.Add(0xA433, "Lens Make");
                 imageMetadataProperties.Add(0xA434, "Lens Model");
                 imageMetadataProperties.Add(0xA435, "Lens Serial Number");
-                Debug.WriteLine("Propriedades de metadados de imagem inicializadas com sucesso.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao inicializar propriedades de metadados de imagem: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -190,13 +185,11 @@ namespace DarkHub
                 {
                     selectedFilePath = openFileDialog.FileName;
                     await LoadMetadataAsync();
-                    Debug.WriteLine($"Arquivo selecionado: {selectedFilePath}");
                 }
             }
             catch (Exception ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Erro ao selecionar arquivo: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
-                Debug.WriteLine($"Erro em SelectFile_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -240,12 +233,10 @@ namespace DarkHub
                     listViewMetadata.ItemsSource = null;
                     listViewMetadata.ItemsSource = metadataItems;
                 });
-                Debug.WriteLine($"Metadados carregados para {selectedFilePath}");
             }
             catch (Exception ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Erro ao carregar os metadados: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
-                Debug.WriteLine($"Erro em LoadMetadataAsync: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -275,7 +266,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao carregar metadados de imagem: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -298,7 +288,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao carregar metadados de PDF: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -324,7 +313,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao carregar metadados de DOCX: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -347,7 +335,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao carregar metadados de EXE: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -358,30 +345,30 @@ namespace DarkHub
             {
                 switch (propItem.Type)
                 {
-                    case 1: // Byte
+                    case 1:  
                         return propItem.Value[0].ToString();
-                    case 2: // ASCII
+                    case 2:  
                         return Encoding.ASCII.GetString(propItem.Value).TrimEnd('\0');
-                    case 3: // Short
+                    case 3:  
                         ushort shortValue = BitConverter.ToUInt16(propItem.Value, 0);
                         return propItem.Id == 0x0112 ? GetOrientationDescription(shortValue) :
                                propItem.Id == 0x8822 ? GetExposureProgramDescription(shortValue) :
                                propItem.Id == 0x9207 ? GetMeteringModeDescription(shortValue) :
                                propItem.Id == 0x9208 ? GetLightSourceDescription(shortValue) :
                                propItem.Id == 0x9209 ? GetFlashDescription(shortValue) : shortValue.ToString();
-                    case 4: // Long
+                    case 4:  
                         return BitConverter.ToUInt32(propItem.Value, 0).ToString();
-                    case 5: // Rational
+                    case 5:  
                         uint num = BitConverter.ToUInt32(propItem.Value, 0);
                         uint den = BitConverter.ToUInt32(propItem.Value, 4);
                         return den == 0 ? "Invalid Rational" : $"{num}/{den} ({(double)num / den})";
-                    case 7: // Undefined
-                        if (propItem.Id == 0xA000) // Flashpix Version
+                    case 7:  
+                        if (propItem.Id == 0xA000)   
                             return Encoding.ASCII.GetString(propItem.Value).TrimEnd('\0');
-                        else if (propItem.Id == 0x927C) // Maker Note
+                        else if (propItem.Id == 0x927C)   
                             return BitConverter.ToString(propItem.Value);
                         return BitConverter.ToString(propItem.Value);
-                    case 10: // SRational
+                    case 10:  
                         int sNum = BitConverter.ToInt32(propItem.Value, 0);
                         int sDen = BitConverter.ToInt32(propItem.Value, 4);
                         return sDen == 0 ? "Invalid SRational" : $"{sNum}/{sDen} ({(double)sNum / sDen})";
@@ -391,7 +378,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao obter valor de propriedade: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 return "Error reading value";
             }
         }
@@ -537,22 +523,18 @@ namespace DarkHub
                         return;
                 }
                 Dispatcher.Invoke(() => MessageBox.Show("Metadados salvos com sucesso.", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information));
-                Debug.WriteLine($"Metadados salvos para {selectedFilePath}");
             }
             catch (UnauthorizedAccessException ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show("Erro de permissão ao salvar os metadados. Execute o programa como administrador.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
-                Debug.WriteLine($"Erro de permissão em SaveMetadata_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             catch (IOException ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Erro de I/O ao salvar os metadados: {ex.Message}. Verifique se o arquivo não está aberto em outro programa.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
-                Debug.WriteLine($"Erro de I/O em SaveMetadata_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
             catch (Exception ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Erro ao salvar os metadados: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
-                Debug.WriteLine($"Erro em SaveMetadata_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
@@ -570,19 +552,19 @@ namespace DarkHub
 
                     switch (propItem.Type)
                     {
-                        case 2: // ASCII
+                        case 2:  
                             byte[] asciiBytes = Encoding.ASCII.GetBytes(item.Value + '\0');
                             propItem.Value = asciiBytes;
                             break;
-                        case 3: // Short
+                        case 3:  
                             if (ushort.TryParse(item.Value, out ushort shortValue))
                                 propItem.Value = BitConverter.GetBytes(shortValue);
                             break;
-                        case 4: // Long
+                        case 4:  
                             if (uint.TryParse(item.Value, out uint longValue))
                                 propItem.Value = BitConverter.GetBytes(longValue);
                             break;
-                        case 5: // Rational
+                        case 5:  
                             string[] rationalParts = item.Value.Split('/');
                             if (rationalParts.Length == 2 &&
                                 uint.TryParse(rationalParts[0], out uint num) &&
@@ -594,7 +576,7 @@ namespace DarkHub
                                 propItem.Value = rationalBytes;
                             }
                             break;
-                        case 7: // Undefined (somente leitura por enquanto)
+                        case 7:      
                             continue;
                         default:
                             continue;
@@ -609,7 +591,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao salvar metadados de imagem: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -634,7 +615,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao salvar metadados de PDF: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -684,7 +664,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro ao salvar metadados de DOCX: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }
@@ -694,11 +673,9 @@ namespace DarkHub
             try
             {
                 Dispatcher.Invoke(() => MessageBox.Show("Edição de metadados de executáveis não é totalmente suportada nesta versão devido a limitações do GDI+. Apenas leitura disponível.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning));
-                Debug.WriteLine("Tentativa de salvar metadados de EXE não suportada.");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro em SaveExeMetadata: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
     }
