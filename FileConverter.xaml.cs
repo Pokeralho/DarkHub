@@ -2,11 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;     
+using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Media;   
+using PdfiumViewer;     
+using PdfSharp.Drawing;     
+using PdfSharp.Pdf;     
 
 namespace DarkHub
 {
@@ -38,7 +44,7 @@ namespace DarkHub
                 OpenFileDialog openFileDialog = new()
                 {
                     Multiselect = true,
-                    Title = "Selecionar Arquivos para Conversão"      
+                    Title = "Selecionar Arquivos para Conversão"
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
@@ -62,7 +68,7 @@ namespace DarkHub
                 OpenFolderDialog folderDialog = new()
                 {
                     Multiselect = false,
-                    Title = "Escolher Diretório de Saída"      
+                    Title = "Escolher Diretório de Saída"
                 };
                 if (folderDialog.ShowDialog() == true)
                 {
@@ -115,9 +121,22 @@ namespace DarkHub
                                                                           Path.GetFileName(inputFile), outputFormat));
 
                             if (IsImageFormat(outputFormat))
-                                ConvertImage(inputFile, outputFile);
+                            {
+                                if (Path.GetExtension(inputFile).ToLower() == ".pdf")
+                                    ConvertPdfToImages(inputFile, outputDir, outputFormat);    
+                                else
+                                    ConvertImage(inputFile, outputFile);    
+                            }
+                            else if (IsDocumentFormat(outputFormat) && outputFormat == "pdf")
+                            {
+                                ConvertImagesToPdf(inputFiles, outputFile);      
+                                completed = inputFiles.Count;      
+                                return;         
+                            }
                             else if (IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat))
+                            {
                                 ConvertMedia(inputFile, outputFile, outputFormat);
+                            }
 
                             AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CompletedFileProgress,
                                                                           Path.GetFileName(outputFile)));
@@ -162,8 +181,12 @@ namespace DarkHub
             try
             {
                 string dir = string.IsNullOrEmpty(outputDir) ? Path.GetDirectoryName(inputFile) ?? string.Empty : outputDir;
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
                 string fileName = Path.GetFileNameWithoutExtension(inputFile);
-                return Path.Combine(dir, $"{fileName}.{outputFormat}");
+                string outputPath = Path.Combine(dir, $"{fileName}.{outputFormat}");
+                Debug.WriteLine($"Generated output path: {outputPath}");
+                return outputPath;
             }
             catch (Exception ex)
             {
@@ -199,32 +222,21 @@ namespace DarkHub
             _ => false
         };
 
+        private static bool IsDocumentFormat(string format) => format switch
+        {
+            "pdf" => true,
+            _ => false
+        };
+
         private void ConvertImage(string inputFile, string outputFile)
         {
             try
             {
-                string magickPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "magick.exe");
-                if (!File.Exists(magickPath))
-                    throw new FileNotFoundException("ImageMagick (magick.exe) não encontrado no diretório 'assets'.");
-
-                using var process = new Process
+                using (var image = System.Drawing.Image.FromFile(inputFile))
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = magickPath,
-                        Arguments = $"convert \"{inputFile}\" \"{outputFile}\"",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-                if (process.ExitCode != 0)
-                    throw new Exception($"Erro na conversão de imagem: {error}");
-                Debug.WriteLine($"Imagem convertida: {inputFile} -> {outputFile}");
+                    image.Save(outputFile, GetImageFormat(Path.GetExtension(outputFile).ToLower()));
+                    Debug.WriteLine($"Imagem convertida: {inputFile} -> {outputFile}");
+                }
             }
             catch (Exception ex)
             {
@@ -239,7 +251,7 @@ namespace DarkHub
             {
                 string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
                 if (!File.Exists(ffmpegPath))
-                    throw new FileNotFoundException("FFmpeg (ffmpeg.exe) não encontrado no diretório 'assets'.");
+                    throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}");
 
                 string arguments = outputFormat switch
                 {
@@ -265,10 +277,11 @@ namespace DarkHub
                     }
                 };
                 process.Start();
+                string output = process.StandardOutput.ReadToEnd();
                 string error = process.StandardError.ReadToEnd();
                 process.WaitForExit();
                 if (process.ExitCode != 0)
-                    throw new Exception($"Erro na conversão de mídia: {error}");
+                    throw new Exception($"Erro na conversão de mídia: {error}\nSaída: {output}");
                 Debug.WriteLine($"Mídia convertida: {inputFile} -> {outputFile}");
             }
             catch (Exception ex)
@@ -277,6 +290,87 @@ namespace DarkHub
                 throw;
             }
         }
+
+        private void ConvertPdfToImages(string inputFile, string outputDir, string imageFormat)
+        {
+            try
+            {
+                string outputBase = Path.Combine(string.IsNullOrEmpty(outputDir) ? Path.GetDirectoryName(inputFile) ?? string.Empty : outputDir,
+                                                 Path.GetFileNameWithoutExtension(inputFile));
+                if (!Directory.Exists(Path.GetDirectoryName(outputBase)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputBase));
+
+                using (var document = PdfiumViewer.PdfDocument.Load(inputFile))
+                {
+                    for (int i = 0; i < document.PageCount; i++)
+                    {
+                        using (var image = document.Render(i, 300, 300, true))     
+                        {
+                            string outputFile = $"{outputBase}-{i}.{imageFormat}";
+                            image.Save(outputFile, GetImageFormat(imageFormat));
+                            Debug.WriteLine($"Página {i + 1} convertida: {outputFile}");
+                        }
+                    }
+                }
+                Debug.WriteLine($"PDF convertido para imagens: {inputFile} -> {outputBase}-*.{imageFormat}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em ConvertPdfToImages: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        private void ConvertImagesToPdf(List<string> inputFiles, string outputFile)
+        {
+            try
+            {
+                string outputDir = Path.GetDirectoryName(outputFile);
+                if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
+                    Directory.CreateDirectory(outputDir);
+
+                using (var pdf = new PdfSharp.Pdf.PdfDocument())   
+                {
+                    foreach (string imageFile in inputFiles)
+                    {
+                        if (!File.Exists(imageFile))
+                            throw new FileNotFoundException($"Imagem não encontrada: {imageFile}");
+
+                        XImage xImage = XImage.FromFile(imageFile);
+                        PdfSharp.Pdf.PdfPage page = pdf.AddPage();   
+
+                        using (XGraphics gfx = XGraphics.FromPdfPage(page))
+                        {
+                            gfx.DrawImage(xImage, 0, 0, xImage.PointWidth, xImage.PointHeight);
+                        }
+                    }
+                    pdf.Save(outputFile);
+                }
+                Debug.WriteLine($"Imagens convertidas para PDF: {inputFiles.Count} arquivos -> {outputFile}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em ConvertImagesToPdf: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        private ImageFormat GetImageFormat(string format) => format.ToLower() switch
+        {
+            ".png" => ImageFormat.Png,
+            "png" => ImageFormat.Png,
+            ".jpg" => ImageFormat.Jpeg,
+            "jpg" => ImageFormat.Jpeg,
+            ".webp" => ImageFormat.Webp,
+            "webp" => ImageFormat.Webp,
+            ".bmp" => ImageFormat.Bmp,
+            "bmp" => ImageFormat.Bmp,
+            ".gif" => ImageFormat.Gif,
+            "gif" => ImageFormat.Gif,
+            ".tiff" => ImageFormat.Tiff,
+            "tiff" => ImageFormat.Tiff,
+            _ => throw new ArgumentException($"Formato de imagem não suportado: {format}")
+        };
 
         private Window CreateProgressWindow(int totalFiles)
         {
@@ -289,8 +383,8 @@ namespace DarkHub
                     Height = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Colors.White),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(115, 69, 161)),
+                    Background = new SolidColorBrush(System.Windows.Media.Colors.White),  
+                    BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(115, 69, 161)),  
                     BorderThickness = new Thickness(2)
                 };
 
@@ -301,10 +395,10 @@ namespace DarkHub
                 var title = new TextBlock
                 {
                     Text = ResourceManagerHelper.Instance.ConvertingFilesTitle,
-                    FontFamily = new FontFamily("JetBrains Mono"),
+                    FontFamily = new System.Windows.Media.FontFamily("JetBrains Mono"),  
                     FontSize = 20,
                     FontWeight = FontWeights.Bold,
-                    Foreground = Brushes.Black,
+                    Foreground = System.Windows.Media.Brushes.Black,  
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -316,11 +410,11 @@ namespace DarkHub
                     Name = "ProgressTextBox",
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(245, 245, 245)),
-                    Foreground = Brushes.Black,
+                    Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(245, 245, 245)),  
+                    Foreground = System.Windows.Media.Brushes.Black,  
                     Margin = new Thickness(10),
                     Padding = new Thickness(5),
-                    FontFamily = new FontFamily("JetBrains Mono"),
+                    FontFamily = new System.Windows.Media.FontFamily("JetBrains Mono"),  
                     FontSize = 12,
                     Text = string.Format(ResourceManagerHelper.Instance.ProgressInitialText, totalFiles)
                 };
@@ -353,7 +447,7 @@ namespace DarkHub
                 {
                     textBox.Dispatcher.Invoke(() =>
                     {
-                        textBox.AppendText(message);
+                        textBox.AppendText(message + Environment.NewLine);
                         textBox.ScrollToEnd();
                     });
                 }

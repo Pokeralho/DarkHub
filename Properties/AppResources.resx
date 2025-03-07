@@ -153,9 +153,6 @@
   <data name="ClickerStatusOn" xml:space="preserve">
     <value>Status: Clicando</value>
   </data>
-  <data name="ClickerTitle" xml:space="preserve">
-    <value>AutoClicker</value>
-  </data>
   <data name="ClicksPerSecondLabel" xml:space="preserve">
     <value>Cliques por segundo: {0:F2}</value>
   </data>
@@ -252,1511 +249,1255 @@
   <data name="WarningTitle" xml:space="preserve">
     <value>Aviso</value>
   </data>
-	<data name="ErrorInitializingFileConverter" xml:space="preserve">
+  <data name="ErrorInitializingFileConverter" xml:space="preserve">
     <value>Erro ao inicializar FileConverter: {0}</value>
-</data>
-	<data name="ErrorSelectingFiles" xml:space="preserve">
+  </data>
+  <data name="ErrorSelectingFiles" xml:space="preserve">
     <value>Erro ao selecionar arquivos: {0}</value>
-</data>
-	<data name="ErrorSelectingOutputDir" xml:space="preserve">
+  </data>
+  <data name="ErrorSelectingOutputDir" xml:space="preserve">
     <value>Erro ao selecionar diretório de saída: {0}</value>
-</data>
-	<data name="SelectFilesAndFormatWarning" xml:space="preserve">
+  </data>
+  <data name="SelectFilesAndFormatWarning" xml:space="preserve">
     <value>Selecione pelo menos um arquivo e um formato de saída!</value>
-</data>
-	<data name="InvalidOutputFormatWarning" xml:space="preserve">
+  </data>
+  <data name="InvalidOutputFormatWarning" xml:space="preserve">
     <value>Formato de saída inválido!</value>
-</data>
-	<data name="ConversionCompleted" xml:space="preserve">
+  </data>
+  <data name="ConversionCompleted" xml:space="preserve">
     <value>Conversão concluída!</value>
-</data>
-	<data name="SuccessTitle" xml:space="preserve">
+  </data>
+  <data name="SuccessTitle" xml:space="preserve">
     <value>Sucesso</value>
-</data>
-	<data name="GeneralConversionError" xml:space="preserve">
+  </data>
+  <data name="GeneralConversionError" xml:space="preserve">
     <value>Erro geral durante a conversão: {0}</value>
-</data>
-	<data name="SelectedFilesText" xml:space="preserve">
+  </data>
+  <data name="SelectedFilesText" xml:space="preserve">
     <value>Arquivos selecionados: {0}</value>
-</data>
-	<data name="OutputDirText" xml:space="preserve">
+  </data>
+  <data name="OutputDirText" xml:space="preserve">
     <value>Saída: {0}</value>
-</data>
-	<data name="ConversionProgressTitle" xml:space="preserve">
+  </data>
+  <data name="ConversionProgressTitle" xml:space="preserve">
     <value>Progresso da Conversão</value>
-</data>
-	<data name="ConvertingFilesTitle" xml:space="preserve">
+  </data>
+  <data name="ConvertingFilesTitle" xml:space="preserve">
     <value>Convertendo Arquivos</value>
-</data>
-	<data name="ProgressInitialText" xml:space="preserve">
+  </data>
+  <data name="ProgressInitialText" xml:space="preserve">
     <value>Progresso: 0/{0}</value>
-</data>
-	<data name="ConvertingFileProgress" xml:space="preserve">
+  </data>
+  <data name="ConvertingFileProgress" xml:space="preserve">
     <value>Convertendo {0} para {1}...</value>
-</data>
-	<data name="CompletedFileProgress" xml:space="preserve">
+  </data>
+  <data name="CompletedFileProgress" xml:space="preserve">
     <value>Concluído: {0}</value>
-</data>
-	<data name="ErrorConvertingFileProgress" xml:space="preserve">
+  </data>
+  <data name="ErrorConvertingFileProgress" xml:space="preserve">
     <value>Erro ao converter {0}: {1}</value>
-</data>
-	<data name="ProgressUpdateText" xml:space="preserve">
+  </data>
+  <data name="ProgressUpdateText" xml:space="preserve">
     <value>Progresso: {0}/{1}</value>
-</data>
-	<data name="FileConverterInitialized" xml:space="preserve">
+  </data>
+  <data name="FileConverterInitialized" xml:space="preserve">
     <value>FileConverter inicializado com sucesso.</value>
-</data>
-	<data name="FilesSelectedLog" xml:space="preserve">
+  </data>
+  <data name="FilesSelectedLog" xml:space="preserve">
     <value>Selecionados {0} arquivos.</value>
-</data>
-	<data name="OutputDirSelectedLog" xml:space="preserve">
+  </data>
+  <data name="OutputDirSelectedLog" xml:space="preserve">
     <value>Diretório de saída selecionado: {0}</value>
-</data>
-	<data name="ProgressWindowCreated" xml:space="preserve">
+  </data>
+  <data name="ProgressWindowCreated" xml:space="preserve">
     <value>Janela de progresso criada com sucesso.</value>
-</data>
-	<data name="AutoClickerInitialized" xml:space="preserve">
+  </data>
+  <data name="AutoClickerInitialized" xml:space="preserve">
     <value>AutoClicker inicializado com sucesso.</value>
-</data>
-	<data name="HotkeyRegisteredSuccess" xml:space="preserve">
+  </data>
+  <data name="HotkeyRegisteredSuccess" xml:space="preserve">
     <value>Hotkey registrado com sucesso.</value>
-</data>
-	<data name="HotkeyActivated" xml:space="preserve">
+  </data>
+  <data name="HotkeyActivated" xml:space="preserve">
     <value>Hotkey {0} ativado.</value>
-</data>
-	<data name="HotkeyRegistered" xml:space="preserve">
+  </data>
+  <data name="HotkeyRegistered" xml:space="preserve">
     <value>Hotkey registrado: {0}</value>
-</data>
-	<data name="IntervalUpdated" xml:space="preserve">
+  </data>
+  <data name="IntervalUpdated" xml:space="preserve">
     <value>Intervalo atualizado para {0}ms.</value>
-</data>
-	<data name="SelectValidActivationKey" xml:space="preserve">
+  </data>
+  <data name="SelectValidActivationKey" xml:space="preserve">
     <value>Selecione uma tecla de ativação válida!</value>
-</data>
-	<data name="ErrorSettingUpUIComponents" xml:space="preserve">
+  </data>
+  <data name="ErrorSettingUpUIComponents" xml:space="preserve">
     <value>Erro ao configurar componentes da UI</value>
-</data>
-	<data name="ErrorSettingUpTimers" xml:space="preserve">
+  </data>
+  <data name="ErrorSettingUpTimers" xml:space="preserve">
     <value>Erro ao configurar timers</value>
-</data>
-	<data name="ErrorSettingUpHotkey" xml:space="preserve">
+  </data>
+  <data name="ErrorSettingUpHotkey" xml:space="preserve">
     <value>Erro ao configurar hotkey</value>
-</data>
-	<data name="ErrorPerformingClick" xml:space="preserve">
+  </data>
+  <data name="ErrorPerformingClick" xml:space="preserve">
     <value>Erro ao realizar clique</value>
-</data>
-	<data name="ErrorProcessingHotkey" xml:space="preserve">
+  </data>
+  <data name="ErrorProcessingHotkey" xml:space="preserve">
     <value>Erro ao processar hotkey</value>
-</data>
-	<data name="ErrorRegisteringHotkey" xml:space="preserve">
+  </data>
+  <data name="ErrorRegisteringHotkey" xml:space="preserve">
     <value>Erro ao registrar hotkey</value>
-</data>
-	<data name="ErrorChangingActivationKey" xml:space="preserve">
+  </data>
+  <data name="ErrorChangingActivationKey" xml:space="preserve">
     <value>Erro ao trocar tecla de ativação</value>
-</data>
-	<data name="ErrorProcessingIntervalChange" xml:space="preserve">
+  </data>
+  <data name="ErrorProcessingIntervalChange" xml:space="preserve">
     <value>Erro ao processar mudança de intervalo</value>
-</data>
-	<data name="ErrorValidatingInterval" xml:space="preserve">
+  </data>
+  <data name="ErrorValidatingInterval" xml:space="preserve">
     <value>Erro ao validar intervalo</value>
-</data>
-	<data name="ErrorGettingActivationKey" xml:space="preserve">
+  </data>
+  <data name="ErrorGettingActivationKey" xml:space="preserve">
     <value>Erro ao obter tecla de ativação</value>
-</data>
-	<data name="ErrorUpdatingUIStatus" xml:space="preserve">
+  </data>
+  <data name="ErrorUpdatingUIStatus" xml:space="preserve">
     <value>Erro ao atualizar status da UI</value>
-</data>
-	<data name="MetaDataEditorTitle" xml:space="preserve">
+  </data>
+  <data name="MetaDataEditorTitle" xml:space="preserve">
     <value>MetaData Editor</value>
-</data>
-	<data name="SaveMetadataButton" xml:space="preserve">
-    <value>Salvar Metadados</value>
-</data>
-	<data name="SelectFileButton" xml:space="preserve">
-    <value>Selecionar Arquivo</value>
-</data>
-	<data name="PropertyColumnHeader" xml:space="preserve">
-    <value>Propriedade</value>
-</data>
-	<data name="ValueColumnHeader" xml:space="preserve">
-    <value>Valor</value>
-</data>
-	<data name="MetaDataEditorTitle" xml:space="preserve">
-    <value>MetaData Editor</value>
-</data>
-	<data name="SaveMetadataButton" xml:space="preserve">
+  </data>
+  <data name="SaveMetadataButton" xml:space="preserve">
     <value>Save Metadata</value>
-</data>
-	<data name="SelectFileButton" xml:space="preserve">
+  </data>
+  <data name="SelectFileButton" xml:space="preserve">
     <value>Select File</value>
-</data>
-	<data name="PropertyColumnHeader" xml:space="preserve">
+  </data>
+  <data name="PropertyColumnHeader" xml:space="preserve">
     <value>Property</value>
-</data>
-	<data name="ValueColumnHeader" xml:space="preserve">
+  </data>
+  <data name="ValueColumnHeader" xml:space="preserve">
     <value>Value</value>
-</data>
-	<data name="DllInjectorTitle" xml:space="preserve">
+  </data>
+  <data name="DllInjectorTitle" xml:space="preserve">
     <value>DLL Injector</value>
-</data>
-	<data name="ProcessNameLabel" xml:space="preserve">
+  </data>
+  <data name="ProcessNameLabel" xml:space="preserve">
     <value>Nome do Processo:</value>
-</data>
-	<data name="DllPathLabel" xml:space="preserve">
+  </data>
+  <data name="DllPathLabel" xml:space="preserve">
     <value>Caminho da DLL:</value>
-</data>
-	<data name="BrowseButton" xml:space="preserve">
+  </data>
+  <data name="BrowseButton" xml:space="preserve">
     <value>Procurar</value>
-</data>
-	<data name="InjectDllButton" xml:space="preserve">
+  </data>
+  <data name="InjectDllButton" xml:space="preserve">
     <value>INJETAR DLL</value>
-</data>
-	<data name="InjectingStatus" xml:space="preserve">
+  </data>
+  <data name="InjectingStatus" xml:space="preserve">
     <value>Injetando...</value>
-</data>
-	<data name="InjectionSuccessStatus" xml:space="preserve">
+  </data>
+  <data name="InjectionSuccessStatus" xml:space="preserve">
     <value>Injeção concluída com sucesso</value>
-</data>
-	<data name="ProcessNotFoundStatus" xml:space="preserve">
+  </data>
+  <data name="ProcessNotFoundStatus" xml:space="preserve">
     <value>Processo não encontrado</value>
-</data>
-	<data name="InjectionFailedStatus" xml:space="preserve">
+  </data>
+  <data name="InjectionFailedStatus" xml:space="preserve">
     <value>Falha na injeção</value>
-</data>
-	<data name="ProcessNameToolTip" xml:space="preserve">
+  </data>
+  <data name="ProcessNameToolTip" xml:space="preserve">
     <value>Digite o nome do processo (ex: notepad.exe)</value>
-</data>
-	<data name="ReadyStatus" xml:space="preserve">
+  </data>
+  <data name="ReadyStatus" xml:space="preserve">
     <value>Ready</value>
-</data>
-	<data name="InjectionFailedWithError" xml:space="preserve">
+  </data>
+  <data name="InjectionFailedWithError" xml:space="preserve">
     <value>Injection failed: {0}</value>
-</data>
-	<data name="ErrorStatus" xml:space="preserve">
+  </data>
+  <data name="ErrorStatus" xml:space="preserve">
     <value>Error: {0}</value>
-</data>
-	<data name="DllFileFilter" xml:space="preserve">
+  </data>
+  <data name="DllFileFilter" xml:space="preserve">
     <value>DLL Files (*.dll)|*.dll|All Files (*.*)|*.*</value>
-</data>
-	<data name="SelectDllTitle" xml:space="preserve">
+  </data>
+  <data name="SelectDllTitle" xml:space="preserve">
     <value>Select the DLL to inject</value>
-</data>
-	<data name="ErrorBuildingPage" xml:space="preserve">
+  </data>
+  <data name="ErrorBuildingPage" xml:space="preserve">
     <value>Erro ao construir a página: {0}</value>
-</data>
-	<data name="ErrorLoadingTextEditor" xml:space="preserve">
+  </data>
+  <data name="ErrorLoadingTextEditor" xml:space="preserve">
     <value>Erro ao carregar TextEditor: {0}</value>
-</data>
-	<data name="ErrorCreatingDocsFolder" xml:space="preserve">
+  </data>
+  <data name="ErrorCreatingDocsFolder" xml:space="preserve">
     <value>Erro ao criar pasta DarkHubDocs: {0}</value>
-</data>
-	<data name="ErrorLoadingFiles" xml:space="preserve">
+  </data>
+  <data name="ErrorLoadingFiles" xml:space="preserve">
     <value>Erro ao carregar arquivos: {0}</value>
-</data>
-	<data name="PageLoadedSuccess" xml:space="preserve">
+  </data>
+  <data name="PageLoadedSuccess" xml:space="preserve">
     <value>Página carregada com sucesso.</value>
-</data>
-	<data name="NoEditorSelectedToSave" xml:space="preserve">
+  </data>
+  <data name="NoEditorSelectedToSave" xml:space="preserve">
     <value>Nenhum editor selecionado para salvar.</value>
-</data>
-	<data name="FileSavedAt" xml:space="preserve">
+  </data>
+  <data name="FileSavedAt" xml:space="preserve">
     <value>Arquivo salvo em: {0}</value>
-</data>
-	<data name="NoEditorSelectedToRename" xml:space="preserve">
+  </data>
+  <data name="NoEditorSelectedToRename" xml:space="preserve">
     <value>Nenhum editor selecionado para renomear.</value>
-</data>
-	<data name="EnterNewDocumentNamePrompt" xml:space="preserve">
+  </data>
+  <data name="EnterNewDocumentNamePrompt" xml:space="preserve">
     <value>Digite o novo nome do documento:</value>
-</data>
-	<data name="RenameDocumentTitle" xml:space="preserve">
+  </data>
+  <data name="RenameDocumentTitle" xml:space="preserve">
     <value>Renomear Documento</value>
-</data>
-	<data name="FileRenamedTo" xml:space="preserve">
+  </data>
+  <data name="FileRenamedTo" xml:space="preserve">
     <value>Arquivo renomeado para: {0}</value>
-</data>
-	<data name="NoTabSelectedToDelete" xml:space="preserve">
+  </data>
+  <data name="NoTabSelectedToDelete" xml:space="preserve">
     <value>Nenhuma aba selecionada para excluir.</value>
-</data>
-	<data name="ConfirmDeleteMessage" xml:space="preserve">
+  </data>
+  <data name="ConfirmDeleteMessage" xml:space="preserve">
     <value>Tem certeza que deseja excluir '{0}'?</value>
-</data>
-	<data name="ConfirmDeleteTitle" xml:space="preserve">
+  </data>
+  <data name="ConfirmDeleteTitle" xml:space="preserve">
     <value>Confirmar Exclusão</value>
-</data>
-	<data name="DeleteCancelled" xml:space="preserve">
+  </data>
+  <data name="DeleteCancelled" xml:space="preserve">
     <value>Exclusão cancelada.</value>
-</data>
-	<data name="FileDeletedSuccess" xml:space="preserve">
+  </data>
+  <data name="FileDeletedSuccess" xml:space="preserve">
     <value>Arquivo '{0}' excluído com sucesso.</value>
-</data>
-	<data name="TabClosedNoFile" xml:space="preserve">
+  </data>
+  <data name="TabClosedNoFile" xml:space="preserve">
     <value>Aba '{0}' fechada (arquivo não existia no sistema).</value>
-</data>
-	<data name="NoEditorSelectedToRun" xml:space="preserve">
+  </data>
+  <data name="NoEditorSelectedToRun" xml:space="preserve">
     <value>Nenhum editor selecionado para executar ou tipo de documento inválido.</value>
-</data>
-	<data name="NotPythonDocument" xml:space="preserve">
+  </data>
+  <data name="NotPythonDocument" xml:space="preserve">
     <value>Este documento não é um arquivo Python.</value>
-</data>
-	<data name="RunningPythonCode" xml:space="preserve">
+  </data>
+  <data name="RunningPythonCode" xml:space="preserve">
     <value>Executando código Python...</value>
-</data>
-	<data name="PythonExecutionError" xml:space="preserve">
+  </data>
+  <data name="PythonExecutionError" xml:space="preserve">
     <value>Erro ao executar:{0}</value>
-</data>
-	<data name="PythonNotInstalled" xml:space="preserve">
+  </data>
+  <data name="PythonNotInstalled" xml:space="preserve">
     <value>Python não está instalado ou não foi encontrado no sistema. Por favor, instale o Python para executar scripts.</value>
-</data>
-	<data name="ErrorRunningPython" xml:space="preserve">
+  </data>
+  <data name="ErrorRunningPython" xml:space="preserve">
     <value>Erro ao tentar executar o Python: {0}</value>
-</data>
-	<data name="PythonInstallInstructions" xml:space="preserve">
+  </data>
+  <data name="PythonInstallInstructions" xml:space="preserve">
     <value>Verifique se o Python está instalado e adicionado ao PATH. Você pode baixá-lo em python.org.</value>
-</data>
-	<data name="ErrorAddingTab" xml:space="preserve">
+  </data>
+  <data name="ErrorAddingTab" xml:space="preserve">
     <value>Erro ao adicionar aba: {0}</value>
-</data>
-	<data name="ErrorCreatingNewTab" xml:space="preserve">
+  </data>
+  <data name="ErrorCreatingNewTab" xml:space="preserve">
     <value>Erro ao criar nova aba: {0}</value>
-</data>
-	<data name="ErrorSavingFile" xml:space="preserve">
+  </data>
+  <data name="ErrorSavingFile" xml:space="preserve">
     <value>Erro ao salvar arquivo: {0}</value>
-</data>
-	<data name="ErrorRenamingFile" xml:space="preserve">
+  </data>
+  <data name="ErrorRenamingFile" xml:space="preserve">
     <value>Erro ao renomear arquivo: {0}</value>
-</data>
-	<data name="ErrorDeletingFile" xml:space="preserve">
-    <value>Erro ao excluir arquivo: {0}</value>
-</data>
-	<data name="ErrorChangingDocType" xml:space="preserve">
+  </data>
+  <data name="ErrorDeletingFile" xml:space="preserve">
+    <value>Erro ao deletar {0}: {1}</value>
+  </data>
+  <data name="ErrorChangingDocType" xml:space="preserve">
     <value>Erro ao alterar tipo de documento: {0}</value>
-</data>
-	<data name="ErrorSwitchingTab" xml:space="preserve">
+  </data>
+  <data name="ErrorSwitchingTab" xml:space="preserve">
     <value>Erro ao mudar aba: {0}</value>
-</data>
-	<data name="ErrorSyncingComboBox" xml:space="preserve">
+  </data>
+  <data name="ErrorSyncingComboBox" xml:space="preserve">
     <value>Erro ao sincronizar ComboBox: {0}</value>
-</data>
-	<data name="ErrorChangingFontSize" xml:space="preserve">
+  </data>
+  <data name="ErrorChangingFontSize" xml:space="preserve">
     <value>Erro ao alterar tamanho da fonte: {0}</value>
-</data>
-	<data name="TextEditorTitle" xml:space="preserve">
+  </data>
+  <data name="TextEditorTitle" xml:space="preserve">
     <value>Editor de Texto</value>
-</data>
-	<data name="NewTabButton" xml:space="preserve">
+  </data>
+  <data name="NewTabButton" xml:space="preserve">
     <value>Nova Aba</value>
-</data>
-	<data name="NewTabToolTip" xml:space="preserve">
+  </data>
+  <data name="NewTabToolTip" xml:space="preserve">
     <value>Nova Aba</value>
-</data>
-	<data name="SaveButton" xml:space="preserve">
+  </data>
+  <data name="SaveButton" xml:space="preserve">
     <value>Salvar</value>
-</data>
-	<data name="SaveToolTip" xml:space="preserve">
+  </data>
+  <data name="SaveToolTip" xml:space="preserve">
     <value>Salvar</value>
-</data>
-	<data name="RenameButton" xml:space="preserve">
+  </data>
+  <data name="RenameButton" xml:space="preserve">
     <value>Renomear</value>
-</data>
-	<data name="RenameToolTip" xml:space="preserve">
+  </data>
+  <data name="RenameToolTip" xml:space="preserve">
     <value>Renomear</value>
-</data>
-	<data name="DeleteButton" xml:space="preserve">
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
     <value>Excluir</value>
-</data>
-	<data name="DeleteToolTip" xml:space="preserve">
+  </data>
+  <data name="DeleteToolTip" xml:space="preserve">
     <value>Excluir</value>
-</data>
-	<data name="RunPythonButton" xml:space="preserve">
+  </data>
+  <data name="RunPythonButton" xml:space="preserve">
     <value>Executar</value>
-</data>
-	<data name="RunPythonToolTip" xml:space="preserve">
+  </data>
+  <data name="RunPythonToolTip" xml:space="preserve">
     <value>Executar Python</value>
-</data>
-	<data name="PlainTextOption" xml:space="preserve">
+  </data>
+  <data name="PlainTextOption" xml:space="preserve">
     <value>Texto Simples</value>
-</data>
-	<data name="PythonOption" xml:space="preserve">
+  </data>
+  <data name="PythonOption" xml:space="preserve">
     <value>Python</value>
-</data>
-	<data name="DocTypeToolTip" xml:space="preserve">
+  </data>
+  <data name="DocTypeToolTip" xml:space="preserve">
     <value>Tipo de Documento</value>
-</data>
-	<data name="FontSizeToolTip" xml:space="preserve">
+  </data>
+  <data name="FontSizeToolTip" xml:space="preserve">
     <value>Tamanho da Fonte</value>
-</data>
-	<data name="NewDocumentHeader" xml:space="preserve">
+  </data>
+  <data name="NewDocumentHeader" xml:space="preserve">
     <value>Novo Documento</value>
-</data>
-	<data name="ErrorBuildingPage" xml:space="preserve">
-    <value>Erro ao construir a página: {0}</value>
-</data>
-	<data name="ErrorLoadingTextEditor" xml:space="preserve">
-    <value>Erro ao carregar TextEditor: {0}</value>
-</data>
-	<data name="ErrorCreatingDocsFolder" xml:space="preserve">
-    <value>Erro ao criar pasta DarkHubDocs: {0}</value>
-</data>
-	<data name="ErrorLoadingFiles" xml:space="preserve">
-    <value>Erro ao carregar arquivos: {0}</value>
-</data>
-	<data name="PageLoadedSuccess" xml:space="preserve">
-    <value>Página carregada com sucesso.</value>
-</data>
-	<data name="NoEditorSelectedToSave" xml:space="preserve">
-    <value>Nenhum editor selecionado para salvar.</value>
-</data>
-	<data name="FileSavedAt" xml:space="preserve">
-    <value>Arquivo salvo em: {0}</value>
-</data>
-	<data name="EnterNewDocumentNamePrompt" xml:space="preserve">
-    <value>Digite o novo nome do documento:</value>
-</data>
-	<data name="RenameDocumentTitle" xml:space="preserve">
-    <value>Renomear Documento</value>
-</data>
-	<data name="FileRenamedTo" xml:space="preserve">
-    <value>Arquivo renomeado para: {0}</value>
-</data>
-	<data name="NoTabSelectedToDelete" xml:space="preserve">
-    <value>Nenhuma aba selecionada para excluir.</value>
-</data>
-	<data name="ConfirmDeleteMessage" xml:space="preserve">
-    <value>Tem certeza que deseja excluir '{0}'?</value>
-</data>
-	<data name="ConfirmDeleteTitle" xml:space="preserve">
-    <value>Confirmar Exclusão</value>
-</data>
-	<data name="DeleteCancelled" xml:space="preserve">
-    <value>Exclusão cancelada.</value>
-</data>
-	<data name="FileDeletedSuccess" xml:space="preserve">
-    <value>Arquivo '{0}' excluído com sucesso.</value>
-</data>
-	<data name="TabClosedNoFile" xml:space="preserve">
-    <value>Aba '{0}' fechada (arquivo não existia no sistema).</value>
-</data>
-	<data name="NoEditorSelectedToRun" xml:space="preserve">
-    <value>Nenhum editor selecionado para executar ou tipo de documento inválido.</value>
-</data>
-	<data name="NotPythonDocument" xml:space="preserve">
-    <value>Este documento não é um arquivo Python.</value>
-</data>
-	<data name="RunningPythonCode" xml:space="preserve">
-    <value>Executando código Python...</value>
-</data>
-	<data name="PythonExecutionError" xml:space="preserve">
-    <value>Erro ao executar:{0}</value>
-</data>
-	<data name="PythonNotInstalled" xml:space="preserve">
-    <value>Python não está instalado ou não foi encontrado no sistema. Por favor, instale o Python para executar scripts.</value>
-</data>
-	<data name="ErrorRunningPython" xml:space="preserve">
-    <value>Erro ao tentar executar o Python: {0}</value>
-</data>
-	<data name="PythonInstallInstructions" xml:space="preserve">
-    <value>Verifique se o Python está instalado e adicionado ao PATH. Você pode baixá-lo em python.org.</value>
-</data>
-	<data name="ErrorAddingTab" xml:space="preserve">
-    <value>Erro ao adicionar aba: {0}</value>
-</data>
-	<data name="ErrorCreatingNewTab" xml:space="preserve">
-    <value>Erro ao criar nova aba: {0}</value>
-</data>
-	<data name="ErrorSavingFile" xml:space="preserve">
-    <value>Erro ao salvar arquivo: {0}</value>
-</data>
-	<data name="ErrorRenamingFile" xml:space="preserve">
-    <value>Erro ao renomear arquivo: {0}</value>
-</data>
-	<data name="ErrorDeletingFile" xml:space="preserve">
-    <value>Erro ao excluir arquivo: {0}</value>
-</data>
-	<data name="ErrorChangingDocType" xml:space="preserve">
-    <value>Erro ao alterar tipo de documento: {0}</value>
-</data>
-	<data name="ErrorSwitchingTab" xml:space="preserve">
-    <value>Erro ao mudar aba: {0}</value>
-</data>
-	<data name="ErrorSyncingComboBox" xml:space="preserve">
-    <value>Erro ao sincronizar ComboBox: {0}</value>
-</data>
-	<data name="ErrorChangingFontSize" xml:space="preserve">
-    <value>Erro ao alterar tamanho da fonte: {0}</value>
-</data>
-	<data name="ErrorInitializingOptimizer" xml:space="preserve">
+  </data>
+  <data name="ErrorInitializingOptimizer" xml:space="preserve">
     <value>Erro ao inicializar o Otimizador: {0}</value>
-</data>
-	<data name="CriticalErrorTitle" xml:space="preserve">
+  </data>
+  <data name="CriticalErrorTitle" xml:space="preserve">
     <value>Erro Crítico</value>
-</data>
-	<data name="ErrorGettingSystemInfo" xml:space="preserve">
+  </data>
+  <data name="ErrorGettingSystemInfo" xml:space="preserve">
     <value>Erro ao obter informações do sistema: {0}</value>
-</data>
-	<data name="ErrorTitle" xml:space="preserve">
+  </data>
+  <data name="ErrorTitle" xml:space="preserve">
     <value>Erro</value>
-</data>
-	<data name="SystemInfoTitle" xml:space="preserve">
+  </data>
+  <data name="SystemInfoTitle" xml:space="preserve">
     <value>Informações do Sistema</value>
-</data>
-	<data name="NoDataAvailable" xml:space="preserve">
+  </data>
+  <data name="NoDataAvailable" xml:space="preserve">
     <value>Nenhum dado disponível</value>
-</data>
-	<data name="ErrorShowingInfoWindow" xml:space="preserve">
+  </data>
+  <data name="ErrorShowingInfoWindow" xml:space="preserve">
     <value>Erro ao exibir janela de informações: {0}</value>
-</data>
-	<data name="CleaningProgressTitle" xml:space="preserve">
+  </data>
+  <data name="CleaningProgressTitle" xml:space="preserve">
     <value>Progresso da Limpeza</value>
-</data>
-	<data name="StartingCleanup" xml:space="preserve">
+  </data>
+  <data name="StartingCleanup" xml:space="preserve">
     <value>Iniciando limpeza...</value>
-</data>
-	<data name="CleaningWindowsTemp" xml:space="preserve">
+  </data>
+  <data name="CleaningWindowsTemp" xml:space="preserve">
     <value>Limpando Windows Temp...</value>
-</data>
-	<data name="CleaningPrefetchExe" xml:space="preserve">
+  </data>
+  <data name="CleaningPrefetchExe" xml:space="preserve">
     <value>Limpando Prefetch (*.exe)...</value>
-</data>
-	<data name="CleaningPrefetchDll" xml:space="preserve">
+  </data>
+  <data name="CleaningPrefetchDll" xml:space="preserve">
     <value>Limpando Prefetch (*.dll)...</value>
-</data>
-	<data name="CleaningPrefetchPf" xml:space="preserve">
+  </data>
+  <data name="CleaningPrefetchPf" xml:space="preserve">
     <value>Limpando Prefetch (*.pf)...</value>
-</data>
-	<data name="CleaningDllCache" xml:space="preserve">
+  </data>
+  <data name="CleaningDllCache" xml:space="preserve">
     <value>Limpando dllcache...</value>
-</data>
-	<data name="CleaningSystemDriveTemp" xml:space="preserve">
+  </data>
+  <data name="CleaningSystemDriveTemp" xml:space="preserve">
     <value>Limpando SystemDrive Temp...</value>
-</data>
-	<data name="CleaningUserTemp" xml:space="preserve">
+  </data>
+  <data name="CleaningUserTemp" xml:space="preserve">
     <value>Limpando %TEMP%...</value>
-</data>
-	<data name="CleaningHistory" xml:space="preserve">
+  </data>
+  <data name="CleaningHistory" xml:space="preserve">
     <value>Limpando History...</value>
-</data>
-	<data name="CleaningTempInternetFiles" xml:space="preserve">
+  </data>
+  <data name="CleaningTempInternetFiles" xml:space="preserve">
     <value>Limpando Temporary Internet Files...</value>
-</data>
-	<data name="CleaningLocalTemp" xml:space="preserve">
+  </data>
+  <data name="CleaningLocalTemp" xml:space="preserve">
     <value>Limpando Local Temp...</value>
-</data>
-	<data name="CleaningRecent" xml:space="preserve">
+  </data>
+  <data name="CleaningRecent" xml:space="preserve">
     <value>Limpando Recent...</value>
-</data>
-	<data name="CleaningCookies" xml:space="preserve">
+  </data>
+  <data name="CleaningCookies" xml:space="preserve">
     <value>Limpando Cookies...</value>
-</data>
-	<data name="CleaningEventLogs" xml:space="preserve">
+  </data>
+  <data name="CleaningEventLogs" xml:space="preserve">
     <value>Limpando registros de eventos...</value>
-</data>
-	<data name="TaskCompleted" xml:space="preserve">
+  </data>
+  <data name="TaskCompleted" xml:space="preserve">
     <value>Concluído.</value>
-</data>
-	<data name="DirectoryNotFoundOrInvalid" xml:space="preserve">
+  </data>
+  <data name="DirectoryNotFoundOrInvalid" xml:space="preserve">
     <value>Diretório não existe ou é inválido, pulando...</value>
-</data>
-	<data name="AccessDeniedToFile" xml:space="preserve">
+  </data>
+  <data name="AccessDeniedToFile" xml:space="preserve">
     <value>Acesso negado ao arquivo {0}: {1}</value>
-</data>
-	<data name="FileInUse" xml:space="preserve">
+  </data>
+  <data name="FileInUse" xml:space="preserve">
     <value>Arquivo em uso {0}: {1}</value>
-</data>
-	<data name="ErrorDeletingFile" xml:space="preserve">
-    <value>Erro ao deletar {0}: {1}</value>
-</data>
-	<data name="ErrorDeletingSubdirectory" xml:space="preserve">
+  </data>
+  <data name="ErrorDeletingSubdirectory" xml:space="preserve">
     <value>Falha ao deletar subdiretório {0}: {1}</value>
-</data>
-	<data name="ErrorCleaningDirectory" xml:space="preserve">
+  </data>
+  <data name="ErrorCleaningDirectory" xml:space="preserve">
     <value>Erro ao limpar {0}: {1}</value>
-</data>
-	<data name="ErrorCleaningFilesByExtension" xml:space="preserve">
+  </data>
+  <data name="ErrorCleaningFilesByExtension" xml:space="preserve">
     <value>Erro ao limpar arquivos {0} em {1}: {2}</value>
-</data>
-	<data name="CleaningLog" xml:space="preserve">
+  </data>
+  <data name="CleaningLog" xml:space="preserve">
     <value>Limpando {0}...</value>
-</data>
-	<data name="LogError" xml:space="preserve">
+  </data>
+  <data name="LogError" xml:space="preserve">
     <value>Erro: {0}</value>
-</data>
-	<data name="ErrorCleaningLog" xml:space="preserve">
+  </data>
+  <data name="ErrorCleaningLog" xml:space="preserve">
     <value>Erro ao limpar {0}: {1}</value>
-</data>
-	<data name="ErrorCleaningLogs" xml:space="preserve">
+  </data>
+  <data name="ErrorCleaningLogs" xml:space="preserve">
     <value>Erro geral ao limpar logs: {0}</value>
-</data>
-	<data name="CleanupCompletedSuccess" xml:space="preserve">
+  </data>
+  <data name="CleanupCompletedSuccess" xml:space="preserve">
     <value>Limpeza concluída com sucesso!</value>
-</data>
-	<data name="CleanupCompleted" xml:space="preserve">
+  </data>
+  <data name="CleanupCompleted" xml:space="preserve">
     <value>Limpeza concluída!</value>
-</data>
-	<data name="SuccessTitle" xml:space="preserve">
-    <value>Sucesso</value>
-</data>
-	<data name="GeneralCleanupError" xml:space="preserve">
+  </data>
+  <data name="GeneralCleanupError" xml:space="preserve">
     <value>Erro geral ao limpar: {0}</value>
-</data>
-	<data name="ErrorCreatingProgressWindow" xml:space="preserve">
+  </data>
+  <data name="ErrorCreatingProgressWindow" xml:space="preserve">
     <value>Erro ao criar janela de progresso: {0}</value>
-</data>
-	<data name="VisualEffectsDisabledSuccess" xml:space="preserve">
+  </data>
+  <data name="VisualEffectsDisabledSuccess" xml:space="preserve">
     <value>Efeitos visuais desabilitados para máxima otimização!</value>
-</data>
-	<data name="ErrorDisablingVisualEffects" xml:space="preserve">
+  </data>
+  <data name="ErrorDisablingVisualEffects" xml:space="preserve">
     <value>Erro ao desabilitar efeitos visuais: {0}</value>
-</data>
-	<data name="RepairingWindowsTitle" xml:space="preserve">
+  </data>
+  <data name="RepairingWindowsTitle" xml:space="preserve">
     <value>Reparando o Windows</value>
-</data>
-	<data name="StartingWindowsRepair" xml:space="preserve">
+  </data>
+  <data name="StartingWindowsRepair" xml:space="preserve">
     <value>Iniciando reparação do Windows...</value>
-</data>
-	<data name="RunningSFC" xml:space="preserve">
+  </data>
+  <data name="RunningSFC" xml:space="preserve">
     <value>Executando Verificador de Arquivos do Sistema (SFC)...</value>
-</data>
-	<data name="RunningDISM" xml:space="preserve">
+  </data>
+  <data name="RunningDISM" xml:space="preserve">
     <value>Executando DISM para restaurar a saúde do sistema...</value>
-</data>
-	<data name="SchedulingCHKDSK" xml:space="preserve">
+  </data>
+  <data name="SchedulingCHKDSK" xml:space="preserve">
     <value>Agendando verificação de disco (CHKDSK) para a próxima reinicialização...</value>
-</data>
-	<data name="CheckScheduled" xml:space="preserve">
+  </data>
+  <data name="CheckScheduled" xml:space="preserve">
     <value>Verificação agendada para a próxima reinicialização.</value>
-</data>
-	<data name="RepairsCompleted" xml:space="preserve">
+  </data>
+  <data name="RepairsCompleted" xml:space="preserve">
     <value>Reparos concluídos. Reinicie o sistema para aplicar todas as alterações.</value>
-</data>
-	<data name="RepairCommandsExecuted" xml:space="preserve">
+  </data>
+  <data name="RepairCommandsExecuted" xml:space="preserve">
     <value>Os comandos de reparo foram executados. Reinicie o sistema para aplicar todas as alterações.</value>
-</data>
-	<data name="GeneralRepairError" xml:space="preserve">
+  </data>
+  <data name="GeneralRepairError" xml:space="preserve">
     <value>Erro geral ao reparar o Windows: {0}</value>
-</data>
-	<data name="HighPerformanceModeTitle" xml:space="preserve">
+  </data>
+  <data name="HighPerformanceModeTitle" xml:space="preserve">
     <value>Ativando Modo de Alto Desempenho</value>
-</data>
-	<data name="StartingHighPerformanceMode" xml:space="preserve">
+  </data>
+  <data name="StartingHighPerformanceMode" xml:space="preserve">
     <value>Iniciando ativação do modo de alto desempenho...</value>
-</data>
-	<data name="ActivatingPowerPlan" xml:space="preserve">
+  </data>
+  <data name="ActivatingPowerPlan" xml:space="preserve">
     <value>Ativando plano de energia de alto desempenho...</value>
-</data>
-	<data name="PowerPlanAlreadyActive" xml:space="preserve">
+  </data>
+  <data name="PowerPlanAlreadyActive" xml:space="preserve">
     <value>Plano já ativo ou não encontrado.</value>
-</data>
-	<data name="HighPerformanceModeSuccess" xml:space="preserve">
+  </data>
+  <data name="HighPerformanceModeSuccess" xml:space="preserve">
     <value>Modo de alto desempenho ativado com sucesso!</value>
-</data>
-	<data name="HighPerformanceModeActivated" xml:space="preserve">
+  </data>
+  <data name="HighPerformanceModeActivated" xml:space="preserve">
     <value>Modo de alto desempenho ativado!</value>
-</data>
-	<data name="ErrorActivatingHighPerformanceMode" xml:space="preserve">
+  </data>
+  <data name="ErrorActivatingHighPerformanceMode" xml:space="preserve">
     <value>Erro ao ativar modo de alto desempenho: {0}</value>
-</data>
-	<data name="TimerResolutionTitle" xml:space="preserve">
+  </data>
+  <data name="TimerResolutionTitle" xml:space="preserve">
     <value>Ajustando Resolução do Temporizador</value>
-</data>
-	<data name="StartingTimerAdjustment" xml:space="preserve">
+  </data>
+  <data name="StartingTimerAdjustment" xml:space="preserve">
     <value>Iniciando ajuste da resolução do temporizador...</value>
-</data>
-	<data name="AdjustingTimer" xml:space="preserve">
+  </data>
+  <data name="AdjustingTimer" xml:space="preserve">
     <value>Tentando ajustar resolução do timer para 0.5ms...</value>
-</data>
-	<data name="TimerAdjusted" xml:space="preserve">
+  </data>
+  <data name="TimerAdjusted" xml:space="preserve">
     <value>Resolução ajustada para {0}ms.</value>
-</data>
-	<data name="ErrorAdjustingTimerAPI" xml:space="preserve">
+  </data>
+  <data name="ErrorAdjustingTimerAPI" xml:space="preserve">
     <value>Erro ao ajustar timer via API: {0}</value>
-</data>
-	<data name="RunningPowercfgFallback" xml:space="preserve">
+  </data>
+  <data name="RunningPowercfgFallback" xml:space="preserve">
     <value>Executando fallback com powercfg...</value>
-</data>
-	<data name="FallbackCompleted" xml:space="preserve">
+  </data>
+  <data name="FallbackCompleted" xml:space="preserve">
     <value>Fallback concluído.</value>
-</data>
-	<data name="TimerAdjustmentCompleted" xml:space="preserve">
+  </data>
+  <data name="TimerAdjustmentCompleted" xml:space="preserve">
     <value>Ajuste da resolução do temporizador concluído!</value>
-</data>
-	<data name="TimerResolutionAdjusted" xml:space="preserve">
+  </data>
+  <data name="TimerResolutionAdjusted" xml:space="preserve">
     <value>Resolução do temporizador ajustada!</value>
-</data>
-	<data name="ErrorAdjustingTimerResolution" xml:space="preserve">
+  </data>
+  <data name="ErrorAdjustingTimerResolution" xml:space="preserve">
     <value>Erro ao ajustar resolução do temporizador: {0}</value>
-</data>
-	<data name="SelectExecutableForPriority" xml:space="preserve">
+  </data>
+  <data name="SelectExecutableForPriority" xml:space="preserve">
     <value>Selecionar Executável para Alterar Prioridade</value>
-</data>
-	<data name="ChangingProcessPriorityTitle" xml:space="preserve">
+  </data>
+  <data name="ChangingProcessPriorityTitle" xml:space="preserve">
     <value>Alterando Prioridade do Processo</value>
-</data>
-	<data name="StartingPriorityChange" xml:space="preserve">
+  </data>
+  <data name="StartingPriorityChange" xml:space="preserve">
     <value>Iniciando alteração de prioridade para {0}...</value>
-</data>
-	<data name="CheckingProcessRunning" xml:space="preserve">
+  </data>
+  <data name="CheckingProcessRunning" xml:space="preserve">
     <value>Verificando se o processo '{0}' está em execução...</value>
-</data>
-
-	<data name="ProcessNotFound" xml:space="preserve">
+  </data>
+  <data name="ProcessNotFound" xml:space="preserve">
     <value>Processo não encontrado.</value>
-</data>
-
-	<data name="ChangingPriorityToHigh" xml:space="preserve">
+  </data>
+  <data name="ChangingPriorityToHigh" xml:space="preserve">
     <value>Alterando prioridade para 'Alta' (256)...</value>
-</data>
-
-	<data name="PriorityChangeFailed" xml:space="preserve">
+  </data>
+  <data name="PriorityChangeFailed" xml:space="preserve">
     <value>Falha ao alterar prioridade.</value>
-</data>
-
-	<data name="PriorityChangeCompleted" xml:space="preserve">
+  </data>
+  <data name="PriorityChangeCompleted" xml:space="preserve">
     <value>Alteração de prioridade concluída!</value>
-</data>
-
-	<data name="PriorityChangedToHigh" xml:space="preserve">
+  </data>
+  <data name="PriorityChangedToHigh" xml:space="preserve">
     <value>Prioridade do processo alterada para 'Alta'!</value>
-</data>
-
-	<data name="ErrorChangingPriority" xml:space="preserve">
+  </data>
+  <data name="ErrorChangingPriority" xml:space="preserve">
     <value>Erro ao alterar prioridade: {0}</value>
-</data>
-
-	<data name="SelectProgramToUninstall" xml:space="preserve">
+  </data>
+  <data name="SelectProgramToUninstall" xml:space="preserve">
     <value>Selecionar Programa para Desinstalar</value>
-</data>
-
-	<data name="ProgramNotFound" xml:space="preserve">
+  </data>
+  <data name="ProgramNotFound" xml:space="preserve">
     <value>O programa não foi encontrado!</value>
-</data>
-
-	<data name="UninstallingProgramTitle" xml:space="preserve">
+  </data>
+  <data name="UninstallingProgramTitle" xml:space="preserve">
     <value>Desinstalando Programa</value>
-</data>
-
-	<data name="StartingUninstallation" xml:space="preserve">
+  </data>
+  <data name="StartingUninstallation" xml:space="preserve">
     <value>Iniciando desinstalação de {0}...</value>
-</data>
-
-	<data name="CheckingProgramRegistered" xml:space="preserve">
+  </data>
+  <data name="CheckingProgramRegistered" xml:space="preserve">
     <value>Verificando se '{0}' está registrado...</value>
-</data>
-
-	<data name="ProgramNotRegistered" xml:space="preserve">
+  </data>
+  <data name="ProgramNotRegistered" xml:space="preserve">
     <value>Programa não encontrado no registro de produtos instalados.</value>
-</data>
-
-	<data name="RemovingFileDirectly" xml:space="preserve">
+  </data>
+  <data name="RemovingFileDirectly" xml:space="preserve">
     <value>Tentando remover o arquivo diretamente...</value>
-</data>
-
-	<data name="FileRemovedSuccess" xml:space="preserve">
+  </data>
+  <data name="FileRemovedSuccess" xml:space="preserve">
     <value>Arquivo removido com sucesso.</value>
-</data>
-
-	<data name="UninstallingViaWMIC" xml:space="preserve">
+  </data>
+  <data name="UninstallingViaWMIC" xml:space="preserve">
     <value>Desinstalando via WMIC...</value>
-</data>
-
-	<data name="UninstallationFailed" xml:space="preserve">
+  </data>
+  <data name="UninstallationFailed" xml:space="preserve">
     <value>Falha na desinstalação.</value>
-</data>
-
-	<data name="UninstallationCompleted" xml:space="preserve">
+  </data>
+  <data name="UninstallationCompleted" xml:space="preserve">
     <value>Desinstalação concluída!</value>
-</data>
-
-	<data name="ProgramUninstalledSuccess" xml:space="preserve">
+  </data>
+  <data name="ProgramUninstalledSuccess" xml:space="preserve">
     <value>O programa foi desinstalado com sucesso!</value>
-</data>
-
-	<data name="ErrorUninstallingProgram" xml:space="preserve">
+  </data>
+  <data name="ErrorUninstallingProgram" xml:space="preserve">
     <value>Erro ao desinstalar programa: {0}</value>
-</data>
-
-	<data name="ErrorActivatingWindows" xml:space="preserve">
+  </data>
+  <data name="ErrorActivatingWindows" xml:space="preserve">
     <value>Erro ao executar o comando de ativação: {0}</value>
-</data>
-
-	<data name="CleaningRegistryTitle" xml:space="preserve">
+  </data>
+  <data name="CleaningRegistryTitle" xml:space="preserve">
     <value>Limpando Registro</value>
-</data>
-
-	<data name="StartingRegistryCleanup" xml:space="preserve">
+  </data>
+  <data name="StartingRegistryCleanup" xml:space="preserve">
     <value>Iniciando limpeza do registro...</value>
-</data>
-
-	<data name="ScanningRegistry" xml:space="preserve">
+  </data>
+  <data name="ScanningRegistry" xml:space="preserve">
     <value>Escaneando registro por entradas inválidas...</value>
-</data>
-
-	<data name="CheckingRegistryPath" xml:space="preserve">
+  </data>
+  <data name="CheckingRegistryPath" xml:space="preserve">
     <value>Verificando {0}...</value>
-</data>
-
-	<data name="InvalidEntryFound" xml:space="preserve">
-    <value>Entrada inválida encontrada: {0} -> {1}</value>
-</data>
-
-	<data name="InvalidEntriesFound" xml:space="preserve">
+  </data>
+  <data name="InvalidEntryFound" xml:space="preserve">
+    <value>Entrada inválida encontrada: {0} -&gt; {1}</value>
+  </data>
+  <data name="InvalidEntriesFound" xml:space="preserve">
     <value>Encontradas {0} entradas inválidas:</value>
-</data>
-
-	<data name="InvalidEntryDetail" xml:space="preserve">
+  </data>
+  <data name="InvalidEntryDetail" xml:space="preserve">
     <value> - {0}\\{1}: {2}</value>
-</data>
-
-	<data name="ConfirmRemoveInvalidEntries" xml:space="preserve">
+  </data>
+  <data name="ConfirmRemoveInvalidEntries" xml:space="preserve">
     <value>Deseja remover {0} entradas inválidas?</value>
-</data>
-
-	<data name="ConfirmationTitle" xml:space="preserve">
+  </data>
+  <data name="ConfirmationTitle" xml:space="preserve">
     <value>Confirmação</value>
-</data>
-
-	<data name="EntryRemoved" xml:space="preserve">
+  </data>
+  <data name="EntryRemoved" xml:space="preserve">
     <value>Removido: {0}\\{1}</value>
-</data>
-
-	<data name="PermissionDeniedRemovingEntry" xml:space="preserve">
+  </data>
+  <data name="PermissionDeniedRemovingEntry" xml:space="preserve">
     <value>Permissão negada ao remover {0}\\{1}. Execute como administrador.</value>
-</data>
-
-	<data name="ErrorRemovingEntry" xml:space="preserve">
+  </data>
+  <data name="ErrorRemovingEntry" xml:space="preserve">
     <value>Erro ao remover {0}\\{1}: {2}</value>
-</data>
-
-	<data name="CleanupCancelledByUser" xml:space="preserve">
+  </data>
+  <data name="CleanupCancelledByUser" xml:space="preserve">
     <value>Limpeza cancelada pelo usuário.</value>
-</data>
-
-	<data name="RegistryCleanupCompleted" xml:space="preserve">
+  </data>
+  <data name="RegistryCleanupCompleted" xml:space="preserve">
     <value>Limpeza do registro concluída!</value>
-</data>
-	<data name="ErrorCleaningRegistry" xml:space="preserve">
+  </data>
+  <data name="ErrorCleaningRegistry" xml:space="preserve">
     <value>Erro ao limpar registro: {0}</value>
-</data>
-
-	<data name="ManagingStartupProgramsTitle" xml:space="preserve">
+  </data>
+  <data name="ManagingStartupProgramsTitle" xml:space="preserve">
     <value>Gerenciando Programas de Inicialização</value>
-</data>
-
-	<data name="StartingStartupManagement" xml:space="preserve">
+  </data>
+  <data name="StartingStartupManagement" xml:space="preserve">
     <value>Iniciando gerenciamento de inicialização...</value>
-</data>
-
-	<data name="ListingStartupPrograms" xml:space="preserve">
+  </data>
+  <data name="ListingStartupPrograms" xml:space="preserve">
     <value>Listando programas de inicialização...</value>
-</data>
-
-	<data name="CheckingStartupPath" xml:space="preserve">
+  </data>
+  <data name="CheckingStartupPath" xml:space="preserve">
     <value>Verificando {0}...</value>
-</data>
-
-	<data name="StartupItemFound" xml:space="preserve">
-    <value>Encontrado em {0}: {1} -> {2}</value>
-</data>
-
-	<data name="CheckingStartupFolder" xml:space="preserve">
+  </data>
+  <data name="StartupItemFound" xml:space="preserve">
+    <value>Encontrado em {0}: {1} -&gt; {2}</value>
+  </data>
+  <data name="CheckingStartupFolder" xml:space="preserve">
     <value>Verificando pasta de inicialização: {0}...</value>
-</data>
-
-	<data name="StartupFolderItemFound" xml:space="preserve">
-    <value>Encontrado em {0}: {1} -> {2}</value>
-</data>
-
-	<data name="NoStartupProgramsFound" xml:space="preserve">
+  </data>
+  <data name="StartupFolderItemFound" xml:space="preserve">
+    <value>Encontrado em {0}: {1} -&gt; {2}</value>
+  </data>
+  <data name="NoStartupProgramsFound" xml:space="preserve">
     <value>Nenhum programa de inicialização encontrado.</value>
-</data>
-
-	<data name="ProgramDisabledInRegistry" xml:space="preserve">
+  </data>
+  <data name="ProgramDisabledInRegistry" xml:space="preserve">
     <value>Programa '{0}' desativado no registro.</value>
-</data>
-
-	<data name="ProgramRemovedFromStartupFolder" xml:space="preserve">
+  </data>
+  <data name="ProgramRemovedFromStartupFolder" xml:space="preserve">
     <value>Programa '{0}' removido da pasta de inicialização.</value>
-</data>
-
-	<data name="ErrorOpeningStartupSource" xml:space="preserve">
+  </data>
+  <data name="ErrorOpeningStartupSource" xml:space="preserve">
     <value>Erro: Não foi possível abrir {0}.</value>
-</data>
-
-	<data name="PermissionDeniedDisablingProgram" xml:space="preserve">
+  </data>
+  <data name="PermissionDeniedDisablingProgram" xml:space="preserve">
     <value>Permissão negada ao desativar '{0}'. Execute como administrador.</value>
-</data>
-
-	<data name="ErrorDisablingProgram" xml:space="preserve">
+  </data>
+  <data name="ErrorDisablingProgram" xml:space="preserve">
     <value>Erro ao desativar '{0}': {1}</value>
-</data>
-
-	<data name="StartupManagementCompleted" xml:space="preserve">
+  </data>
+  <data name="StartupManagementCompleted" xml:space="preserve">
     <value>Gerenciamento concluído!</value>
-</data>
-
-	<data name="SelectProgramToDisableTitle" xml:space="preserve">
+  </data>
+  <data name="SelectProgramToDisableTitle" xml:space="preserve">
     <value>Selecionar Programa para Desativar</value>
-</data>
-
-	<data name="DisableSelectedButton" xml:space="preserve">
+  </data>
+  <data name="DisableSelectedButton" xml:space="preserve">
     <value>Desativar Selecionado</value>
-</data>
-
-	<data name="ErrorManagingStartupPrograms" xml:space="preserve">
+  </data>
+  <data name="ErrorManagingStartupPrograms" xml:space="preserve">
     <value>Erro ao gerenciar programas de inicialização: {0}</value>
-</data>
-
-	<data name="CleaningNetworkDataTitle" xml:space="preserve">
+  </data>
+  <data name="CleaningNetworkDataTitle" xml:space="preserve">
     <value>Limpando Dados de Rede</value>
-</data>
-
-	<data name="StartingNetworkDataCleanup" xml:space="preserve">
+  </data>
+  <data name="StartingNetworkDataCleanup" xml:space="preserve">
     <value>Iniciando limpeza de dados de rede...</value>
-</data>
-
-	<data name="FlushingDNSCache" xml:space="preserve">
+  </data>
+  <data name="FlushingDNSCache" xml:space="preserve">
     <value>Limpando cache DNS...</value>
-</data>
-
-	<data name="ReleasingIP" xml:space="preserve">
+  </data>
+  <data name="ReleasingIP" xml:space="preserve">
     <value>Liberando IP...</value>
-</data>
-
-	<data name="RenewingIP" xml:space="preserve">
+  </data>
+  <data name="RenewingIP" xml:space="preserve">
     <value>Renovando IP...</value>
-</data>
-
-	<data name="ResettingWinsock" xml:space="preserve">
+  </data>
+  <data name="ResettingWinsock" xml:space="preserve">
     <value>Redefinindo Winsock...</value>
-</data>
-
-	<data name="ResettingTCPIP" xml:space="preserve">
+  </data>
+  <data name="ResettingTCPIP" xml:space="preserve">
     <value>Redefinindo TCP/IP...</value>
-</data>
-
-	<data name="FlushingARP" xml:space="preserve">
+  </data>
+  <data name="FlushingARP" xml:space="preserve">
     <value>Limpando cache ARP...</value>
-</data>
-
-	<data name="ResettingNetBIOS" xml:space="preserve">
+  </data>
+  <data name="ResettingNetBIOS" xml:space="preserve">
     <value>Redefinindo NetBIOS...</value>
-</data>
-
-	<data name="NetworkDataCleanupCompleted" xml:space="preserve">
+  </data>
+  <data name="NetworkDataCleanupCompleted" xml:space="preserve">
     <value>Limpeza de dados de rede concluída!</value>
-</data>
-
-	<data name="NetworkDataCleanupSuccess" xml:space="preserve">
+  </data>
+  <data name="NetworkDataCleanupSuccess" xml:space="preserve">
     <value>Limpeza de dados de rede concluída com sucesso!</value>
-</data>
-
-	<data name="ErrorCleaningNetworkData" xml:space="preserve">
+  </data>
+  <data name="ErrorCleaningNetworkData" xml:space="preserve">
     <value>Erro ao limpar dados de rede: {0}</value>
-</data>
-
-	<data name="RunningSpaceSnifferTitle" xml:space="preserve">
+  </data>
+  <data name="RunningSpaceSnifferTitle" xml:space="preserve">
     <value>Executando SpaceSniffer</value>
-</data>
-
-	<data name="StartingSpaceSniffer" xml:space="preserve">
+  </data>
+  <data name="StartingSpaceSniffer" xml:space="preserve">
     <value>Iniciando SpaceSniffer...</value>
-</data>
-	<data name="AssetsFolderNotFound" xml:space="preserve">
+  </data>
+  <data name="AssetsFolderNotFound" xml:space="preserve">
     <value>Pasta 'assets' não encontrada em {0}.</value>
-</data>
-
-	<data name="SpaceSnifferNotFound" xml:space="preserve">
+  </data>
+  <data name="SpaceSnifferNotFound" xml:space="preserve">
     <value>Executável 'SpaceSniffer.exe' não encontrado em {0}.</value>
-</data>
-
-	<data name="ExecutingSpaceSniffer" xml:space="preserve">
+  </data>
+  <data name="ExecutingSpaceSniffer" xml:space="preserve">
     <value>Executando: {0}...</value>
-</data>
-
-	<data name="FailedToStartProcess" xml:space="preserve">
+  </data>
+  <data name="FailedToStartProcess" xml:space="preserve">
     <value>Falha ao iniciar o processo.</value>
-</data>
-
-	<data name="ProcessCompletedWithExitCode" xml:space="preserve">
+  </data>
+  <data name="ProcessCompletedWithExitCode" xml:space="preserve">
     <value>Processo concluído com código de saída: {0}.</value>
-</data>
-
-	<data name="SpaceSnifferExecutedSuccess" xml:space="preserve">
+  </data>
+  <data name="SpaceSnifferExecutedSuccess" xml:space="preserve">
     <value>SpaceSniffer executado com sucesso!</value>
-</data>
-
-	<data name="ErrorRunningSpaceSniffer" xml:space="preserve">
+  </data>
+  <data name="ErrorRunningSpaceSniffer" xml:space="preserve">
     <value>Erro ao executar o SpaceSniffer: {0}</value>
-</data>
-
-	<data name="ErrorOpeningMRT" xml:space="preserve">
+  </data>
+  <data name="ErrorOpeningMRT" xml:space="preserve">
     <value>Erro ao tentar abrir o MRT: {0}</value>
-</data>
-
-	<data name="CheckingInstalledAppsTitle" xml:space="preserve">
+  </data>
+  <data name="CheckingInstalledAppsTitle" xml:space="preserve">
     <value>Verificando Aplicativos Instalados</value>
-</data>
-
-	<data name="CheckingInstalledApps" xml:space="preserve">
+  </data>
+  <data name="CheckingInstalledApps" xml:space="preserve">
     <value>Verificando aplicativos instalados no sistema...</value>
-</data>
-
-	<data name="AppFound" xml:space="preserve">
+  </data>
+  <data name="AppFound" xml:space="preserve">
     <value>Encontrado: {0}</value>
-</data>
-
-	<data name="NoBloatwareFound" xml:space="preserve">
+  </data>
+  <data name="NoBloatwareFound" xml:space="preserve">
     <value>Nenhum bloatware encontrado no sistema!</value>
-</data>
-
-	<data name="InfoTitle" xml:space="preserve">
+  </data>
+  <data name="InfoTitle" xml:space="preserve">
     <value>Informação</value>
-</data>
-
-	<data name="SelectAppsToRemoveTitle" xml:space="preserve">
+  </data>
+  <data name="SelectAppsToRemoveTitle" xml:space="preserve">
     <value>Selecionar Aplicativos para Remover</value>
-</data>
-
-	<data name="AppsFoundToRemove" xml:space="preserve">
+  </data>
+  <data name="AppsFoundToRemove" xml:space="preserve">
     <value>Encontrados {0} aplicativos que podem ser removidos:</value>
-</data>
-
-	<data name="SelectAllButton" xml:space="preserve">
+  </data>
+  <data name="SelectAllButton" xml:space="preserve">
     <value>Selecionar Todos</value>
-</data>
-
-	<data name="DeselectAllButton" xml:space="preserve">
+  </data>
+  <data name="DeselectAllButton" xml:space="preserve">
     <value>Desmarcar Todos</value>
-</data>
-
-	<data name="RemoveSelectedButton" xml:space="preserve">
+  </data>
+  <data name="RemoveSelectedButton" xml:space="preserve">
     <value>Remover Selecionados</value>
-</data>
-
-	<data name="NoAppsSelectedForRemoval" xml:space="preserve">
+  </data>
+  <data name="NoAppsSelectedForRemoval" xml:space="preserve">
     <value>Nenhum aplicativo selecionado para remoção.</value>
-</data>
-
-	<data name="WarningTitle" xml:space="preserve">
-    <value>Aviso</value>
-</data>
-
-	<data name="RemovingBloatwareTitle" xml:space="preserve">
+  </data>
+  <data name="RemovingBloatwareTitle" xml:space="preserve">
     <value>Removendo Bloatware do Windows</value>
-</data>
-
-	<data name="StartingBloatwareRemoval" xml:space="preserve">
+  </data>
+  <data name="StartingBloatwareRemoval" xml:space="preserve">
     <value>Iniciando remoção de bloatware...</value>
-</data>
-
-	<data name="RemovingOneDrive" xml:space="preserve">
+  </data>
+  <data name="RemovingOneDrive" xml:space="preserve">
     <value>Removendo OneDrive...</value>
-</data>
-
-	<data name="RemovingMicrosoftEdge" xml:space="preserve">
+  </data>
+  <data name="RemovingMicrosoftEdge" xml:space="preserve">
     <value>Removendo Microsoft Edge...</value>
-</data>
-
-	<data name="RemovingApp" xml:space="preserve">
+  </data>
+  <data name="RemovingApp" xml:space="preserve">
     <value>Removendo {0}...</value>
-</data>
-
-	<data name="CleaningResidualFiles" xml:space="preserve">
+  </data>
+  <data name="CleaningResidualFiles" xml:space="preserve">
     <value>Limpando arquivos residuais...</value>
-</data>
-
-	<data name="FolderDeleted" xml:space="preserve">
+  </data>
+  <data name="FolderDeleted" xml:space="preserve">
     <value>Pasta deletada: {0}</value>
-</data>
-
-	<data name="ErrorDeletingFolder" xml:space="preserve">
+  </data>
+  <data name="ErrorDeletingFolder" xml:space="preserve">
     <value>Erro ao deletar {0}: {1}</value>
-</data>
-
-	<data name="BloatwareRemovalCompleted" xml:space="preserve">
+  </data>
+  <data name="BloatwareRemovalCompleted" xml:space="preserve">
     <value>Remoção de bloatware concluída!</value>
-</data>
-
-	<data name="RestartRecommended" xml:space="preserve">
+  </data>
+  <data name="RestartRecommended" xml:space="preserve">
     <value>Recomenda-se reiniciar o computador para aplicar todas as alterações.</value>
-</data>
-
-	<data name="BloatwareRemovalDone" xml:space="preserve">
+  </data>
+  <data name="BloatwareRemovalDone" xml:space="preserve">
     <value>Remoção de bloatware concluída! Deseja reiniciar o computador agora?</value>
-</data>
-
-	<data name="CompletedTitle" xml:space="preserve">
+  </data>
+  <data name="CompletedTitle" xml:space="preserve">
     <value>Concluído</value>
-</data>
-	<data name="RestartingIn10Seconds" xml:space="preserve">
+  </data>
+  <data name="RestartingIn10Seconds" xml:space="preserve">
     <value>O computador será reiniciado em 10 segundos.</value>
-</data>
-
-	<data name="RestartingTitle" xml:space="preserve">
+  </data>
+  <data name="RestartingTitle" xml:space="preserve">
     <value>Reiniciando</value>
-</data>
-
-	<data name="ErrorRemovingBloatware" xml:space="preserve">
+  </data>
+  <data name="ErrorRemovingBloatware" xml:space="preserve">
     <value>Erro ao remover bloatware: {0}</value>
-</data>
-
-	<data name="OptimizingMemoryTitle" xml:space="preserve">
+  </data>
+  <data name="OptimizingMemoryTitle" xml:space="preserve">
     <value>Otimizando Memória do Sistema</value>
-</data>
-
-	<data name="StartingMemoryOptimization" xml:space="preserve">
+  </data>
+  <data name="StartingMemoryOptimization" xml:space="preserve">
     <value>Iniciando otimização de memória...</value>
-</data>
-
-	<data name="MemoryUsageBefore" xml:space="preserve">
+  </data>
+  <data name="MemoryUsageBefore" xml:space="preserve">
     <value>Memória em uso antes da otimização: {0} GB</value>
-</data>
-
-	<data name="MemoryAvailableBefore" xml:space="preserve">
+  </data>
+  <data name="MemoryAvailableBefore" xml:space="preserve">
     <value>Memória disponível antes da otimização: {0} GB</value>
-</data>
-
-	<data name="OptimizingNonEssentialProcesses" xml:space="preserve">
+  </data>
+  <data name="OptimizingNonEssentialProcesses" xml:space="preserve">
     <value>1. Otimizando processos não essenciais...</value>
-</data>
-
-	<data name="ProcessesOptimized" xml:space="preserve">
+  </data>
+  <data name="ProcessesOptimized" xml:space="preserve">
     <value>Processos otimizados: {0}</value>
-</data>
-
-	<data name="TotalProcessesOptimized" xml:space="preserve">
+  </data>
+  <data name="TotalProcessesOptimized" xml:space="preserve">
     <value>Total de processos otimizados: {0}</value>
-</data>
-
-	<data name="ClearingFileSystemCache" xml:space="preserve">
+  </data>
+  <data name="ClearingFileSystemCache" xml:space="preserve">
     <value>2. Limpando cache do sistema de arquivos...</value>
-</data>
-
-	<data name="ClearingTempFiles" xml:space="preserve">
+  </data>
+  <data name="ClearingTempFiles" xml:space="preserve">
     <value>3. Limpando arquivos temporários...</value>
-</data>
-
-	<data name="RunningGarbageCollection" xml:space="preserve">
+  </data>
+  <data name="RunningGarbageCollection" xml:space="preserve">
     <value>4. Executando coleta de lixo...</value>
-</data>
-
-	<data name="ClearingDNSCacheMemory" xml:space="preserve">
+  </data>
+  <data name="ClearingDNSCacheMemory" xml:space="preserve">
     <value>5. Limpando cache DNS...</value>
-</data>
-
-	<data name="OptimizationResults" xml:space="preserve">
+  </data>
+  <data name="OptimizationResults" xml:space="preserve">
     <value>Resultados da otimização:</value>
-</data>
-
-	<data name="MemoryUsageAfter" xml:space="preserve">
+  </data>
+  <data name="MemoryUsageAfter" xml:space="preserve">
     <value>Memória em uso após otimização: {0} GB</value>
-</data>
-
-	<data name="MemoryAvailableAfter" xml:space="preserve">
+  </data>
+  <data name="MemoryAvailableAfter" xml:space="preserve">
     <value>Memória disponível após otimização: {0} GB</value>
-</data>
-
-	<data name="MemoryFreed" xml:space="preserve">
+  </data>
+  <data name="MemoryFreed" xml:space="preserve">
     <value>Memória liberada: {0} GB</value>
-</data>
-
-	<data name="MemoryOptimizationSuccess" xml:space="preserve">
+  </data>
+  <data name="MemoryOptimizationSuccess" xml:space="preserve">
     <value>Otimização de memória concluída com sucesso!</value>
-</data>
-
-	<data name="ErrorOptimizingMemory" xml:space="preserve">
+  </data>
+  <data name="ErrorOptimizingMemory" xml:space="preserve">
     <value>Erro ao otimizar memória: {0}</value>
-</data>
-
-	<data name="DNSBenchmarkTitle" xml:space="preserve">
+  </data>
+  <data name="DNSBenchmarkTitle" xml:space="preserve">
     <value>DNS Benchmark</value>
-</data>
-
-	<data name="StartingDNSTest" xml:space="preserve">
+  </data>
+  <data name="StartingDNSTest" xml:space="preserve">
     <value>Iniciando teste de DNS...</value>
-</data>
-
-	<data name="TestingDNS" xml:space="preserve">
+  </data>
+  <data name="TestingDNS" xml:space="preserve">
     <value>Testando {0}...</value>
-</data>
-	<data name="LatencyResult" xml:space="preserve">
+  </data>
+  <data name="LatencyResult" xml:space="preserve">
     <value>Latência: {0}ms</value>
-</data>
-
-	<data name="DNSBenchmarkResultsTitle" xml:space="preserve">
+  </data>
+  <data name="DNSBenchmarkResultsTitle" xml:space="preserve">
     <value>Resultados do Benchmark de DNS</value>
-</data>
-
-	<data name="DNSNameColumn" xml:space="preserve">
+  </data>
+  <data name="DNSNameColumn" xml:space="preserve">
     <value>Nome</value>
-</data>
-
-	<data name="DNSPrimaryColumn" xml:space="preserve">
+  </data>
+  <data name="DNSPrimaryColumn" xml:space="preserve">
     <value>DNS Primário</value>
-</data>
-
-	<data name="DNSSecondaryColumn" xml:space="preserve">
+  </data>
+  <data name="DNSSecondaryColumn" xml:space="preserve">
     <value>DNS Secundário</value>
-</data>
-
-	<data name="DNSLatencyColumn" xml:space="preserve">
+  </data>
+  <data name="DNSLatencyColumn" xml:space="preserve">
     <value>Latência (ms)</value>
-</data>
-
-	<data name="ConfigureSelectedDNSButton" xml:space="preserve">
+  </data>
+  <data name="ConfigureSelectedDNSButton" xml:space="preserve">
     <value>Configurar DNS Selecionado</value>
-</data>
-
-	<data name="SelectDNSWarning" xml:space="preserve">
+  </data>
+  <data name="SelectDNSWarning" xml:space="preserve">
     <value>Por favor, selecione um DNS da lista.</value>
-</data>
-
-	<data name="ErrorRunningDNSBenchmark" xml:space="preserve">
+  </data>
+  <data name="ErrorRunningDNSBenchmark" xml:space="preserve">
     <value>Erro ao executar o Benchmark de DNS: {0}</value>
-</data>
-
-	<data name="DNSConfiguredSuccess" xml:space="preserve">
+  </data>
+  <data name="DNSConfiguredSuccess" xml:space="preserve">
     <value>DNS configurado com sucesso!Adaptador: {0}Primário: {1}Secundário: {2}</value>
-</data>
-
-	<data name="ErrorConfiguringDNS" xml:space="preserve">
+  </data>
+  <data name="ErrorConfiguringDNS" xml:space="preserve">
     <value>Erro ao configurar DNS: {0}Verifique se:1. O programa está sendo executado como administrador2. Você está conectado a uma rede3. O adaptador de rede está habilitado4. Não há outros programas interferindo nas configurações de rede</value>
-</data>
-
-	<data name="GameServerIPTitle" xml:space="preserve">
+  </data>
+  <data name="GameServerIPTitle" xml:space="preserve">
     <value>IP do Servidor de Jogo</value>
-</data>
-
-	<data name="EnterGameServerIP" xml:space="preserve">
+  </data>
+  <data name="EnterGameServerIP" xml:space="preserve">
     <value>Digite o IP do servidor de jogo:</value>
-</data>
-
-	<data name="OKButton" xml:space="preserve">
+  </data>
+  <data name="OKButton" xml:space="preserve">
     <value>OK</value>
-</data>
-
-	<data name="CancelButton" xml:space="preserve">
+  </data>
+  <data name="CancelButton" xml:space="preserve">
     <value>Cancelar</value>
-</data>
-
-	<data name="InvalidIPWarning" xml:space="preserve">
+  </data>
+  <data name="InvalidIPWarning" xml:space="preserve">
     <value>Por favor, digite um IP válido.</value>
-</data>
-
-	<data name="OptimizingGameRouteTitle" xml:space="preserve">
+  </data>
+  <data name="OptimizingGameRouteTitle" xml:space="preserve">
     <value>Otimizando Rota de Jogo</value>
-</data>
-
-	<data name="StartingGameDNSOptimization" xml:space="preserve">
+  </data>
+  <data name="StartingGameDNSOptimization" xml:space="preserve">
     <value>Iniciando teste de otimização de DNS para jogos...</value>
-</data>
-
-	<data name="DNSResultsTitle" xml:space="preserve">
+  </data>
+  <data name="DNSResultsTitle" xml:space="preserve">
     <value>Resultados do Teste de DNS</value>
-</data>
-
-	<data name="DNSResultsLabel" xml:space="preserve">
+  </data>
+  <data name="DNSResultsLabel" xml:space="preserve">
     <value>DNSs ordenados por latência (do menor para o maior):</value>
-</data>
-
-	<data name="ErrorOptimizingGameRoute" xml:space="preserve">
+  </data>
+  <data name="ErrorOptimizingGameRoute" xml:space="preserve">
     <value>Erro ao otimizar a rota: {0}</value>
-</data>
-	<data name="YoutubeDownloaderTitle" xml:space="preserve">
+  </data>
+  <data name="YoutubeDownloaderTitle" xml:space="preserve">
     <value>Baixador de Vídeos do YouTube</value>
-</data>
-	<data name="YoutubeDownloaderHeader" xml:space="preserve">
+  </data>
+  <data name="YoutubeDownloaderHeader" xml:space="preserve">
     <value>Baixador do YouTube</value>
-</data>
-	<data name="UrlPlaceholder" xml:space="preserve">
+  </data>
+  <data name="UrlPlaceholder" xml:space="preserve">
     <value>Insira a URL do vídeo ou playlist</value>
-</data>
-	<data name="FormatMP4" xml:space="preserve">
+  </data>
+  <data name="FormatMP4" xml:space="preserve">
     <value>MP4</value>
-</data>
-	<data name="FormatMP3" xml:space="preserve">
+  </data>
+  <data name="FormatMP3" xml:space="preserve">
     <value>MP3</value>
-</data>
-	<data name="FormatMKV" xml:space="preserve">
+  </data>
+  <data name="FormatMKV" xml:space="preserve">
     <value>MKV</value>
-</data>
-	<data name="DownloadButtonText" xml:space="preserve">
+  </data>
+  <data name="DownloadButtonText" xml:space="preserve">
     <value>Baixar</value>
-</data>
-	<data name="DownloadButtonToolTip" xml:space="preserve">
+  </data>
+  <data name="DownloadButtonToolTip" xml:space="preserve">
     <value>Baixar Vídeo</value>
-</data>
-	<data name="ErrorInitializingYoutubeDownloader" xml:space="preserve">
+  </data>
+  <data name="ErrorInitializingYoutubeDownloader" xml:space="preserve">
     <value>Erro ao inicializar YoutubeVideoDownloader: {0}</value>
-</data>
-	<data name="YoutubeDLNotInitializedError" xml:space="preserve">
+  </data>
+  <data name="YoutubeDLNotInitializedError" xml:space="preserve">
     <value>Erro: YoutubeDL não foi inicializado corretamente.</value>
-</data>
-	<data name="InvalidUrlError" xml:space="preserve">
+  </data>
+  <data name="InvalidUrlError" xml:space="preserve">
     <value>Por favor, insira uma URL válida do YouTube.</value>
-</data>
-	<data name="NoFormatSelectedError" xml:space="preserve">
+  </data>
+  <data name="NoFormatSelectedError" xml:space="preserve">
     <value>Por favor, selecione um formato de saída.</value>
-</data>
-	<data name="StartingDownload" xml:space="preserve">
+  </data>
+  <data name="StartingDownload" xml:space="preserve">
     <value>Iniciando download...</value>
-</data>
-	<data name="InitialProgress" xml:space="preserve">
+  </data>
+  <data name="InitialProgress" xml:space="preserve">
     <value>Progresso: 0% - 0 KB/s</value>
-</data>
-	<data name="ProgressUpdate" xml:space="preserve">
+  </data>
+  <data name="ProgressUpdate" xml:space="preserve">
     <value>Progresso: {0} - {1}</value>
-</data>
-	<data name="DownloadCompleted" xml:space="preserve">
+  </data>
+  <data name="DownloadCompleted" xml:space="preserve">
     <value>Download concluído: {0}</value>
-</data>
-	<data name="ProgressCompleted" xml:space="preserve">
+  </data>
+  <data name="ProgressCompleted" xml:space="preserve">
     <value>Progresso: 100% - Concluído</value>
-</data>
-	<data name="DownloadError" xml:space="preserve">
+  </data>
+  <data name="DownloadError" xml:space="preserve">
     <value>Erro durante o download: {0}</value>
-</data>
-	<data name="ProgressError" xml:space="preserve">
+  </data>
+  <data name="ProgressError" xml:space="preserve">
     <value>Progresso: Erro</value>
-</data>
-	<data name="DownloadFailed" xml:space="preserve">
+  </data>
+  <data name="DownloadFailed" xml:space="preserve">
     <value>Erro ao baixar vídeo: {0}Certifique-se de que yt-dlp.exe e ffmpeg.exe estão em 'assets'.</value>
-</data>
-	<data name="GeneralDownloadError" xml:space="preserve">
+  </data>
+  <data name="GeneralDownloadError" xml:space="preserve">
     <value>Erro geral ao baixar vídeo: {0}</value>
-</data>
-	<data name="ImageTextExtractorTitle" xml:space="preserve">
+  </data>
+  <data name="ImageTextExtractorTitle" xml:space="preserve">
     <value>Extrator de Texto de Imagem</value>
-</data>
-	<data name="SelectImageButtonText" xml:space="preserve">
+  </data>
+  <data name="SelectImageButtonText" xml:space="preserve">
     <value>Selecionar Imagem</value>
-</data>
-	<data name="SelectImageButtonToolTip" xml:space="preserve">
+  </data>
+  <data name="SelectImageButtonToolTip" xml:space="preserve">
     <value>Selecionar Imagem</value>
-</data>
-	<data name="ExtractTextButtonText" xml:space="preserve">
+  </data>
+  <data name="ExtractTextButtonText" xml:space="preserve">
     <value>Extrair Texto</value>
-</data>
-	<data name="ExtractTextButtonToolTip" xml:space="preserve">
+  </data>
+  <data name="ExtractTextButtonToolTip" xml:space="preserve">
     <value>Extrair Texto</value>
-</data>
-	<data name="ErrorInitializingImageTextExtractor" xml:space="preserve">
+  </data>
+  <data name="ErrorInitializingImageTextExtractor" xml:space="preserve">
     <value>Erro ao inicializar ImageTextExtractor: {0}</value>
-</data>
-	<data name="TessdataFolderCreated" xml:space="preserve">
+  </data>
+  <data name="TessdataFolderCreated" xml:space="preserve">
     <value>A pasta 'tessdata' foi criada.Adicione os arquivos eng.traineddata e por.traineddata.</value>
-</data>
-	<data name="FolderCreatedTitle" xml:space="preserve">
+  </data>
+  <data name="FolderCreatedTitle" xml:space="preserve">
     <value>Pasta Criada</value>
-</data>
-	<data name="NoTrainedDataFilesFound" xml:space="preserve">
+  </data>
+  <data name="NoTrainedDataFilesFound" xml:space="preserve">
     <value>Nenhum arquivo .traineddata encontrado.Baixe de: https://github.com/tesseract-ocr/tessdata</value>
-</data>
-	<data name="FilesMissingTitle" xml:space="preserve">
+  </data>
+  <data name="FilesMissingTitle" xml:space="preserve">
     <value>Arquivos Ausentes</value>
-</data>
-	<data name="ErrorLoadingLanguages" xml:space="preserve">
+  </data>
+  <data name="ErrorLoadingLanguages" xml:space="preserve">
     <value>Erro ao carregar idiomas: {0}</value>
-</data>
-	<data name="StartingProcessing" xml:space="preserve">
+  </data>
+  <data name="StartingProcessing" xml:space="preserve">
     <value>Iniciando processamento...</value>
-</data>
-	<data name="SelectValidImage" xml:space="preserve">
+  </data>
+  <data name="SelectValidImage" xml:space="preserve">
     <value>Selecione uma imagem válida.</value>
-</data>
-	<data name="ImageTooLarge" xml:space="preserve">
+  </data>
+  <data name="ImageTooLarge" xml:space="preserve">
     <value>Imagem muito grande (máx. 50MB).</value>
-</data>
-	<data name="MissingTrainingFiles" xml:space="preserve">
+  </data>
+  <data name="MissingTrainingFiles" xml:space="preserve">
     <value>Arquivos de treinamento ausentes em 'tessdata'.</value>
-</data>
-	<data name="ExtractingText" xml:space="preserve">
+  </data>
+  <data name="ExtractingText" xml:space="preserve">
     <value>Extraindo texto...</value>
-</data>
-	<data name="NoTextDetected" xml:space="preserve">
+  </data>
+  <data name="NoTextDetected" xml:space="preserve">
     <value>Nenhum texto detectado.</value>
-</data>
-	<data name="TextExtracted" xml:space="preserve">
+  </data>
+  <data name="TextExtracted" xml:space="preserve">
     <value>Texto extraído (Confiança: {0}):{1}</value>
-</data>
-	<data name="ErrorExtractingText" xml:space="preserve">
+  </data>
+  <data name="ErrorExtractingText" xml:space="preserve">
     <value>Erro ao extrair texto: {0}</value>
-</data>
-	<data name="ImageFileFilter" xml:space="preserve">
+  </data>
+  <data name="ImageFileFilter" xml:space="preserve">
     <value>Arquivos de Imagem (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|Todos os Arquivos (*.*)|*.*</value>
-</data>
-	<data name="SelectImageDialogTitle" xml:space="preserve">
+  </data>
+  <data name="SelectImageDialogTitle" xml:space="preserve">
     <value>Selecionar Imagem para Extrair Texto</value>
-</data>
-	<data name="ImageSelected" xml:space="preserve">
+  </data>
+  <data name="ImageSelected" xml:space="preserve">
     <value>Imagem selecionada: {0}Clique em 'Extrair Texto' para processar.</value>
-</data>
-	<data name="ErrorSelectingImage" xml:space="preserve">
+  </data>
+  <data name="ErrorSelectingImage" xml:space="preserve">
     <value>Erro ao selecionar imagem: {0}</value>
-</data>
-	<data name="SystemMonitorTitle" xml:space="preserve">
+  </data>
+  <data name="SystemMonitorTitle" xml:space="preserve">
     <value>Monitor do Sistema</value>
-</data>
-	<data name="SystemMonitorHeader" xml:space="preserve">
+  </data>
+  <data name="SystemMonitorHeader" xml:space="preserve">
     <value>Monitor do Sistema</value>
-</data>
-	<data name="CPUTitle" xml:space="preserve">
+  </data>
+  <data name="CPUTitle" xml:space="preserve">
     <value>CPU</value>
-</data>
-	<data name="RAMTitle" xml:space="preserve">
+  </data>
+  <data name="RAMTitle" xml:space="preserve">
     <value>Memória RAM</value>
-</data>
-	<data name="DiskTitle" xml:space="preserve">
+  </data>
+  <data name="DiskTitle" xml:space="preserve">
     <value>Disco</value>
-</data>
-	<data name="GPUTitle" xml:space="preserve">
+  </data>
+  <data name="GPUTitle" xml:space="preserve">
     <value>GPU</value>
-</data>
-	<data name="SystemTitle" xml:space="preserve">
+  </data>
+  <data name="SystemTitle" xml:space="preserve">
     <value>Sistema</value>
-</data>
-	<data name="NetworkTitle" xml:space="preserve">
+  </data>
+  <data name="NetworkTitle" xml:space="preserve">
     <value>Rede</value>
-</data>
-	<data name="BenchmarkTitle" xml:space="preserve">
+  </data>
+  <data name="BenchmarkTitle" xml:space="preserve">
     <value>Benchmark do Sistema</value>
-</data>
-	<data name="RunBenchmarkButtonText" xml:space="preserve">
+  </data>
+  <data name="RunBenchmarkButtonText" xml:space="preserve">
     <value>Executar Benchmark</value>
-</data>
-	<data name="LoadingSystemInfo" xml:space="preserve">
+  </data>
+  <data name="LoadingSystemInfo" xml:space="preserve">
     <value>Carregando informações do sistema...</value>
-</data>
-	<data name="ErrorLoadingSystemInfo" xml:space="preserve">
+  </data>
+  <data name="ErrorLoadingSystemInfo" xml:space="preserve">
     <value>Erro ao carregar informações do sistema: {0}</value>
-</data>
-	<data name="CPUNameFormat" xml:space="preserve">
+  </data>
+  <data name="CPUNameFormat" xml:space="preserve">
     <value>Nome: {0}</value>
-</data>
-	<data name="CPUCoresFormat" xml:space="preserve">
+  </data>
+  <data name="CPUCoresFormat" xml:space="preserve">
     <value>Núcleos: {0}</value>
-</data>
-	<data name="CPUThreadsFormat" xml:space="preserve">
+  </data>
+  <data name="CPUThreadsFormat" xml:space="preserve">
     <value>Threads: {0}</value>
-</data>
-	<data name="CPUClockFormat" xml:space="preserve">
+  </data>
+  <data name="CPUClockFormat" xml:space="preserve">
     <value>Frequência: {0:F2} GHz</value>
-</data>
-	<data name="CPUUsageFormat" xml:space="preserve">
+  </data>
+  <data name="CPUUsageFormat" xml:space="preserve">
     <value>Uso: {0:F1}%</value>
-</data>
-	<data name="RAMTotalFormat" xml:space="preserve">
+  </data>
+  <data name="RAMTotalFormat" xml:space="preserve">
     <value>Total: {0}</value>
-</data>
-	<data name="RAMSpeedFormat" xml:space="preserve">
+  </data>
+  <data name="RAMSpeedFormat" xml:space="preserve">
     <value>Frequência: {0} MHz</value>
-</data>
-	<data name="RAMCLUnknown" xml:space="preserve">
+  </data>
+  <data name="RAMCLUnknown" xml:space="preserve">
     <value>CL: Desconhecido</value>
-</data>
-	<data name="RAMCL16" xml:space="preserve">
+  </data>
+  <data name="RAMCL16" xml:space="preserve">
     <value>CL: 16</value>
-</data>
-	<data name="RAMCL14" xml:space="preserve">
+  </data>
+  <data name="RAMCL14" xml:space="preserve">
     <value>CL: 14</value>
-</data>
-	<data name="RAMUsedFormat" xml:space="preserve">
+  </data>
+  <data name="RAMUsedFormat" xml:space="preserve">
     <value>Em Uso: {0}</value>
-</data>
-	<data name="RAMFreeFormat" xml:space="preserve">
+  </data>
+  <data name="RAMFreeFormat" xml:space="preserve">
     <value>Disponível: {0}</value>
-</data>
-	<data name="DiskTotalFormat" xml:space="preserve">
+  </data>
+  <data name="DiskTotalFormat" xml:space="preserve">
     <value>Total: {0}</value>
-</data>
-	<data name="DiskUsedFormat" xml:space="preserve">
+  </data>
+  <data name="DiskUsedFormat" xml:space="preserve">
     <value>Em Uso: {0}</value>
-</data>
-	<data name="DiskFreeFormat" xml:space="preserve">
+  </data>
+  <data name="DiskFreeFormat" xml:space="preserve">
     <value>Livre: {0}</value>
-</data>
-	<data name="DiskActivityFormat" xml:space="preserve">
+  </data>
+  <data name="DiskActivityFormat" xml:space="preserve">
     <value>Atividade: {0:F1} MB/s</value>
-</data>
-	<data name="GPUNameFormat" xml:space="preserve">
+  </data>
+  <data name="GPUNameFormat" xml:space="preserve">
     <value>Nome: {0}</value>
-</data>
-	<data name="GPUMemoryFormat" xml:space="preserve">
+  </data>
+  <data name="GPUMemoryFormat" xml:space="preserve">
     <value>Memória: {0}</value>
-</data>
-	<data name="GPUUsageFormat" xml:space="preserve">
+  </data>
+  <data name="GPUUsageFormat" xml:space="preserve">
     <value>Uso GPU: {0:F1}%</value>
-</data>
-	<data name="VRAMUsageFormat" xml:space="preserve">
+  </data>
+  <data name="VRAMUsageFormat" xml:space="preserve">
     <value>Uso VRAM: {0:F1}%</value>
-</data>
-	<data name="SystemVersionFormat" xml:space="preserve">
+  </data>
+  <data name="SystemVersionFormat" xml:space="preserve">
     <value>Versão: {0}</value>
-</data>
-	<data name="SystemArchitectureFormat" xml:space="preserve">
+  </data>
+  <data name="SystemArchitectureFormat" xml:space="preserve">
     <value>Arquitetura: {0}</value>
-</data>
-	<data name="SystemBuildFormat" xml:space="preserve">
+  </data>
+  <data name="SystemBuildFormat" xml:space="preserve">
     <value>Build: {0}</value>
-</data>
-	<data name="SystemMotherboardFormat" xml:space="preserve">
+  </data>
+  <data name="SystemMotherboardFormat" xml:space="preserve">
     <value>Placa-mãe: {0} {1}</value>
-</data>
-	<data name="SystemBIOSFormat" xml:space="preserve">
+  </data>
+  <data name="SystemBIOSFormat" xml:space="preserve">
     <value>BIOS: {0} {1}</value>
-</data>
-	<data name="NetworkAdapterFormat" xml:space="preserve">
+  </data>
+  <data name="NetworkAdapterFormat" xml:space="preserve">
     <value>Adaptador: {0}</value>
-</data>
-	<data name="NetworkSpeedFormat" xml:space="preserve">
+  </data>
+  <data name="NetworkSpeedFormat" xml:space="preserve">
     <value>Velocidade: {0}</value>
-</data>
-	<data name="NetworkIPFormat" xml:space="preserve">
+  </data>
+  <data name="NetworkIPFormat" xml:space="preserve">
     <value>IP: {0}</value>
-</data>
-	<data name="Unknown" xml:space="preserve">
+  </data>
+  <data name="Unknown" xml:space="preserve">
     <value>Desconhecido</value>
-</data>
-	<data name="NotFound" xml:space="preserve">
+  </data>
+  <data name="NotFound" xml:space="preserve">
     <value>Não encontrado</value>
-</data>
-	<data name="RunningBenchmark" xml:space="preserve">
+  </data>
+  <data name="RunningBenchmark" xml:space="preserve">
     <value>Executando Benchmark...</value>
-</data>
-	<data name="CPUTesting" xml:space="preserve">
+  </data>
+  <data name="CPUTesting" xml:space="preserve">
     <value>CPU: Testando...</value>
-</data>
-	<data name="RAMTesting" xml:space="preserve">
+  </data>
+  <data name="RAMTesting" xml:space="preserve">
     <value>RAM: Testando...</value>
-</data>
-	<data name="DiskTesting" xml:space="preserve">
+  </data>
+  <data name="DiskTesting" xml:space="preserve">
     <value>Disco: Testando...</value>
-</data>
-	<data name="GPUTesting" xml:space="preserve">
+  </data>
+  <data name="GPUTesting" xml:space="preserve">
     <value>GPU: Testando...</value>
-</data>
-	<data name="CPUScoreFormat" xml:space="preserve">
+  </data>
+  <data name="CPUScoreFormat" xml:space="preserve">
     <value>CPU: {0:F2} MOPS</value>
-</data>
-	<data name="RAMScoreFormat" xml:space="preserve">
+  </data>
+  <data name="RAMScoreFormat" xml:space="preserve">
     <value>RAM: {0:F2} MB/s</value>
-</data>
-	<data name="DiskScoreFormat" xml:space="preserve">
+  </data>
+  <data name="DiskScoreFormat" xml:space="preserve">
     <value>Disco: {0:F2} MB/s</value>
-</data>
-	<data name="GPUScoreFormat" xml:space="preserve">
+  </data>
+  <data name="GPUScoreFormat" xml:space="preserve">
     <value>GPU: {0:F2} MPixels/s</value>
-</data>
-	<data name="TotalScoreFormat" xml:space="preserve">
+  </data>
+  <data name="TotalScoreFormat" xml:space="preserve">
     <value>Score Total: {0:F2}</value>
-</data>
-	<data name="ErrorRunningBenchmark" xml:space="preserve">
+  </data>
+  <data name="ErrorRunningBenchmark" xml:space="preserve">
     <value>Erro ao executar benchmark: {0}</value>
-</data>
-	<data name="ByteUnits" xml:space="preserve">
+  </data>
+  <data name="ByteUnits" xml:space="preserve">
     <value>B|KB|MB|GB|TB</value>
-</data>
-	<data name="ByteFormat" xml:space="preserve">
+  </data>
+  <data name="ByteFormat" xml:space="preserve">
     <value>{0:F2} {1}</value>
-</data>
-
+  </data>
+  <data name="ClickerTitle" xml:space="preserve">
+    <value>AutoClicker</value>
+  </data>
 </root>
