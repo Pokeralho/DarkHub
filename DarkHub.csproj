@@ -28,6 +28,11 @@
 		<None Remove="assets\extrairtxtinv.png" />
 		<None Remove="assets\extraittxt.png" />
 		<None Remove="assets\ffmpeg.exe" />
+		<None Remove="assets\gsdll64.dll" />
+		<None Remove="assets\gsdll64.lib" />
+		<None Remove="assets\gswin64.exe" />
+		<None Remove="assets\gswin64c.exe" />
+		<None Remove="assets\magick.exe" />
 		<None Remove="assets\newtab.png" />
 		<None Remove="assets\optimizer.png" />
 		<None Remove="assets\python.png" />
@@ -50,6 +55,10 @@
 		<PackageReference Include="IronPython" Version="3.4.2" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
+		<PackageReference Include="PdfiumViewer" Version="2.13.0" />
+		<PackageReference Include="PdfiumViewer.Native.x86.v8-xfa" Version="2018.4.8.256" />
+		<PackageReference Include="PdfiumViewer.Native.x86_64.v8-xfa" Version="2018.4.8.256" />
+		<PackageReference Include="PdfSharp" Version="6.1.1" />
 		<PackageReference Include="pythonnet" Version="3.0.5" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.2" />
 		<PackageReference Include="System.Management" Version="9.0.2" />
@@ -87,6 +96,21 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\estados-unidos.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\gsdll64.dll">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\gsdll64.lib">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\gswin64.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\gswin64c.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\magick.exe">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\SpaceSniffer.exe">

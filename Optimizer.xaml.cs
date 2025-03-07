@@ -314,7 +314,7 @@ namespace DarkHub
 
                 return (window, textBox);
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
@@ -479,7 +479,7 @@ namespace DarkHub
                     });
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
@@ -544,7 +544,7 @@ namespace DarkHub
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
@@ -1347,6 +1347,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em GetShortcutTarget {ex.Message}");
                 return string.Empty;
             }
         }
@@ -1919,6 +1920,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em GetMemoryInfo {ex.Message}");
             }
             
             try

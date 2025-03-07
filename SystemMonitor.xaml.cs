@@ -10,7 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 
 namespace DarkHub
 {
@@ -54,15 +53,37 @@ namespace DarkHub
                 diskWriteCounter.NextValue();
 
                 updateTimer = new DispatcherTimer();
-                updateTimer.Interval = TimeSpan.FromMilliseconds(500);
+                updateTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 updateTimer.Tick += UpdateTimer_Tick;
-                updateTimer.Start();
 
-                Loaded += async (s, e) => await InitializeStaticInfo();
+                Loaded += SystemMonitor_Loaded;
+                Unloaded += SystemMonitor_Unloaded;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro ao inicializar contadores: {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        private void SystemMonitor_Loaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Página SystemMonitor carregada. Iniciando timer...");
+
+            if (!updateTimer.IsEnabled)
+            {
+                updateTimer.Start();
+            }
+
+            _ = InitializeStaticInfo();
+        }
+
+        private void SystemMonitor_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("Página SystemMonitor descarregada. Parando timer...");
+
+            if (updateTimer.IsEnabled)
+            {
+                updateTimer.Stop();
             }
         }
 
@@ -119,7 +140,7 @@ namespace DarkHub
                         string cpuThreadsText = string.Format(ResourceManagerHelper.Instance.CPUThreadsFormat, cpu["NumberOfLogicalProcessors"]);
                         string cpuClockText = string.Format(ResourceManagerHelper.Instance.CPUClockFormat, Convert.ToUInt32(cpu["MaxClockSpeed"]) / 1000.0);
 
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.BeginInvoke(() =>
                         {
                             cpuName.Text = cpuNameText;
                             cpuCores.Text = cpuCoresText;
@@ -178,7 +199,7 @@ namespace DarkHub
                         Debug.WriteLine($"Erro ao tentar obter CL: {ex.Message}");
                     }
 
-                    Application.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         ramTotal.Text = string.Format(ResourceManagerHelper.Instance.RAMTotalFormat, FormatBytes(ramTotalValue));
                         ramSpeedText.Text = string.Format(ResourceManagerHelper.Instance.RAMSpeedFormat, ramSpeed);
@@ -249,7 +270,7 @@ namespace DarkHub
                     osInfoText += $"\n" + string.Format(ResourceManagerHelper.Instance.SystemBIOSFormat, bios["Manufacturer"], bios["Version"]);
             }
 
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.BeginInvoke(() =>
             {
                 osVersion.Text = osInfoText.Split('\n')[0];
                 osArchitecture.Text = osInfoText.Split('\n')[1];
@@ -266,27 +287,9 @@ namespace DarkHub
 
                 Debug.WriteLine($"Instâncias GPU encontradas: {string.Join(", ", instanceNames)}");
 
-                var gpuInstance = instanceNames.FirstOrDefault(name =>
-                    name.Contains("3D") || name.Contains("Video") ||
-                    name.Contains("Copy") || name.Contains("Compute") ||
-                    name.Contains("engtype_3D") || name.Contains("engtype_Video"));
-
-                if (gpuInstance != null)
-                {
-                    Debug.WriteLine($"Instância GPU selecionada: {gpuInstance}");
-                    gpuLoadCounter = new PerformanceCounter("GPU Engine", "Utilization Percentage", gpuInstance);
-                    gpuLoadCounter.NextValue();
-                }
-                else
-                {
-                    Debug.WriteLine("Nenhuma instância GPU válida encontrada");
-                }
-
                 foreach (var name in instanceNames)
                 {
-                    if (name.Contains("engtype_3D") || name.Contains("engtype_Video") ||
-                        name.Contains("engtype_Copy") || name.Contains("engtype_Compute") ||
-                        name.Contains("3D") || name.Contains("Video"))
+                    if (name.Contains("engtype_3D") || name.Contains("engtype_Copy"))
                     {
                         Debug.WriteLine($"Adicionando contador GPU: {name}");
                         gpuCounters[name] = new PerformanceCounter("GPU Engine", "Utilization Percentage", name);
@@ -398,17 +401,26 @@ namespace DarkHub
         private double RunCPUBenchmark()
         {
             var sw = Stopwatch.StartNew();
-            int iterations = Environment.ProcessorCount * 1000000;
-            double floatResult = 0.0;
+            int iterations = Environment.ProcessorCount * 5000000;
+            double[] partialResults = new double[Environment.ProcessorCount];
 
-            Parallel.For(0, iterations, i =>
+            Parallel.For(0, Environment.ProcessorCount, threadIndex =>
             {
                 double localFloat = 0.0;
-                for (int j = 0; j < 5; j++)
-                    localFloat += Math.Sin(i * 0.1) * Math.Cos(j * 0.2);
-                lock (this) { floatResult += localFloat; }
+                int start = threadIndex * (iterations / Environment.ProcessorCount);
+                int end = (threadIndex + 1) * (iterations / Environment.ProcessorCount);
+                for (int i = start; i < end; i++)
+                {
+                    for (int j = 0; j < 5; j++)
+                    {
+                        localFloat += Math.Sin(i * 0.113576) * Math.Cos(j * 0.213576);
+                        localFloat += i % 1024;
+                    }
+                }
+                partialResults[threadIndex] = localFloat;
             });
 
+            double floatResult = partialResults.Sum();
             sw.Stop();
             double mops = (iterations * 5.0) / sw.Elapsed.TotalSeconds / 1000000.0;
             Debug.WriteLine($"CPU Benchmark: {mops:F2} MOPS");
@@ -423,15 +435,27 @@ namespace DarkHub
             Random rand = new Random();
 
             for (int i = 0; i < size; i += 131072)
+            {
                 rand.NextBytes(array.AsSpan(i, Math.Min(131072, size - i)));
+            }
 
-            ulong sum = 0;
-            for (int i = 0; i < size; i += 16)
-                sum += BitConverter.ToUInt64(array, i);
+            ulong sumSequential = 0;
+            for (int i = 0; i < size; i += 8)
+            {
+                sumSequential += BitConverter.ToUInt64(array, i);
+            }
+
+            ulong sumRandom = 0;
+            int[] randomIndices = Enumerable.Range(0, size / 8).OrderBy(x => rand.Next()).ToArray();
+            for (int i = 0; i < randomIndices.Length; i++)
+            {
+                sumRandom += BitConverter.ToUInt64(array, randomIndices[i] * 8);
+            }
 
             sw.Stop();
             double mbps = (size * 2.0) / sw.Elapsed.TotalSeconds / 1024.0 / 1024.0;
-            Debug.WriteLine($"RAM Benchmark: {mbps:F2} MB/s");
+            Debug.WriteLine($"RAM Benchmark: {mbps:F2} MB/s (Sequencial)");
+            Debug.WriteLine($"RAM Latency: {sw.Elapsed.TotalMilliseconds / randomIndices.Length:F4} ms por acesso aleatório");
             return mbps;
         }
 
@@ -444,6 +468,7 @@ namespace DarkHub
             Random rand = new Random();
 
             rand.NextBytes(buffer);
+
             using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.Write, FileShare.None, 131072))
             {
                 fs.Write(buffer, 0, buffer.Length);
@@ -453,6 +478,17 @@ namespace DarkHub
             using (var fs = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.None, 131072))
             {
                 fs.Read(buffer, 0, buffer.Length);
+            }
+
+            long fileSize = new FileInfo(tempFile).Length;
+            for (int i = 0; i < 1000; i++)
+            {
+                long position = rand.NextInt64(fileSize - bufferSize);
+                using (var fs = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.None, 131072))
+                {
+                    fs.Seek(position, SeekOrigin.Begin);
+                    fs.Read(buffer, 0, buffer.Length);
+                }
             }
 
             File.Delete(tempFile);
@@ -466,22 +502,24 @@ namespace DarkHub
         {
             var sw = Stopwatch.StartNew();
             const int width = 1920, height = 1080;
-            const int iterations = 50;
+            const int iterations = 200;
             byte[] pixels = new byte[width * height * 4];
             Random rand = new Random();
 
             for (int iter = 0; iter < iterations; iter++)
             {
-                for (int i = 0; i < pixels.Length; i += 8)
+                for (int i = 0; i < pixels.Length; i += 4)
                 {
                     pixels[i] = (byte)(rand.Next(256));
                     pixels[i + 1] = (byte)(rand.Next(256));
                     pixels[i + 2] = (byte)(rand.Next(256));
                     pixels[i + 3] = 255;
-                    pixels[i + 4] = (byte)(rand.Next(256));
-                    pixels[i + 5] = (byte)(rand.Next(256));
-                    pixels[i + 6] = (byte)(rand.Next(256));
-                    pixels[i + 7] = 255;
+                }
+
+                for (int i = 0; i < pixels.Length; i += 4)
+                {
+                    byte avg = (byte)((pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3);
+                    pixels[i] = pixels[i + 1] = pixels[i + 2] = avg;
                 }
             }
 
@@ -541,7 +579,7 @@ namespace DarkHub
                 ulong ramAvailable = (ulong)ramCounter.NextValue() * 1024 * 1024;
                 ulong ramUsedValue = ramTotalValue - ramAvailable;
 
-                Application.Current.Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     cpuUsageText.Text = string.Format(ResourceManagerHelper.Instance.CPUUsageFormat, cpuUsage);
                     cpuProgress.Value = cpuUsage;
@@ -558,7 +596,7 @@ namespace DarkHub
 
                 float diskActivity = (diskReadCounter.NextValue() + diskWriteCounter.NextValue()) / 1024 / 1024;
 
-                Application.Current.Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     diskTotal.Text = string.Format(ResourceManagerHelper.Instance.DiskTotalFormat, FormatBytes(cachedDiskInfo.TotalSize));
                     diskUsed.Text = string.Format(ResourceManagerHelper.Instance.DiskUsedFormat, FormatBytes(cachedDiskInfo.UsedSize));
@@ -574,7 +612,7 @@ namespace DarkHub
                     lastGPUInfoUpdate = DateTime.Now;
                 }
 
-                Application.Current.Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     gpuUsage.Text = string.Format(ResourceManagerHelper.Instance.GPUUsageFormat, cachedGPUUsage) + "\n" +
                                     string.Format(ResourceManagerHelper.Instance.VRAMUsageFormat, cachedVRAMUsage);
@@ -587,7 +625,7 @@ namespace DarkHub
                     lastNetworkInfoUpdate = DateTime.Now;
                 }
 
-                Application.Current.Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.BeginInvoke(() =>
                 {
                     networkAdapter.Text = string.Format(ResourceManagerHelper.Instance.NetworkAdapterFormat, cachedNetworkInfo.AdapterName);
                     networkSpeed.Text = string.Format(ResourceManagerHelper.Instance.NetworkSpeedFormat, cachedNetworkInfo.Speed);
@@ -631,7 +669,7 @@ namespace DarkHub
                 diskScore.Text = string.Format(ResourceManagerHelper.Instance.DiskScoreFormat, results[2]);
                 gpuScore.Text = string.Format(ResourceManagerHelper.Instance.GPUScoreFormat, results[3]);
 
-                double totalScore = (results[0] * 0.4 + results[1] * 0.3 + results[2] * 0.2 + results[3] * 0.1);
+                double totalScore = ((results[0] * 1 + results[1] * 0.7 + results[2] * 0.5 + results[3] * 1) * 7);
                 systemScore.Text = string.Format(ResourceManagerHelper.Instance.TotalScoreFormat, totalScore);
             }
             catch (Exception ex)
@@ -701,7 +739,7 @@ namespace DarkHub
                 updateTimer.Stop();
                 Task.Delay(50).ContinueWith(_ =>
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.BeginInvoke(() =>
                     {
                         updateTimer.Start();
                     });

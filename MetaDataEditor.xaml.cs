@@ -168,6 +168,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em InitializeImageMetadataProperties: {ex.Message}");
             }
         }
 
@@ -266,6 +267,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em LoadImageMetadata {ex.Message}");
                 throw;
             }
         }
@@ -288,6 +290,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em LoadPdfMetadata {ex.Message}");
                 throw;
             }
         }
@@ -313,6 +316,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em LoadDocxMetadata {ex.Message}");
                 throw;
             }
         }
@@ -335,6 +339,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em LoadExeMetadata {ex.Message}");
                 throw;
             }
         }
@@ -378,6 +383,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em GetPropertyValue: {ex.Message}");
                 return "Error reading value";
             }
         }
@@ -527,14 +533,17 @@ namespace DarkHub
             catch (UnauthorizedAccessException ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show("Erro de permissão ao salvar os metadados. Execute o programa como administrador.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
+                Debug.WriteLine($"Erro em SaveMetadata_Click (UnauthorizedAccessException) {ex.Message}");
             }
             catch (IOException ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Erro de I/O ao salvar os metadados: {ex.Message}. Verifique se o arquivo não está aberto em outro programa.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
+                Debug.WriteLine($"Erro em SaveMetadata_Click (IOException) {ex.Message}");
             }
             catch (Exception ex)
             {
                 Dispatcher.Invoke(() => MessageBox.Show($"Erro ao salvar os metadados: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
+                Debug.WriteLine($"Erro em SaveMetadata_Click (Exception) {ex.Message}");
             }
         }
 
@@ -591,6 +600,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em SaveImageMetadata {ex.Message}");
                 throw;
             }
         }
@@ -615,6 +625,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em SavePdfMetadata {ex.Message}");
                 throw;
             }
         }
@@ -664,6 +675,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Erro em SaveDocxMetadata: {ex.Message}");
                 throw;
             }
         }
@@ -674,7 +686,7 @@ namespace DarkHub
             {
                 Dispatcher.Invoke(() => MessageBox.Show("Edição de metadados de executáveis não é totalmente suportada nesta versão devido a limitações do GDI+. Apenas leitura disponível.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning));
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
