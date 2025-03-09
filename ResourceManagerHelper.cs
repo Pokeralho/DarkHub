@@ -477,6 +477,29 @@ namespace DarkHub
         public string ErrorRunningBenchmark => DarkHub.Properties.AppResources.ErrorRunningBenchmark;
         public string ByteUnits => DarkHub.Properties.AppResources.ByteUnits;
         public string ByteFormat => DarkHub.Properties.AppResources.ByteFormat;
+        public string EmptyTextError => DarkHub.Properties.AppResources.EmptyTextError;
+        public string Processing => DarkHub.Properties.AppResources.Processing;
+        public string SummarizeText => DarkHub.Properties.AppResources.SummarizeText;
+        public string SummarizePDF => DarkHub.Properties.AppResources.SummarizePDF;
+        public string SelectPDFFile => DarkHub.Properties.AppResources.SelectPDFFile;
+        public string SummarizationError => DarkHub.Properties.AppResources.SummarizationError;
+        public string PDFSummarizationError => DarkHub.Properties.AppResources.PDFSummarizationError;
+        public string NoKeywordsFound => DarkHub.Properties.AppResources.NoKeywordsFound;
+        public string SummXTitle => DarkHub.Properties.AppResources.SummXTitle;
+        public string SettingsTitle => DarkHub.Properties.AppResources.SettingsTitle;
+        public string LanguageLabel => DarkHub.Properties.AppResources.LanguageLabel;
+        public string MaxLengthLabel => DarkHub.Properties.AppResources.MaxLengthLabel;
+        public string KeywordWeightLabel => DarkHub.Properties.AppResources.KeywordWeightLabel;
+        public string TfidfWeightLabel => DarkHub.Properties.AppResources.TfidfWeightLabel;
+        public string TextRankWeightLabel => DarkHub.Properties.AppResources.TextRankWeightLabel;
+        public string KeywordsTitle => DarkHub.Properties.AppResources.KeywordsTitle;
+        public string KeywordsPlaceholder => DarkHub.Properties.AppResources.KeywordsPlaceholder;
+        public string InputTextTitle => DarkHub.Properties.AppResources.InputTextTitle;
+        public string InputTextPlaceholder => DarkHub.Properties.AppResources.InputTextPlaceholder;
+        public string SummarizeButton => DarkHub.Properties.AppResources.SummarizeButton;
+        public string SummarizePdfButton => DarkHub.Properties.AppResources.SummarizePdfButton;
+        public string SummaryTitle => DarkHub.Properties.AppResources.SummaryTitle;
+        public string CopyToClipboardSuccess => DarkHub.Properties.AppResources.CopyToClipboardSuccess;
 
         public void NotifyCultureChanged()
         {

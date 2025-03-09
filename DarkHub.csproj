@@ -16,6 +16,7 @@
 		<None Remove="assets\brasil.png" />
 		<None Remove="assets\clicker.png" />
 		<None Remove="assets\converter.png" />
+		<None Remove="assets\copiar.png" />
 		<None Remove="assets\crunchyroll.png" />
 		<None Remove="assets\DarkHub.ico" />
 		<None Remove="assets\DarkHub.pfx" />
@@ -37,6 +38,7 @@
 		<None Remove="assets\optimizer.png" />
 		<None Remove="assets\python.png" />
 		<None Remove="assets\rename.png" />
+		<None Remove="assets\resumir.png" />
 		<None Remove="assets\rmbackground.png" />
 		<None Remove="assets\run.png" />
 		<None Remove="assets\save.png" />
@@ -53,6 +55,7 @@
 	<ItemGroup>
 		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
 		<PackageReference Include="IronPython" Version="3.4.2" />
+		<PackageReference Include="iText7" Version="9.1.0" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
 		<PackageReference Include="PdfiumViewer" Version="2.13.0" />
@@ -83,6 +86,9 @@
 		<Content Include="assets\converter.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="assets\copiar.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\crunchyroll.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -98,19 +104,7 @@
 		<Content Include="assets\estados-unidos.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="assets\gsdll64.dll">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="assets\gsdll64.lib">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="assets\gswin64.exe">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="assets\gswin64c.exe">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="assets\magick.exe">
+		<Content Include="assets\resumir.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\SpaceSniffer.exe">

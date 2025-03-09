@@ -14,8 +14,10 @@
             <Setter Property="Background" Value="#35373c"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="200"/>
             <Setter Property="Margin" Value="5"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -27,12 +29,20 @@
                                 BorderThickness="{TemplateBinding BorderThickness}" 
                                 CornerRadius="10">
                             <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                            VerticalAlignment="Center"
+                                            TextElement.FontSize="{TemplateBinding FontSize}"
+                                            TextElement.FontWeight="{TemplateBinding FontWeight}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Height" Value="60"/>
+                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="FontSize" Value="14"/>
+                </DataTrigger>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#80848e"/>
                     <Setter Property="BorderBrush" Value="White"/>
@@ -45,60 +55,93 @@
     </Page.Resources>
 
     <Grid Background="{x:Null}">
-        <TextBlock FontFamily="JetBrains Mono" Foreground="White" FontSize="20" FontWeight="Bold" 
-                   HorizontalAlignment="Center" Margin="0,0,0,20"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   FontFamily="JetBrains Mono" 
+                   Foreground="White" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,20,0,20"
                    Text="{Binding OptimizerTitle}"/>
 
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="600" Height="450" Margin="0,0,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      HorizontalScrollBarVisibility="Disabled"
+                      Margin="0,0,0,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Height="449" VerticalAlignment="Center">
-                <Button Content="{Binding SystemInfoButton}" 
-                        Click="SystemInfo" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding ActivateWindowsButton}" 
-                        Click="AtivarWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding RepairWindowsButton}" 
-                        Click="RepairWindows" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding ClearTempFilesButton}" 
-                        Click="ClearTempFilesAndLogs" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding HighPerformanceModeButton}" 
-                        Click="EnableHighPerformanceMode" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding StartupOptimizerButton}" 
-                        Click="ManageStartupPrograms" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="cleanNetworkDataButton" 
-                        Content="{Binding CleanNetworkDataButton}" 
-                        Click="CleanNetworkData" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding RemoveBloatwareButton}" 
-                        Click="RemoveWindowsBloatware" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="optimizeGameRouteButton" 
-                        Content="{Binding OptimizeGameRouteButton}" 
-                        Click="OptimizeGameRoute" Style="{StaticResource ButtonStyle}" Width="200"/>
-            </StackPanel>
+                <StackPanel Grid.Column="0" Margin="10,0,5,0">
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="SystemInfo"
+                            Content="{Binding SystemInfoButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="AtivarWindows"
+                            Content="{Binding ActivateWindowsButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="RepairWindows"
+                            Content="{Binding RepairWindowsButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="ClearTempFilesAndLogs"
+                            Content="{Binding ClearTempFilesButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="EnableHighPerformanceMode"
+                            Content="{Binding HighPerformanceModeButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="ManageStartupPrograms"
+                            Content="{Binding StartupOptimizerButton}"/>
+                    <Button x:Name="cleanNetworkDataButton"
+                            Style="{StaticResource ButtonStyle}"
+                            Click="CleanNetworkData"
+                            Content="{Binding CleanNetworkDataButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="RemoveWindowsBloatware"
+                            Content="{Binding RemoveBloatwareButton}"/>
+                    <Button x:Name="optimizeGameRouteButton"
+                            Style="{StaticResource ButtonStyle}"
+                            Click="OptimizeGameRoute"
+                            Content="{Binding OptimizeGameRouteButton}"/>
+                </StackPanel>
 
-            <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                <Button Content="{Binding AdjustTimerButton}" 
-                        Click="AdjustTimerResolution" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding DisableVisualEffectsButton}" 
-                        Click="DisableVisualEffects" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding ChangePriorityButton}" 
-                        Click="ChangePriority" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding UninstallProgramButton}" 
-                        Click="UninstallProgram" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding CleanRegistryButton}" 
-                        Click="CleanRegistry" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding AntivirusButton}" 
-                        Click="OpenWindowsDefender" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding SpaceSnifferButton}" 
-                        Click="RunSpaceSniffer" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button Content="{Binding OptimizeMemoryButton}" 
-                        Click="OptimizeMemory" Style="{StaticResource ButtonStyle}" Width="200"/>
-                <Button x:Name="dnsBenchmarkButton" 
-                        Content="{Binding DNSBenchmarkButton}" 
-                        Click="DNSBenchmark" Style="{StaticResource ButtonStyle}" Width="200"/>
-            </StackPanel>
-        </Grid>
+                <StackPanel Grid.Column="1" Margin="5,0,10,0">
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="AdjustTimerResolution"
+                            Content="{Binding AdjustTimerButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="DisableVisualEffects"
+                            Content="{Binding DisableVisualEffectsButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="ChangePriority"
+                            Content="{Binding ChangePriorityButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="UninstallProgram"
+                            Content="{Binding UninstallProgramButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="CleanRegistry"
+                            Content="{Binding CleanRegistryButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="OpenWindowsDefender"
+                            Content="{Binding AntivirusButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="RunSpaceSniffer"
+                            Content="{Binding SpaceSnifferButton}"/>
+                    <Button Style="{StaticResource ButtonStyle}"
+                            Click="OptimizeMemory"
+                            Content="{Binding OptimizeMemoryButton}"/>
+                    <Button x:Name="dnsBenchmarkButton"
+                            Style="{StaticResource ButtonStyle}"
+                            Click="DNSBenchmark"
+                            Content="{Binding DNSBenchmarkButton}"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>

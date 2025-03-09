@@ -123,7 +123,7 @@
 
         <ListView x:Name="listViewMetadata" Grid.Row="1" 
                   Style="{StaticResource ListViewStyle}" 
-                  Margin="0,10,0,0">
+                  Margin="0,0,10,40">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="{Binding PropertyColumnHeader}" 

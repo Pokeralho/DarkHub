@@ -41,14 +41,14 @@
         <FontFamily x:Key="JetBrainsMono">JetBrains Mono</FontFamily>
     </Page.Resources>
 
-    <Grid Background="{x:Null}">
+    <Grid Background="{x:Null}" Margin="20">
         <StackPanel VerticalAlignment="top" HorizontalAlignment="Center" Width="400">
             <TextBlock Text="{Binding FileConverterTitle}" 
                        FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" 
                        HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White"/>
 
             <Button Content="{Binding SelectFilesButton}" 
-                    Width="200" Click="SelectFiles_Click" Margin="0,0,0,10"/>
+                    Width="200" Click="SelectFiles_Click" Margin="0,100,0,10"/>
             <TextBlock x:Name="SelectedFilesText" Text="{Binding NoFilesSelected}" 
                        Foreground="White" FontFamily="{StaticResource JetBrainsMono}" 
                        HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap"/>
@@ -70,6 +70,7 @@
                 <ComboBoxItem Content="BMP"/>
                 <ComboBoxItem Content="GIF"/>
                 <ComboBoxItem Content="TIFF"/>
+                <ComboBoxItem Content="PDF"/>
                 <ComboBoxItem Content="MP4"/>
                 <ComboBoxItem Content="AVI"/>
                 <ComboBoxItem Content="MKV"/>

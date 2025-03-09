@@ -99,57 +99,57 @@ namespace DarkHub
                 using var originalImage = new Bitmap(imagePath);
                 int width = originalImage.Width;
                 int height = originalImage.Height;
-                const int minDimension = 1200;
-                const int maxDimension = 4000;
-
-                if (width < minDimension || height < minDimension)
+                const int maxDimension = 2000;
+                double scale = 1.0;
+                if (width > maxDimension || height > maxDimension)
                 {
-                    float scale = Math.Max((float)minDimension / width, (float)minDimension / height);
+                    scale = Math.Min((double)maxDimension / width, (double)maxDimension / height);
                     width = (int)(width * scale);
                     height = (int)(height * scale);
                 }
-                else if (width > maxDimension || height > maxDimension)
+                else if (width < 800 || height < 800)
                 {
-                    float scale = Math.Min((float)maxDimension / width, (float)maxDimension / height);
+                    scale = Math.Max(800.0 / width, 800.0 / height);
                     width = (int)(width * scale);
                     height = (int)(height * scale);
                 }
 
-                width = Math.Max(1, Math.Min(width, maxDimension));
-                height = Math.Max(1, Math.Min(height, maxDimension));
-
-                using var processedImage = new Bitmap(width, height);
+                var processedImage = new Bitmap(width, height, PixelFormat.Format32bppArgb);
                 using (var g = Graphics.FromImage(processedImage))
                 {
                     g.Clear(Color.White);
                     g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
                     g.DrawImage(originalImage, 0, 0, width, height);
                 }
 
-                using var grayscaleImage = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-                using (var g = Graphics.FromImage(grayscaleImage))
+                using (var adjustedImage = new Bitmap(width, height))
                 {
-                    g.DrawImage(processedImage, 0, 0);
+                    using (var g = Graphics.FromImage(adjustedImage))
+                    {
+                        var colorMatrix = new System.Drawing.Imaging.ColorMatrix(
+                            new float[][]
+                            {
+                                new float[] {1.5f, 0, 0, 0, 0},
+                                new float[] {0, 1.5f, 0, 0, 0},
+                                new float[] {0, 0, 1.5f, 0, 0},
+                                new float[] {0, 0, 0, 1, 0},
+                                new float[] {-0.2f, -0.2f, -0.2f, 0, 1}
+                            });
+
+                        var attributes = new System.Drawing.Imaging.ImageAttributes();
+                        attributes.SetColorMatrix(colorMatrix);
+
+                        g.DrawImage(processedImage,
+                            new Rectangle(0, 0, width, height),
+                            0, 0, width, height,
+                            GraphicsUnit.Pixel,
+                            attributes);
+                    }
+                    return new Bitmap(adjustedImage);
                 }
-
-                var imageData = grayscaleImage.LockBits(new Rectangle(0, 0, width, height),
-                    ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-
-                int bytes = Math.Abs(imageData.Stride) * height;
-                byte[] rgbValues = new byte[bytes];
-                System.Runtime.InteropServices.Marshal.Copy(imageData.Scan0, rgbValues, 0, bytes);
-
-                for (int i = 0; i < rgbValues.Length - 2; i += 3)
-                {
-                    byte gray = (byte)((rgbValues[i] + rgbValues[i + 1] + rgbValues[i + 2]) / 3);
-                    byte value = gray < 128 ? (byte)0 : (byte)255;
-                    rgbValues[i] = rgbValues[i + 1] = rgbValues[i + 2] = value;
-                }
-
-                System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, imageData.Scan0, bytes);
-                grayscaleImage.UnlockBits(imageData);
-
-                return (Bitmap)grayscaleImage.Clone();
             }
             catch (Exception ex)
             {
@@ -158,11 +158,36 @@ namespace DarkHub
             }
         }
 
+        private void ProcessImageBlock(byte[] rgbValues)
+        {
+            byte min = 255, max = 0;
+            for (int i = 0; i < rgbValues.Length; i += 3)
+            {
+                byte gray = (byte)((rgbValues[i] * 0.299 + rgbValues[i + 1] * 0.587 + rgbValues[i + 2] * 0.114));
+                min = Math.Min(min, gray);
+                max = Math.Max(max, gray);
+            }
+
+            if (max == min) return;
+
+            byte threshold = (byte)((max + min) / 2);
+            for (int i = 0; i < rgbValues.Length; i += 3)
+            {
+                byte gray = (byte)((rgbValues[i] * 0.299 + rgbValues[i + 1] * 0.587 + rgbValues[i + 2] * 0.114));
+                gray = (byte)(((gray - min) * 255.0) / (max - min));
+                byte value = gray < threshold ? (byte)0 : (byte)255;
+                rgbValues[i] = rgbValues[i + 1] = rgbValues[i + 2] = value;
+            }
+        }
+
         private async void ExtractText_Click(object? sender, RoutedEventArgs? e)
         {
             try
             {
                 Debug.WriteLine("ExtractText_Click iniciado.");
+                btnExtractText.IsEnabled = false;
+                btnSelectImage.IsEnabled = false;
+
                 await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.StartingProcessing);
 
                 if (string.IsNullOrEmpty(selectedImagePath) || !File.Exists(selectedImagePath))
@@ -186,34 +211,55 @@ namespace DarkHub
 
                 await Task.Run(async () =>
                 {
-                    Debug.WriteLine("Processando imagem em background...");
-                    using var processedImage = PreProcessImage(selectedImagePath);
-                    using var stream = new MemoryStream();
-                    processedImage.Save(stream, System.Drawing.Imaging.ImageFormat.Png);   
-                    stream.Position = 0;
-
-                    using var pix = Pix.LoadFromMemory(stream.ToArray());
-                    using var engine = new TesseractEngine(tessDataPath, "por+eng", EngineMode.Default);
-                    ConfigureEngine(engine);
-
-                    await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.ExtractingText);
-                    using Tesseract.Page page = engine.Process(pix);   
-                    string text = page.GetText()?.Trim() ?? "";
-                    float confidence = page.GetMeanConfidence();
-
-                    await Dispatcher.InvokeAsync(() =>
+                    try
                     {
-                        extractedTextBox.Text = string.IsNullOrWhiteSpace(text)
-                            ? ResourceManagerHelper.Instance.NoTextDetected
-                            : string.Format(ResourceManagerHelper.Instance.TextExtracted, confidence.ToString("P"), text);
-                    });
-                    Debug.WriteLine("Extração concluída com sucesso.");
+                        Debug.WriteLine("Processando imagem em background...");
+                        string text;
+                        float confidence;
+
+                        using (var processedImage = PreProcessImage(selectedImagePath))
+                        {
+                            await Dispatcher.InvokeAsync(() => extractedTextBox.Text = ResourceManagerHelper.Instance.ExtractingText);
+
+                            using var engine = new TesseractEngine(tessDataPath, "por+eng", EngineMode.Default);
+                            ConfigureEngine(engine);
+
+                            using var stream = new MemoryStream();
+                            processedImage.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+                            stream.Position = 0;
+
+                            using var pix = Pix.LoadFromMemory(stream.ToArray());
+                            using var page = engine.Process(pix);
+                            text = page.GetText()?.Trim() ?? "";
+                            confidence = page.GetMeanConfidence();
+                        }
+
+                        GC.Collect(2, GCCollectionMode.Forced, true);
+                        await Task.Delay(100);
+
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            extractedTextBox.Text = string.IsNullOrWhiteSpace(text)
+                                ? ResourceManagerHelper.Instance.NoTextDetected
+                                : string.Format(ResourceManagerHelper.Instance.TextExtracted, confidence.ToString("P"), text);
+                        });
+                        Debug.WriteLine("Extração concluída com sucesso.");
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Erro durante o processamento da imagem: {ex.Message}", ex);
+                    }
                 });
             }
             catch (Exception ex)
             {
                 await Dispatcher.InvokeAsync(() => extractedTextBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorExtractingText, ex.Message));
                 Debug.WriteLine($"Erro em ExtractText_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+            finally
+            {
+                btnExtractText.IsEnabled = true;
+                btnSelectImage.IsEnabled = true;
             }
         }
 
@@ -222,15 +268,31 @@ namespace DarkHub
             try
             {
                 Debug.WriteLine("Configurando engine Tesseract...");
-                engine.SetVariable("tessedit_pageseg_mode", "3");
-                engine.SetVariable("tessedit_ocr_engine_mode", "3");
+
+                engine.SetVariable("tessedit_pageseg_mode", "6");
+                engine.SetVariable("tessedit_ocr_engine_mode", "2");
+                engine.SetVariable("lstm_choice_mode", "2");
+                engine.SetVariable("tessedit_char_blacklist", "{}[]()$~");
+                engine.SetVariable("tessedit_enable_dict_correction", "1");
+                engine.SetVariable("tessedit_enable_bigram_correction", "1");
+                engine.SetVariable("classify_bln_numeric_mode", "0");
+                engine.SetVariable("edges_childarea", "0.5");
+                engine.SetVariable("edges_max_children_per_outline", "50");
+                engine.SetVariable("textord_heavy_nr", "0");
+                engine.SetVariable("textord_noise_sizelimit", "0.2");
+                engine.SetVariable("load_system_dawg", "1");
+                engine.SetVariable("load_freq_dawg", "1");
+                engine.SetVariable("language_model_penalty_non_dict_word", "0.2");
+                engine.SetVariable("language_model_penalty_non_freq_dict_word", "0.1");
                 engine.SetVariable("tessedit_char_whitelist",
-                    "0123456789abcdefghijklmnopqrstuvwxyzáàâãéèêíìîóòôõúùûçABCDEFGHIJKLMNOPQRSTUVWXYZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ.,!?()-_:;/\\[]{}@#$%&*+=<>|\"' ");
+                    "0123456789abcdefghijklmnopqrstuvwxyzáàâãéèêíìîóòôõúùûçABCDEFGHIJKLMNOPQRSTUVWXYZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ.,!?-_:;/\\@#$%&*+=<>|\"' ");
+
                 Debug.WriteLine("Engine configurada com sucesso.");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro ao configurar engine: {ex.Message}");
+                throw;
             }
         }
 

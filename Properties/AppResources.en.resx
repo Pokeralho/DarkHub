@@ -1252,7 +1252,7 @@
     <value>General error downloading video: {0}</value>
   </data>
   <data name="ImageTextExtractorTitle" xml:space="preserve">
-    <value>Image Text Extractor</value>
+    <value>Extract Text from Image</value>
   </data>
   <data name="SelectImageButtonText" xml:space="preserve">
     <value>Select Image</value>
@@ -1490,5 +1490,77 @@
   </data>
   <data name="ErrorOpeningSystemMonitor" xml:space="preserve">
     <value>Error opening system monitor: {0}</value>
+  </data>
+  <data name="EmptyTextError" xml:space="preserve">
+    <value>Please enter some text to summarize!</value>
+  </data>
+  <data name="NoKeywordsFound" xml:space="preserve">
+    <value>None of the specified keywords were found in the summary.</value>
+  </data>
+  <data name="PDFSummarizationError" xml:space="preserve">
+    <value>Error summarizing PDF: {0}</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processing...</value>
+  </data>
+  <data name="SelectPDFFile" xml:space="preserve">
+    <value>Select PDF File</value>
+  </data>
+  <data name="SummarizationError" xml:space="preserve">
+    <value>Error summarizing text: {0}</value>
+  </data>
+  <data name="SummarizePDF" xml:space="preserve">
+    <value>Summarize PDF</value>
+  </data>
+  <data name="SummarizeText" xml:space="preserve">
+    <value>Summarize Text</value>
+  </data>
+  <data name="SummXTitle" xml:space="preserve">
+    <value>SummX - Text Summarizer</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="MaxLengthLabel" xml:space="preserve">
+    <value>Maximum Length (characters)</value>
+  </data>
+  <data name="KeywordWeightLabel" xml:space="preserve">
+    <value>Keyword Weight</value>
+  </data>
+  <data name="TfidfWeightLabel" xml:space="preserve">
+    <value>TF-IDF Weight</value>
+  </data>
+  <data name="TextRankWeightLabel" xml:space="preserve">
+    <value>TextRank Weight</value>
+  </data>
+  <data name="KeywordsTitle" xml:space="preserve">
+    <value>Keywords</value>
+  </data>
+  <data name="KeywordsPlaceholder" xml:space="preserve">
+    <value>Enter keywords separated by commas</value>
+  </data>
+  <data name="InputTextTitle" xml:space="preserve">
+    <value>Input Text</value>
+  </data>
+  <data name="InputTextPlaceholder" xml:space="preserve">
+    <value>Type or paste the text you want to summarize</value>
+  </data>
+  <data name="SummarizeButton" xml:space="preserve">
+    <value>Summarize Text</value>
+  </data>
+  <data name="SummarizePdfButton" xml:space="preserve">
+    <value>Summarize PDF</value>
+  </data>
+  <data name="SummaryTitle" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="CopyToClipboardSuccess" xml:space="preserve">
+    <value>Text copied to clipboard!</value>
   </data>
 </root>

@@ -727,6 +727,24 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Texto copiado para a área de transferência!.
+        /// </summary>
+        public static string CopyToClipboardSuccess {
+            get {
+                return ResourceManager.GetString("CopyToClipboardSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Copiar para a área de transferência.
+        /// </summary>
+        public static string CopyToClipboardTooltip {
+            get {
+                return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Frequência: {0:F2} GHz.
         /// </summary>
         public static string CPUClockFormat {
@@ -1119,6 +1137,15 @@ namespace DarkHub.Properties {
         public static string DownloadFailed {
             get {
                 return ResourceManager.GetString("DownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Por favor, insira um texto para resumir!.
+        /// </summary>
+        public static string EmptyTextError {
+            get {
+                return ResourceManager.GetString("EmptyTextError", resourceCulture);
             }
         }
         
@@ -2194,7 +2221,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Extrator de Texto de Imagem.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Extrair Texto de Imagem.
         /// </summary>
         public static string ImageTextExtractorTitle {
             get {
@@ -2271,6 +2298,24 @@ namespace DarkHub.Properties {
         public static string InjectionSuccessStatus {
             get {
                 return ResourceManager.GetString("InjectionSuccessStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Digite ou cole o texto que deseja resumir.
+        /// </summary>
+        public static string InputTextPlaceholder {
+            get {
+                return ResourceManager.GetString("InputTextPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Texto de Entrada.
+        /// </summary>
+        public static string InputTextTitle {
+            get {
+                return ResourceManager.GetString("InputTextTitle", resourceCulture);
             }
         }
         
@@ -2365,6 +2410,42 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Digite as palavras-chave separadas por vírgula.
+        /// </summary>
+        public static string KeywordsPlaceholder {
+            get {
+                return ResourceManager.GetString("KeywordsPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Palavras-chave.
+        /// </summary>
+        public static string KeywordsTitle {
+            get {
+                return ResourceManager.GetString("KeywordsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Peso das Palavras-chave.
+        /// </summary>
+        public static string KeywordWeightLabel {
+            get {
+                return ResourceManager.GetString("KeywordWeightLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Idioma.
+        /// </summary>
+        public static string LanguageLabel {
+            get {
+                return ResourceManager.GetString("LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Latência: {0}ms.
         /// </summary>
         public static string LatencyResult {
@@ -2406,6 +2487,15 @@ namespace DarkHub.Properties {
         public static string ManagingStartupProgramsTitle {
             get {
                 return ResourceManager.GetString("ManagingStartupProgramsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Tamanho Máximo (caracteres).
+        /// </summary>
+        public static string MaxLengthLabel {
+            get {
+                return ResourceManager.GetString("MaxLengthLabel", resourceCulture);
             }
         }
         
@@ -2635,6 +2725,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma das palavras-chave especificadas foi encontrada no resumo..
+        /// </summary>
+        public static string NoKeywordsFound {
+            get {
+                return ResourceManager.GetString("NoKeywordsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum programa de inicialização encontrado..
         /// </summary>
         public static string NoStartupProgramsFound {
@@ -2797,6 +2896,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Erro ao resumir PDF: {0}.
+        /// </summary>
+        public static string PDFSummarizationError {
+            get {
+                return ResourceManager.GetString("PDFSummarizationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Permissão negada ao desativar &apos;{0}&apos;. Execute como administrador..
         /// </summary>
         public static string PermissionDeniedDisablingProgram {
@@ -2874,6 +2982,15 @@ namespace DarkHub.Properties {
         public static string ProcessesOptimized {
             get {
                 return ResourceManager.GetString("ProcessesOptimized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Processando....
+        /// </summary>
+        public static string Processing {
+            get {
+                return ResourceManager.GetString("Processing", resourceCulture);
             }
         }
         
@@ -3607,6 +3724,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Selecionar Arquivo PDF.
+        /// </summary>
+        public static string SelectPDFFile {
+            get {
+                return ResourceManager.GetString("SelectPDFFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Selecionar Programa para Desativar.
         /// </summary>
         public static string SelectProgramToDisableTitle {
@@ -3639,6 +3765,15 @@ namespace DarkHub.Properties {
         public static string SelectValidImage {
             get {
                 return ResourceManager.GetString("SelectValidImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Configurações.
+        /// </summary>
+        public static string SettingsTitle {
+            get {
+                return ResourceManager.GetString("SettingsTitle", resourceCulture);
             }
         }
         
@@ -3877,6 +4012,69 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Erro ao resumir texto: {0}.
+        /// </summary>
+        public static string SummarizationError {
+            get {
+                return ResourceManager.GetString("SummarizationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Resumir Texto.
+        /// </summary>
+        public static string SummarizeButton {
+            get {
+                return ResourceManager.GetString("SummarizeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Resumir PDF.
+        /// </summary>
+        public static string SummarizePDF {
+            get {
+                return ResourceManager.GetString("SummarizePDF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Resumir PDF.
+        /// </summary>
+        public static string SummarizePdfButton {
+            get {
+                return ResourceManager.GetString("SummarizePdfButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Resumir Texto.
+        /// </summary>
+        public static string SummarizeText {
+            get {
+                return ResourceManager.GetString("SummarizeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Resumo.
+        /// </summary>
+        public static string SummaryTitle {
+            get {
+                return ResourceManager.GetString("SummaryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a SummX - Resumidor de Textos.
+        /// </summary>
+        public static string SummXTitle {
+            get {
+                return ResourceManager.GetString("SummXTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Arquitetura: {0}.
         /// </summary>
         public static string SystemArchitectureFormat {
@@ -4017,6 +4215,24 @@ namespace DarkHub.Properties {
         public static string TextExtracted {
             get {
                 return ResourceManager.GetString("TextExtracted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Peso TextRank.
+        /// </summary>
+        public static string TextRankWeightLabel {
+            get {
+                return ResourceManager.GetString("TextRankWeightLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Peso TF-IDF.
+        /// </summary>
+        public static string TfidfWeightLabel {
+            get {
+                return ResourceManager.GetString("TfidfWeightLabel", resourceCulture);
             }
         }
         
