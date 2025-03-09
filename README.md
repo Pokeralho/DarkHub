@@ -14,6 +14,7 @@ automation and media handling tools, DarkHub offers a complete solution for user
 - **YouTube Video Downloader**: Download YouTube videos or playlists in MP4 format with H.264 and AAC support.
 - **Text Editor with Python Interpreter**: Write, edit and execute Python scripts in real time, with integrated debugging support.
 - **Resource Monitor**: Real-time information and metrics on hardware and software. Plus a Benchmark for performance evaluation.
+- **Text Summarizer**:  allows you to summarize your giant texts and PDFs into a size and parameters defined by you.
 
 ## Prerequisites
 - Windows 10 or higher.
