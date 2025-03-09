@@ -18,6 +18,7 @@ namespace DarkHub
             try
             {
                 InitializeComponent();
+                this.Unloaded += YoutubeVideoDownloader_Unloaded;
                 ytdl = new YoutubeDL
                 {
                     YoutubeDLPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "yt-dlp.exe"),
@@ -175,6 +176,17 @@ namespace DarkHub
                         downloadListBox.Items[0] = ResourceManagerHelper.Instance.ProgressError;
                 });
                 Debug.WriteLine($"Erro em Download_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+        private void YoutubeVideoDownloader_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current.MainWindow is MainWindow mainWindow)
+            {
+                if (mainWindow.btnYTDownloader != null)
+                {
+                    mainWindow.btnYTDownloader.Tag = null;
+                }
             }
         }
     }

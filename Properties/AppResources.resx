@@ -1500,4 +1500,79 @@
   <data name="ClickerTitle" xml:space="preserve">
     <value>AutoClicker</value>
   </data>
+  <data name="EmptyTextError" xml:space="preserve">
+    <value>Por favor, insira um texto para resumir!</value>
+  </data>
+  <data name="Processing" xml:space="preserve">
+    <value>Processando...</value>
+  </data>
+  <data name="NoKeywordsFound" xml:space="preserve">
+    <value>Nenhuma das palavras-chave especificadas foi encontrada no resumo.</value>
+  </data>
+  <data name="PDFSummarizationError" xml:space="preserve">
+    <value>Erro ao resumir PDF: {0}</value>
+  </data>
+  <data name="SummarizationError" xml:space="preserve">
+    <value>Erro ao resumir texto: {0}</value>
+  </data>
+  <data name="SummarizePDF" xml:space="preserve">
+    <value>Resumir PDF</value>
+  </data>
+  <data name="SummarizeText" xml:space="preserve">
+    <value>Resumir Texto</value>
+  </data>
+  <data name="SelectPDFFile" xml:space="preserve">
+    <value>Selecionar Arquivo PDF</value>
+  </data>
+  <data name="SummXTitle" xml:space="preserve">
+    <value>SummX - Resumidor de Textos</value>
+  </data>
+  <data name="SettingsTitle" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="MaxLengthLabel" xml:space="preserve">
+    <value>Tamanho Máximo (caracteres)</value>
+  </data>
+  <data name="KeywordWeightLabel" xml:space="preserve">
+    <value>Peso das Palavras-chave</value>
+  </data>
+  <data name="TfidfWeightLabel" xml:space="preserve">
+    <value>Peso TF-IDF</value>
+  </data>
+  <data name="TextRankWeightLabel" xml:space="preserve">
+    <value>Peso TextRank</value>
+  </data>
+  <data name="KeywordsTitle" xml:space="preserve">
+    <value>Palavras-chave</value>
+  </data>
+  <data name="KeywordsPlaceholder" xml:space="preserve">
+    <value>Digite as palavras-chave separadas por vírgula</value>
+  </data>
+  <data name="InputTextTitle" xml:space="preserve">
+    <value>Texto de Entrada</value>
+  </data>
+  <data name="InputTextPlaceholder" xml:space="preserve">
+    <value>Digite ou cole o texto que deseja resumir</value>
+  </data>
+  <data name="SummarizeButton" xml:space="preserve">
+    <value>Resumir Texto</value>
+  </data>
+  <data name="SummarizePdfButton" xml:space="preserve">
+    <value>Resumir PDF</value>
+  </data>
+  <data name="SummaryTitle" xml:space="preserve">
+    <value>Resumo</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copiar para a área de transferência</value>
+  </data>
+  <data name="CopyToClipboardSuccess" xml:space="preserve">
+    <value>Texto copiado para a área de transferência!</value>
+  </data>
+  <data name="ImageTextExtractorTitle" xml:space="preserve">
+    <value>Extrair Texto de Imagem</value>
+  </data>
 </root>

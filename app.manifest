@@ -18,6 +18,10 @@
         -->
 		<requestedExecutionLevel level="requireAdministrator" uiAccess="false" />
       </requestedPrivileges>
+      <applicationRequestMinimum>
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+        <PermissionSet class="System.Security.PermissionSet" version="1" ID="Custom" SameSite="site" />
+      </applicationRequestMinimum>
     </security>
   </trustInfo>
 
@@ -40,7 +44,10 @@
       <!--<supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />-->
 
       <!-- Windows 10 -->
-      <!--<supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />-->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
+
+      <!-- Windows 11 -->
+      <maxversiontested Id="10.0.22621.0"/>
 
     </application>
   </compatibility>
@@ -51,17 +58,16 @@
        também devem ter a configuração 'EnableWindowsFormsHighDpiAutoResizing' definida como 'true' no app.config. 
        
        Esta opção faz com que o aplicativo reconheça caminhos longos. Confira https://docs.microsoft.com/windows/win32/fileio/maximum-file-path-limitation -->
-  <!--
   <application xmlns="urn:schemas-microsoft-com:asm.v3">
     <windowsSettings>
-      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true</dpiAware>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/PM</dpiAware>
+      <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2, PerMonitor</dpiAwareness>
       <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+      <heapType xmlns="http://schemas.microsoft.com/SMI/2020/WindowsSettings">SegmentHeap</heapType>
     </windowsSettings>
   </application>
-  -->
 
   <!-- Habilita temas para caixas de diálogo e controles comuns do Windows (Windows XP e posteriores) -->
-  <!--
   <dependency>
     <dependentAssembly>
       <assemblyIdentity
@@ -74,6 +80,5 @@
         />
     </dependentAssembly>
   </dependency>
-  -->
 
 </assembly>

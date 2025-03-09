@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
@@ -7,12 +8,16 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using System.Windows.Forms;
+using Forms = System.Windows.Forms;
+using WPF = System.Windows;
 
 namespace DarkHub
 {
     public partial class MainWindow : Window
     {
         private Type _currentPageType;
+        private WindowState _previousWindowState;
 
         public MainWindow()
         {
@@ -29,10 +34,13 @@ namespace DarkHub
 
                 NavigateToPageAsync(new Optimizer()).ConfigureAwait(false);
                 _currentPageType = typeof(Optimizer);
+
+                MinWidth = 800;
+                MinHeight = 600;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao inicializar MainWindow: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro Crítico", MessageBoxButton.OK, MessageBoxImage.Error);
+                WPF.MessageBox.Show($"Erro ao inicializar MainWindow: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro Crítico", WPF.MessageBoxButton.OK, WPF.MessageBoxImage.Error);
                 Close();
             }
         }
@@ -50,7 +58,7 @@ namespace DarkHub
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show("Erro ao tentar abrir o link: " + ex.Message);
+                WPF.MessageBox.Show("Erro ao tentar abrir o link: " + ex.Message);
             }
         }
 
@@ -70,7 +78,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao navegar para página: {ex.Message}", "Erro de Navegação", MessageBoxButton.OK, MessageBoxImage.Error);
+                WPF.MessageBox.Show($"Erro ao navegar para página: {ex.Message}", "Erro de Navegação", WPF.MessageBoxButton.OK, WPF.MessageBoxImage.Error);
             }
         }
 
@@ -90,7 +98,7 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao mudar para inglês: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                WPF.MessageBox.Show($"Erro ao mudar para inglês: {ex.Message}", "Erro", WPF.MessageBoxButton.OK, WPF.MessageBoxImage.Error);
             }
         }
 
@@ -110,13 +118,13 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao mudar para português: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                WPF.MessageBox.Show($"Erro ao mudar para português: {ex.Message}", "Erro", WPF.MessageBoxButton.OK, WPF.MessageBoxImage.Error);
             }
         }
 
         private async void SetActiveButton(object sender, RoutedEventArgs e)
         {
-            Button clickedButton = sender as Button;
+            System.Windows.Controls.Button clickedButton = sender as System.Windows.Controls.Button;
             if (clickedButton == null)
             {
                 return;
@@ -130,9 +138,11 @@ namespace DarkHub
                 btnMetaDataEditor.Tag = null;
                 btnTextEditor.Tag = null;
                 btnExtrairTexto.Tag = null;
+                btnYTDownloader.Tag = null;
                 btnDllInjector.Tag = null;
                 btnCrunchyrollAcc.Tag = null;
                 btnSystemMonitor.Tag = null;
+                btnSummX.Tag = null;
 
                 clickedButton.Tag = "Active";
 
@@ -156,10 +166,12 @@ namespace DarkHub
                     await NavigateToPageAsync(new CrunchyrollAcc());
                 else if (clickedButton == btnSystemMonitor)
                     await NavigateToPageAsync(new SystemMonitor());
+                else if (clickedButton == btnSummX)
+                    await NavigateToPageAsync(new SummX());
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao navegar: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro de Navegação", MessageBoxButton.OK, MessageBoxImage.Error);
+                WPF.MessageBox.Show($"Erro ao navegar: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro de Navegação", WPF.MessageBoxButton.OK, WPF.MessageBoxImage.Error);
             }
         }
 
@@ -203,7 +215,56 @@ namespace DarkHub
         {
             string pageName = e.Content.GetType().Name;
 
-            var paginasOcultas = new List<string> { "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
+            btnOptimizer.Tag = null;
+            btnClicker.Tag = null;
+            btnFileConverter.Tag = null;
+            btnMetaDataEditor.Tag = null;
+            btnTextEditor.Tag = null;
+            btnExtrairTexto.Tag = null;
+            btnYTDownloader.Tag = null;
+            btnDllInjector.Tag = null;
+            btnCrunchyrollAcc.Tag = null;
+            btnSystemMonitor.Tag = null;
+            btnSummX.Tag = null;
+
+            switch (pageName)
+            {
+                case "Optimizer":
+                    btnOptimizer.Tag = "Active";
+                    break;
+                case "AutoClicker":
+                    btnClicker.Tag = "Active";
+                    break;
+                case "FileConverter":
+                    btnFileConverter.Tag = "Active";
+                    break;
+                case "MetaDataEditor":
+                    btnMetaDataEditor.Tag = "Active";
+                    break;
+                case "TextEditor":
+                    btnTextEditor.Tag = "Active";
+                    break;
+                case "ImageTextExtractor":
+                    btnExtrairTexto.Tag = "Active";
+                    break;
+                case "YoutubeVideoDownloader":
+                    btnYTDownloader.Tag = "Active";
+                    break;
+                case "SystemMonitor":
+                    btnSystemMonitor.Tag = "Active";
+                    break;
+                case "SummX":
+                    btnSummX.Tag = "Active";
+                    break;
+                case "DllInjector":
+                    btnDllInjector.Tag = "Active";
+                    break;
+                case "CrunchyrollAcc":
+                    btnCrunchyrollAcc.Tag = "Active";
+                    break;
+            }
+
+            var paginasOcultas = new List<string> { "SummX", "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
 
             if (paginasOcultas.Contains(pageName))
             {
@@ -232,6 +293,43 @@ namespace DarkHub
             {
                 bool hasMoreContentBelow = scrollViewer.VerticalOffset + scrollViewer.ViewportHeight < scrollViewer.ExtentHeight;
                 scrollIndicator.Visibility = hasMoreContentBelow ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private void MaximizeWindow(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (WindowState == WindowState.Normal)
+                {
+                    WindowState = WindowState.Maximized;
+                    var screen = Forms.Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                    this.MaxHeight = screen.WorkingArea.Height;
+                    this.MaxWidth = screen.WorkingArea.Width;
+                }
+                else
+                {
+                    WindowState = WindowState.Normal;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao maximizar/restaurar janela: {ex.Message}");
+            }
+        }
+
+        private void RestoreWindow(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (WindowState == WindowState.Maximized)
+                {
+                    WindowState = _previousWindowState;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao restaurar janela: {ex.Message}");
             }
         }
     }

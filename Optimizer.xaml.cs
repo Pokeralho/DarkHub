@@ -2127,22 +2127,21 @@ namespace DarkHub
                 };
 
                 var results = new List<DnsResult>();
-
-                foreach (var dns in dnsList)
+                var tasks = dnsList.Select(async dns =>
                 {
                     AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TestingDNS, dns.Name));
                     double latency = await TestDNSLatency(dns.Primary);
-                    results.Add(new DnsResult
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.LatencyResult, latency.ToString("F2")));
+                    return new DnsResult
                     {
                         Name = dns.Name,
                         Primary = dns.Primary,
                         Secondary = dns.Secondary,
                         Latency = latency
-                    });
-                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.LatencyResult, latency.ToString("F2")));
-                }
+                    };
+                });
 
-                results = results.OrderBy(r => r.Latency).ToList();
+                results = (await Task.WhenAll(tasks)).OrderBy(r => r.Latency).ToList();
 
                 var resultsWindow = new Window
                 {
@@ -2286,26 +2285,38 @@ namespace DarkHub
             }
         }
 
-private async Task<double> TestDNSLatency(string dnsServer)
-{
-    try
-    {
-        using var client = new UdpClient();
-        var endpoint = new IPEndPoint(IPAddress.Parse(dnsServer), 53);
-        var query = new byte[] { 0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x77, 0x77, 0x77, 0x06, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x03, 0x63, 0x6f, 0x6d, 0x00, 0x00, 0x01, 0x00, 0x01 };
-        
-        var sw = Stopwatch.StartNew();
-        await client.SendAsync(query, query.Length, endpoint);
-        var response = await client.ReceiveAsync();
-        sw.Stop();
+        private async Task<double> TestDNSLatency(string dnsServer)
+        {
+            try
+            {
+                using var client = new UdpClient();
+                var endpoint = new IPEndPoint(IPAddress.Parse(dnsServer), 53);
+                var query = new byte[] { 0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x77, 0x77, 0x77, 0x06, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x03, 0x63, 0x6f, 0x6d, 0x00, 0x00, 0x01, 0x00, 0x01 };
 
-        return sw.ElapsedMilliseconds;
-    }
-    catch
-    {
-        return double.MaxValue;
-    }
-}
+                var sw = Stopwatch.StartNew();
+                await client.SendAsync(query, query.Length, endpoint);
+
+                var receiveTask = client.ReceiveAsync();
+                var timeoutTask = Task.Delay(5000);
+                var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
+
+                if (completedTask == timeoutTask)
+                {
+                    sw.Stop();
+                    return double.MaxValue;
+                }
+
+                await receiveTask;
+                sw.Stop();
+
+                return sw.ElapsedMilliseconds;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao testar DNS {dnsServer}: {ex.Message}");
+                return double.MaxValue;
+            }
+        }
 
         [DllImport("iphlpapi.dll", SetLastError = true)]
         private static extern int GetAdaptersInfo(IntPtr pAdapterInfo, ref int pOutBufLen);
@@ -2618,19 +2629,44 @@ private async Task<double> TestDNSLatency(string dnsServer)
                 var results = new List<DnsResult>();
                 AppendProgress(progressTextBox, ResourceManagerHelper.Instance.StartingGameDNSOptimization);
 
-                foreach (var dns in dnsList)
+                var semaphore = new SemaphoreSlim(5);
+                var tasks = dnsList.Select(async dns =>
                 {
-                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TestingDNS, dns.Name));
-                    double latency = await TestDNSLatency(dns.Primary);
-                    results.Add(new DnsResult
+                    await semaphore.WaitAsync();
+                    try
                     {
-                        Name = dns.Name,
-                        Primary = dns.Primary,
-                        Secondary = dns.Secondary,
-                        Latency = latency
-                    });
-                }
+                        AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.TestingDNS, dns.Name));
+                        double latency = await TestDNSLatency(dns.Primary);
+                        if (latency != double.MaxValue)
+                        {
+                            lock (results)
+                            {
+                                results.Add(new DnsResult
+                                {
+                                    Name = dns.Name,
+                                    Primary = dns.Primary,
+                                    Secondary = dns.Secondary,
+                                    Latency = latency
+                                });
+                            }
+                            AppendProgress(progressTextBox, $"Concluído {dns.Name}: {latency:F2} ms");
+                        }
+                        else
+                        {
+                            AppendProgress(progressTextBox, $"{dns.Name} falhou ou atingiu timeout");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendProgress(progressTextBox, $"Erro ao testar {dns.Name}: {ex.Message}");
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
 
+                await Task.WhenAll(tasks);
                 progressWindow.Close();
 
                 var resultsWindow = new Window

@@ -430,7 +430,7 @@ namespace DarkHub
                 }
 
                 string pythonCode = editor.Text;
-                await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode);
+                await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode + Environment.NewLine + Environment.NewLine);
 
                 string tempFilePath = Path.Combine(Path.GetTempPath(), "temp_script.py");
                 await File.WriteAllTextAsync(tempFilePath, pythonCode);
@@ -449,26 +449,25 @@ namespace DarkHub
                 process.Start();
                 string output = await process.StandardOutput.ReadToEndAsync();
                 string error = await process.StandardError.ReadToEndAsync();
-                await Task.Run(() => process.WaitForExit());
+                await process.WaitForExitAsync();
 
-                await Dispatcher.InvokeAsync(() =>
+                if (!string.IsNullOrEmpty(error))
                 {
-                    if (process.ExitCode == 0)
-                    {
-                        outputBox.Text += output;
-                    }
-                    else
-                    {
-                        outputBox.Text += string.Format(ResourceManagerHelper.Instance.PythonExecutionError, error);
-                        if (error.Contains("is not recognized") || string.IsNullOrEmpty(error))
-                        {
-                            outputBox.Text += "\n" + ResourceManagerHelper.Instance.PythonNotInstalled;
-                        }
-                    }
-                });
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode + Environment.NewLine + Environment.NewLine + error);
+                }
+                else
+                {
+                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode + Environment.NewLine + Environment.NewLine + output);
+                }
 
-                await Task.Run(() => File.Delete(tempFilePath));
-                Debug.WriteLine($"Código Python executado: {tempFilePath}");
+                try
+                {
+                    File.Delete(tempFilePath);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Erro ao deletar arquivo temporário: {ex.Message}");
+                }
             }
             catch (Exception ex)
             {
