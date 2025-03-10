@@ -19,3 +19,4 @@ InjectorViewModel.cs
 
 assets/yt-dlp.exe
 assets/ffmpeg.exe
+/SystemMonitor.xaml.cs
