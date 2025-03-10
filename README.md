@@ -15,6 +15,7 @@ automation and media handling tools, DarkHub offers a complete solution for user
 - **Text Editor with Python Interpreter**: Write, edit and execute Python scripts in real time, with integrated debugging support.
 - **Resource Monitor**: Real-time information and metrics on hardware and software. Plus a Benchmark for performance evaluation.
 - **Text Summarizer**:  allows you to summarize your giant texts and PDFs into a size and parameters defined by you.
+- **Password Manager**: This password manager provides a secure and user-friendly way to store, manage, and retrieve passwords.
 
 ## Prerequisites
 - Windows 10 or higher.
