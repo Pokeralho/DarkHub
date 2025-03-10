@@ -1,17 +1,12 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+﻿using iTextSharp.text.pdf;
+using Microsoft.Win32;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Packaging;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using iTextSharp.text.pdf;
 
 namespace DarkHub
 {
@@ -215,15 +210,19 @@ namespace DarkHub
                     case ".bmp":
                         await Task.Run(LoadImageMetadata);
                         break;
+
                     case ".pdf":
                         await Task.Run(LoadPdfMetadata);
                         break;
+
                     case ".docx":
                         await Task.Run(LoadDocxMetadata);
                         break;
+
                     case ".exe":
                         await Task.Run(LoadExeMetadata);
                         break;
+
                     default:
                         Dispatcher.Invoke(() => MessageBox.Show("Formato de arquivo não suportado.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
                         return;
@@ -350,33 +349,40 @@ namespace DarkHub
             {
                 switch (propItem.Type)
                 {
-                    case 1:  
+                    case 1:
                         return propItem.Value[0].ToString();
-                    case 2:  
+
+                    case 2:
                         return Encoding.ASCII.GetString(propItem.Value).TrimEnd('\0');
-                    case 3:  
+
+                    case 3:
                         ushort shortValue = BitConverter.ToUInt16(propItem.Value, 0);
                         return propItem.Id == 0x0112 ? GetOrientationDescription(shortValue) :
                                propItem.Id == 0x8822 ? GetExposureProgramDescription(shortValue) :
                                propItem.Id == 0x9207 ? GetMeteringModeDescription(shortValue) :
                                propItem.Id == 0x9208 ? GetLightSourceDescription(shortValue) :
                                propItem.Id == 0x9209 ? GetFlashDescription(shortValue) : shortValue.ToString();
-                    case 4:  
+
+                    case 4:
                         return BitConverter.ToUInt32(propItem.Value, 0).ToString();
-                    case 5:  
+
+                    case 5:
                         uint num = BitConverter.ToUInt32(propItem.Value, 0);
                         uint den = BitConverter.ToUInt32(propItem.Value, 4);
                         return den == 0 ? "Invalid Rational" : $"{num}/{den} ({(double)num / den})";
-                    case 7:  
-                        if (propItem.Id == 0xA000)   
+
+                    case 7:
+                        if (propItem.Id == 0xA000)
                             return Encoding.ASCII.GetString(propItem.Value).TrimEnd('\0');
-                        else if (propItem.Id == 0x927C)   
+                        else if (propItem.Id == 0x927C)
                             return BitConverter.ToString(propItem.Value);
                         return BitConverter.ToString(propItem.Value);
-                    case 10:  
+
+                    case 10:
                         int sNum = BitConverter.ToInt32(propItem.Value, 0);
                         int sDen = BitConverter.ToInt32(propItem.Value, 4);
                         return sDen == 0 ? "Invalid SRational" : $"{sNum}/{sDen} ({(double)sNum / sDen})";
+
                     default:
                         return $"Type {propItem.Type} Not Supported";
                 }
@@ -515,15 +521,19 @@ namespace DarkHub
                     case ".bmp":
                         await Task.Run(SaveImageMetadata);
                         break;
+
                     case ".pdf":
                         await Task.Run(SavePdfMetadata);
                         break;
+
                     case ".docx":
                         await Task.Run(SaveDocxMetadata);
                         break;
+
                     case ".exe":
                         await Task.Run(SaveExeMetadata);
                         break;
+
                     default:
                         Dispatcher.Invoke(() => MessageBox.Show("Formato de arquivo não suportado para salvamento.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
                         return;
@@ -561,19 +571,22 @@ namespace DarkHub
 
                     switch (propItem.Type)
                     {
-                        case 2:  
+                        case 2:
                             byte[] asciiBytes = Encoding.ASCII.GetBytes(item.Value + '\0');
                             propItem.Value = asciiBytes;
                             break;
-                        case 3:  
+
+                        case 3:
                             if (ushort.TryParse(item.Value, out ushort shortValue))
                                 propItem.Value = BitConverter.GetBytes(shortValue);
                             break;
-                        case 4:  
+
+                        case 4:
                             if (uint.TryParse(item.Value, out uint longValue))
                                 propItem.Value = BitConverter.GetBytes(longValue);
                             break;
-                        case 5:  
+
+                        case 5:
                             string[] rationalParts = item.Value.Split('/');
                             if (rationalParts.Length == 2 &&
                                 uint.TryParse(rationalParts[0], out uint num) &&
@@ -585,7 +598,8 @@ namespace DarkHub
                                 propItem.Value = rationalBytes;
                             }
                             break;
-                        case 7:      
+
+                        case 7:
                             continue;
                         default:
                             continue;
@@ -644,28 +658,36 @@ namespace DarkHub
                         case "Title":
                             props.Title = item.Value;
                             break;
+
                         case "Subject":
                             props.Subject = item.Value;
                             break;
+
                         case "Creator":
                             props.Creator = item.Value;
                             break;
+
                         case "Keywords":
                             props.Keywords = item.Value;
                             break;
+
                         case "Description":
                             props.Description = item.Value;
                             break;
+
                         case "LastModifiedBy":
                             props.LastModifiedBy = item.Value;
                             break;
+
                         case "Revision":
                             props.Revision = item.Value;
                             break;
+
                         case "Created":
                             if (DateTime.TryParse(item.Value, out DateTime created))
                                 props.Created = created;
                             break;
+
                         case "Modified":
                             if (DateTime.TryParse(item.Value, out DateTime modified))
                                 props.Modified = modified;

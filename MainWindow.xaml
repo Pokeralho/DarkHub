@@ -10,20 +10,20 @@
 
     <Window.Resources>
         <Style x:Key="ActiveIndicatorStyle" TargetType="Border">
-            <Setter Property="Width" Value="3"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Background" Value="#5865f2"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Width" Value="3" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Background" Value="#5865f2" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Opacity" Value="0" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Value="Active">
                     <DataTrigger.EnterActions>
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                               From="0" To="1" Duration="0:0:0.2"/>
+                                               From="0" To="1" Duration="0:0:0.2" />
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.EnterActions>
@@ -31,7 +31,7 @@
                         <BeginStoryboard>
                             <Storyboard>
                                 <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                               From="1" To="0" Duration="0:0:0.2"/>
+                                               From="1" To="0" Duration="0:0:0.2" />
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.ExitActions>
@@ -40,28 +40,26 @@
         </Style>
 
         <Style x:Key="ActiveButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width" Value="60"/>
-            <Setter Property="Height" Value="60"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="60" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <!-- Fundo com animação -->
                             <Border x:Name="ButtonBackground"
                                     Background="Transparent"
                                     CornerRadius="12"
                                     Margin="5">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="0" BlurRadius="15" Color="#5865f2" Opacity="0"/>
+                                    <DropShadowEffect ShadowDepth="0" BlurRadius="15" Color="#5865f2" Opacity="0" />
                                 </Border.Effect>
                             </Border>
-                            
-                            <!-- Indicador lateral -->
-                            <Border x:Name="Indicator" 
-                                    Width="3" Height="25" 
+
+                            <Border x:Name="Indicator"
+                                    Width="3" Height="25"
                                     Background="#5865f2"
                                     CornerRadius="2"
                                     HorizontalAlignment="Left"
@@ -69,31 +67,29 @@
                                     Margin="-3,0,0,0"
                                     Opacity="0">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="0" BlurRadius="8" Color="#5865f2" Opacity="0.5"/>
+                                    <DropShadowEffect ShadowDepth="0" BlurRadius="8" Color="#5865f2" Opacity="0.5" />
                                 </Border.Effect>
                             </Border>
-                            
-                            <!-- Conteúdo do botão -->
-                            <ContentPresenter x:Name="Content" 
-                                            HorizontalAlignment="Center" 
+
+                            <ContentPresenter x:Name="Content"
+                                            HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Margin="8"/>
+                                            Margin="8" />
                         </Grid>
                         <ControlTemplate.Triggers>
-                            <!-- Animação de Seleção -->
                             <Trigger Property="Tag" Value="Active">
                                 <Trigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="ButtonBackground"
                                                           Storyboard.TargetProperty="Background.Color"
-                                                          To="#2b2d31" Duration="0:0:01"/>
+                                                          To="#2b2d31" Duration="0:0:01" />
                                             <DoubleAnimation Storyboard.TargetName="Indicator"
                                                            Storyboard.TargetProperty="Opacity"
-                                                           To="1" Duration="0:0:01"/>
+                                                           To="1" Duration="0:0:01" />
                                             <DoubleAnimation Storyboard.TargetName="ButtonBackground"
                                                            Storyboard.TargetProperty="Effect.Opacity"
-                                                           To="0.3" Duration="0:0:01 "/>
+                                                           To="0.3" Duration="0:0:01 " />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
@@ -102,13 +98,13 @@
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="ButtonBackground"
                                                           Storyboard.TargetProperty="Background.Color"
-                                                          To="Transparent" Duration="0:0:0.2"/>
+                                                          To="Transparent" Duration="0:0:0.2" />
                                             <DoubleAnimation Storyboard.TargetName="Indicator"
                                                            Storyboard.TargetProperty="Opacity"
-                                                           To="0" Duration="0:0:0.2"/>
+                                                           To="0" Duration="0:0:0.2" />
                                             <DoubleAnimation Storyboard.TargetName="ButtonBackground"
                                                            Storyboard.TargetProperty="Effect.Opacity"
-                                                           To="0" Duration="0:0:0.2"/>
+                                                           To="0" Duration="0:0:0.2" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
@@ -120,105 +116,104 @@
         </Style>
     </Window.Resources>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80"/>
-                    <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
 
-        <!-- Menu Lateral Esquerdo -->
         <Border Grid.Column="0" Background="#1e1f22">
             <Grid>
-                <ScrollViewer x:Name="MenuScrollViewer" 
-                            VerticalScrollBarVisibility="Hidden" 
-                            PanningMode="VerticalOnly" 
-                            PanningDeceleration="0.001" 
+                <ScrollViewer x:Name="MenuScrollViewer"
+                            VerticalScrollBarVisibility="Hidden"
+                            PanningMode="VerticalOnly"
+                            PanningDeceleration="0.001"
                             PanningRatio="1.5"
                             CanContentScroll="False"
                             ScrollChanged="MenuScrollViewer_ScrollChanged">
-                    <StackPanel Orientation="Vertical" Margin="0,15,0,0">
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,0">
                         <Button x:Name="btnOptimizer" Click="SetActiveButton" Tag="Active" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/optimizer.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/optimizer.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnClicker" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/clicker.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/clicker.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnFileConverter" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/converter.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/converter.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnMetaDataEditor" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/exif.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/exif.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnTextEditor" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/python.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/python.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnExtrairTexto" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/extrairtxt.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/extrairtxt.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnYTDownloader" x:FieldModifier="public" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/youtubedw.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/youtubedw.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnSystemMonitor" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/bench-info.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/bench-info.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                         <Button x:Name="btnSummX" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
-                            <Image Source="/assets/resumir.png" Stretch="Uniform" Width="32" Height="32"/>
+                            <Image Source="/assets/resumir.png" Stretch="Uniform" Width="32" Height="32" />
+                        </Button>
+                        <Button x:Name="btnPassMng" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
+                            <Image Source="/assets/pass.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
                     </StackPanel>
                 </ScrollViewer>
 
-                <Border x:Name="ScrollIndicator" 
-                        Width="15" Height="15" 
-                        Background="#464c55" 
-                        CornerRadius="0" 
-                        VerticalAlignment="Bottom" 
-                        HorizontalAlignment="Right" 
-                        Margin="0,0,10,10" 
+                <Border x:Name="ScrollIndicator"
+                        Width="15" Height="15"
+                        Background="#464c55"
+                        CornerRadius="0"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Margin="0,0,10,10"
                         Visibility="Collapsed">
-                    <Path Data="M 0,0 L 10,10 L 20,0 Z" 
-                          Fill="White" 
-                          Stretch="Uniform" 
-                          VerticalAlignment="Center" 
-                          HorizontalAlignment="Center"/>
+                    <Path Data="M 0,0 L 10,10 L 20,0 Z"
+                          Fill="White"
+                          Stretch="Uniform"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center" />
                 </Border>
             </Grid>
         </Border>
 
-        <!-- Conteúdo Principal -->
         <Border Grid.Column="1" Grid.ColumnSpan="2" Background="#2b2d31">
-            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Navigated="MainFrame_Navigated"/>
+            <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Navigated="MainFrame_Navigated" />
         </Border>
 
-        <!-- Botões de Controle (Minimizar, Maximizar, Fechar) -->
         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0">
             <Button Click="MinimizeWindow" Style="{StaticResource MenuButtonStyle}">
-                <TextBlock Text="—" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18"/>
+                <TextBlock Text="—" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18" />
             </Button>
             <Button Click="MaximizeWindow" Style="{StaticResource MenuButtonStyle}">
-                <TextBlock Text="⬜" FontWeight="Bold" Foreground="#f7f7fa" FontSize="14"/>
+                <TextBlock Text="⬜" FontWeight="Bold" Foreground="#f7f7fa" FontSize="14" />
             </Button>
             <Button Click="CloseWindow" Style="{StaticResource MenuButtonStyle}">
-                <TextBlock Text="X" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18"/>
+                <TextBlock Text="X" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18" />
             </Button>
         </StackPanel>
 
-        <!-- Botões Laterais Direitos -->
         <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,50,12,0">
             <Button x:Name="btnDllInjector" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="Assets/DllInjection.png" Stretch="Uniform"/>
+                <Image Source="Assets/DllInjection.png" Stretch="Uniform" />
             </Button>
             <Button x:Name="btnCrunchyrollAcc" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="Assets/Crunchyroll.png" Stretch="Uniform"/>
+                <Image Source="Assets/Crunchyroll.png" Stretch="Uniform" />
             </Button>
             <Button x:Name="btnEua" Click="ChangeToEnglish" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="/assets/estados-unidos.png" Stretch="Uniform"/>
+                <Image Source="/assets/estados-unidos.png" Stretch="Uniform" />
             </Button>
             <Button x:Name="btnBr" Click="ChangeToPortuguese" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="/assets/brasil.png" Stretch="Uniform"/>
+                <Image Source="/assets/brasil.png" Stretch="Uniform" />
             </Button>
             <Button x:Name="btnDiscord" Click="DiscordServer" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="/assets/discord.png" Stretch="Uniform"/>
+                <Image Source="/assets/discord.png" Stretch="Uniform" />
             </Button>
         </StackPanel>
     </Grid>

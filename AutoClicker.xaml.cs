@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -109,7 +107,7 @@ namespace DarkHub
                     ValidateAndUpdateInterval();
                     if (_clickIntervalMs <= 0)
                     {
-                        ShowWarning("IntervalMustBeGreaterThanZero");    
+                        ShowWarning("IntervalMustBeGreaterThanZero");
                         return;
                     }
 
@@ -245,7 +243,7 @@ namespace DarkHub
                     int newInterval = ValidateAndUpdateInterval();
                     if (newInterval <= 0)
                     {
-                        ShowWarning("IntervalMustBeGreaterThanZero");    
+                        ShowWarning("IntervalMustBeGreaterThanZero");
                         return;
                     }
 
@@ -274,7 +272,7 @@ namespace DarkHub
                 if (int.TryParse(txtInterval.Text, out int value) && value > 0)
                     return value;
 
-                ShowWarning("IntervalMustBeGreaterThanZero");    
+                ShowWarning("IntervalMustBeGreaterThanZero");
                 return _clickIntervalMs;
             }
             catch (Exception ex)

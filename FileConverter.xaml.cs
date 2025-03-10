@@ -1,18 +1,11 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
+using PdfSharp.Drawing;
 using System.Diagnostics;
-using System.Drawing;     
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;   
-using PdfiumViewer;     
-using PdfSharp.Drawing;     
-using PdfSharp.Pdf;     
+using System.Windows.Media;
 
 namespace DarkHub
 {
@@ -123,15 +116,15 @@ namespace DarkHub
                             if (IsImageFormat(outputFormat))
                             {
                                 if (Path.GetExtension(inputFile).ToLower() == ".pdf")
-                                    ConvertPdfToImages(inputFile, outputDir, outputFormat);    
+                                    ConvertPdfToImages(inputFile, outputDir, outputFormat);
                                 else
-                                    ConvertImage(inputFile, outputFile);    
+                                    ConvertImage(inputFile, outputFile);
                             }
                             else if (IsDocumentFormat(outputFormat) && outputFormat == "pdf")
                             {
-                                ConvertImagesToPdf(inputFiles, outputFile);      
-                                completed = inputFiles.Count;      
-                                return;         
+                                ConvertImagesToPdf(inputFiles, outputFile);
+                                completed = inputFiles.Count;
+                                return;
                             }
                             else if (IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat))
                             {
@@ -304,7 +297,7 @@ namespace DarkHub
                 {
                     for (int i = 0; i < document.PageCount; i++)
                     {
-                        using (var image = document.Render(i, 300, 300, true))     
+                        using (var image = document.Render(i, 300, 300, true))
                         {
                             string outputFile = $"{outputBase}-{i}.{imageFormat}";
                             image.Save(outputFile, GetImageFormat(imageFormat));
@@ -329,7 +322,7 @@ namespace DarkHub
                 if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
                     Directory.CreateDirectory(outputDir);
 
-                using (var pdf = new PdfSharp.Pdf.PdfDocument())   
+                using (var pdf = new PdfSharp.Pdf.PdfDocument())
                 {
                     foreach (string imageFile in inputFiles)
                     {
@@ -337,7 +330,7 @@ namespace DarkHub
                             throw new FileNotFoundException($"Imagem não encontrada: {imageFile}");
 
                         XImage xImage = XImage.FromFile(imageFile);
-                        PdfSharp.Pdf.PdfPage page = pdf.AddPage();   
+                        PdfSharp.Pdf.PdfPage page = pdf.AddPage();
 
                         using (XGraphics gfx = XGraphics.FromPdfPage(page))
                         {
@@ -383,8 +376,8 @@ namespace DarkHub
                     Height = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(System.Windows.Media.Colors.White),  
-                    BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(115, 69, 161)),  
+                    Background = new SolidColorBrush(System.Windows.Media.Colors.White),
+                    BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(115, 69, 161)),
                     BorderThickness = new Thickness(2)
                 };
 
@@ -395,10 +388,10 @@ namespace DarkHub
                 var title = new TextBlock
                 {
                     Text = ResourceManagerHelper.Instance.ConvertingFilesTitle,
-                    FontFamily = new System.Windows.Media.FontFamily("JetBrains Mono"),  
+                    FontFamily = new System.Windows.Media.FontFamily("JetBrains Mono"),
                     FontSize = 20,
                     FontWeight = FontWeights.Bold,
-                    Foreground = System.Windows.Media.Brushes.Black,  
+                    Foreground = System.Windows.Media.Brushes.Black,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -410,11 +403,11 @@ namespace DarkHub
                     Name = "ProgressTextBox",
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(245, 245, 245)),  
-                    Foreground = System.Windows.Media.Brushes.Black,  
+                    Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(245, 245, 245)),
+                    Foreground = System.Windows.Media.Brushes.Black,
                     Margin = new Thickness(10),
                     Padding = new Thickness(5),
-                    FontFamily = new System.Windows.Media.FontFamily("JetBrains Mono"),  
+                    FontFamily = new System.Windows.Media.FontFamily("JetBrains Mono"),
                     FontSize = 12,
                     Text = string.Format(ResourceManagerHelper.Instance.ProgressInitialText, totalFiles)
                 };

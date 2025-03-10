@@ -10,6 +10,8 @@ DllInjectionService.cs
 DllInjector.xaml
 DllInjector.xaml.cs
 InjectorViewModel.cs
+PasswordManager.xaml
+PasswordManager.xaml.cs
 
 /DarkHubRmk/bin/
 /DarkHubRmk/obj/

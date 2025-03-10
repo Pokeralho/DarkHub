@@ -1,1566 +1,1817 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
+	Microsoft ResX Schema 
+	
+	Version 2.0
+	
+	The primary goals of this format is to allow a simple XML format 
+	that is mostly human readable. The generation and parsing of the 
+	various data types are done through the TypeConverter classes 
+	associated with the data types.
+	
+	Example:
+	
+	... ado.net/XML headers & schema ...
+	<resheader name="resmimetype">text/microsoft-resx</resheader>
+	<resheader name="version">2.0</resheader>
+	<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+	<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+	<data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+	<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+	<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+		<value>[base64 mime encoded serialized .NET Framework object]</value>
+	</data>
+	<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+		<value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+		<comment>This is a comment</comment>
+	</data>
+				
+	There are any number of "resheader" rows that contain simple 
+	name/value pairs.
+	
+	Each data row contains a name, and value. The row also contains a 
+	type or mimetype. Type corresponds to a .NET class that support 
+	text/value conversion through the TypeConverter architecture. 
+	Classes that don't support this are serialized and stored with the 
+	mimetype set.
+	
+	The mimetype is used for serialized objects, and tells the 
+	ResXResourceReader how to depersist the object. This is currently not 
+	extensible. For a given mimetype the value must be set accordingly:
+	
+	Note - application/x-microsoft.net.object.binary.base64 is the format 
+	that the ResXResourceWriter will generate, however the reader can 
+	read any of the formats listed below.
+	
+	mimetype: application/x-microsoft.net.object.binary.base64
+	value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+			: and then encoded with base64 encoding.
+	
+	mimetype: application/x-microsoft.net.object.soap.base64
+	value   : The object must be serialized with 
+			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+			: and then encoded with base64 encoding.
 
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
+	mimetype: application/x-microsoft.net.object.bytearray.base64
+	value   : The object must be serialized into a byte array 
+			: using a System.ComponentModel.TypeConverter
+			: and then encoded with base64 encoding.
+	-->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+	<xsd:element name="root" msdata:IsDataSet="true">
+	  <xsd:complexType>
+		<xsd:choice maxOccurs="unbounded">
+		  <xsd:element name="metadata">
+			<xsd:complexType>
+			  <xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" />
+			  </xsd:sequence>
+			  <xsd:attribute name="name" use="required" type="xsd:string" />
+			  <xsd:attribute name="type" type="xsd:string" />
+			  <xsd:attribute name="mimetype" type="xsd:string" />
+			  <xsd:attribute ref="xml:space" />
+			</xsd:complexType>
+		  </xsd:element>
+		  <xsd:element name="assembly">
+			<xsd:complexType>
+			  <xsd:attribute name="alias" type="xsd:string" />
+			  <xsd:attribute name="name" type="xsd:string" />
+			</xsd:complexType>
+		  </xsd:element>
+		  <xsd:element name="data">
+			<xsd:complexType>
+			  <xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+				<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+			  </xsd:sequence>
+			  <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+			  <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+			  <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+			  <xsd:attribute ref="xml:space" />
+			</xsd:complexType>
+		  </xsd:element>
+		  <xsd:element name="resheader">
+			<xsd:complexType>
+			  <xsd:sequence>
+				<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+			  </xsd:sequence>
+			  <xsd:attribute name="name" type="xsd:string" use="required" />
+			</xsd:complexType>
+		  </xsd:element>
+		</xsd:choice>
+	  </xsd:complexType>
+	</xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
+	<value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+	<value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateWindowsButton" xml:space="preserve">
-    <value>Activate Windows</value>
+	<value>Activate Windows/Office</value>
   </data>
   <data name="AdjustTimerButton" xml:space="preserve">
-    <value>Adjust Timer Resolution</value>
+	<value>Adjust Timer Resolution</value>
   </data>
   <data name="AntivirusButton" xml:space="preserve">
-    <value>Antivirus</value>
+	<value>Antivirus</value>
   </data>
   <data name="AutoClickerStarted" xml:space="preserve">
-    <value>AutoClicker started.</value>
+	<value>AutoClicker started.</value>
   </data>
   <data name="AutoClickerStopped" xml:space="preserve">
-    <value>AutoClicker stopped.</value>
+	<value>AutoClicker stopped.</value>
   </data>
   <data name="ChangePriorityButton" xml:space="preserve">
-    <value>Change Application Priority</value>
+	<value>Change Application Priority</value>
   </data>
   <data name="ChooseOutputDirButton" xml:space="preserve">
-    <value>Choose Output Directory</value>
+	<value>Choose Output Directory</value>
   </data>
   <data name="CleanNetworkDataButton" xml:space="preserve">
-    <value>Clean Network Data</value>
+	<value>Clean Network Data</value>
   </data>
   <data name="CleanRegistryButton" xml:space="preserve">
-    <value>Registry Cleanup</value>
+	<value>Registry Cleanup</value>
   </data>
   <data name="ClearTempFilesButton" xml:space="preserve">
-    <value>Clear Temporary Files</value>
+	<value>Clear Temporary Files</value>
   </data>
   <data name="ClickerStatusOff" xml:space="preserve">
-    <value>Status: Off</value>
+	<value>Status: Off</value>
   </data>
   <data name="ClickerStatusOn" xml:space="preserve">
-    <value>Status: On</value>
+	<value>Status: On</value>
   </data>
   <data name="ClicksPerSecondLabel" xml:space="preserve">
-    <value>Clicks per second: {0:F2}</value>
+	<value>Clicks per second: {0:F2}</value>
   </data>
   <data name="ConvertButton" xml:space="preserve">
-    <value>Convert</value>
+	<value>Convert</value>
   </data>
   <data name="DebounceTimerDisposed" xml:space="preserve">
-    <value>Debounce timer disposed.</value>
+	<value>Debounce timer disposed.</value>
   </data>
   <data name="DefaultOutputDir" xml:space="preserve">
-    <value>Output: Same directory as the files</value>
+	<value>Output: Same directory as the files</value>
   </data>
   <data name="DisableVisualEffectsButton" xml:space="preserve">
-    <value>Disable Visual Effects</value>
+	<value>Disable Visual Effects</value>
   </data>
   <data name="DNSBenchmarkButton" xml:space="preserve">
-    <value>DNS Benchmark</value>
+	<value>DNS Benchmark</value>
   </data>
   <data name="ErrorDisposingAutoClickerResources" xml:space="preserve">
-    <value>Error disposing AutoClicker resources</value>
+	<value>Error disposing AutoClicker resources</value>
   </data>
   <data name="ErrorStartingAutoClicker" xml:space="preserve">
-    <value>Error when starting AutoClicker</value>
+	<value>Error when starting AutoClicker</value>
   </data>
   <data name="ErrorStoppingAutoClicker" xml:space="preserve">
-    <value>Error when stopping AutoClicker</value>
+	<value>Error when stopping AutoClicker</value>
   </data>
   <data name="FileConverterTitle" xml:space="preserve">
-    <value>File Converter</value>
+	<value>File Converter</value>
   </data>
   <data name="HighPerformanceModeButton" xml:space="preserve">
-    <value>High Performance Mode</value>
+	<value>High Performance Mode</value>
   </data>
   <data name="HotkeyUnregisteredSuccess" xml:space="preserve">
-    <value>Hotkey unregistered successfully.</value>
+	<value>Hotkey unregistered successfully.</value>
   </data>
   <data name="HotkeyUnregisterFailed" xml:space="preserve">
-    <value>Failed to unregister hotkey: {0}</value>
+	<value>Failed to unregister hotkey: {0}</value>
   </data>
   <data name="IntervalMustBeGreaterThanZero" xml:space="preserve">
-    <value>The interval must be greater than 0!</value>
+	<value>The interval must be greater than 0!</value>
   </data>
   <data name="IntervalText" xml:space="preserve">
-    <value>Interval (ms):</value>
+	<value>Interval (ms):</value>
   </data>
   <data name="KeyBindText" xml:space="preserve">
-    <value>Key Bind:</value>
+	<value>Key Bind:</value>
   </data>
   <data name="NoFilesSelected" xml:space="preserve">
-    <value>No files selected!</value>
+	<value>No files selected!</value>
   </data>
   <data name="OptimizeGameRouteButton" xml:space="preserve">
-    <value>Optimize Game Route</value>
+	<value>Optimize Game Route</value>
   </data>
   <data name="OptimizeMemoryButton" xml:space="preserve">
-    <value>Optimize RAM</value>
+	<value>Optimize RAM</value>
   </data>
   <data name="OptimizerTitle" xml:space="preserve">
-    <value>PC Optimizer</value>
+	<value>PC Optimizer</value>
   </data>
   <data name="OutputFormatLabel" xml:space="preserve">
-    <value>Output Format:</value>
+	<value>Output Format:</value>
   </data>
   <data name="RemoveBloatwareButton" xml:space="preserve">
-    <value>Remove Bloatware</value>
+	<value>Remove Bloatware</value>
   </data>
   <data name="RepairWindowsButton" xml:space="preserve">
-    <value>Repair Windows</value>
+	<value>Repair Windows</value>
   </data>
   <data name="SelectFilesButton" xml:space="preserve">
-    <value>Select Files</value>
+	<value>Select Files</value>
   </data>
   <data name="SpaceSnifferButton" xml:space="preserve">
-    <value>Space Sniffer</value>
+	<value>Space Sniffer</value>
   </data>
   <data name="StartButton" xml:space="preserve">
-    <value>Start</value>
+	<value>Start</value>
   </data>
   <data name="StartupOptimizerButton" xml:space="preserve">
-    <value>Startup Optimizer</value>
+	<value>Startup Optimizer</value>
   </data>
   <data name="StopButton" xml:space="preserve">
-    <value>Stop</value>
+	<value>Stop</value>
   </data>
   <data name="SystemInfoButton" xml:space="preserve">
-    <value>System Information</value>
+	<value>System Information</value>
   </data>
   <data name="TimerDisposed" xml:space="preserve">
-    <value>Click timer disposed.</value>
+	<value>Click timer disposed.</value>
   </data>
   <data name="UninstallProgramButton" xml:space="preserve">
-    <value>Uninstall Program</value>
+	<value>Uninstall Program</value>
   </data>
   <data name="WarningTitle" xml:space="preserve">
-    <value>Warning</value>
+	<value>Warning</value>
   </data>
   <data name="ErrorInitializingFileConverter" xml:space="preserve">
-    <value>Error initializing FileConverter: {0}</value>
+	<value>Error initializing FileConverter: {0}</value>
   </data>
   <data name="ErrorSelectingFiles" xml:space="preserve">
-    <value>Error selecting files: {0}</value>
+	<value>Error selecting files: {0}</value>
   </data>
   <data name="ErrorSelectingOutputDir" xml:space="preserve">
-    <value>Error selecting output directory: {0}</value>
+	<value>Error selecting output directory: {0}</value>
   </data>
   <data name="SelectFilesAndFormatWarning" xml:space="preserve">
-    <value>Select at least one file and an output format!</value>
+	<value>Select at least one file and an output format!</value>
   </data>
   <data name="InvalidOutputFormatWarning" xml:space="preserve">
-    <value>Invalid output format!</value>
+	<value>Invalid output format!</value>
   </data>
   <data name="ConversionCompleted" xml:space="preserve">
-    <value>Conversion completed!</value>
+	<value>Conversion completed!</value>
   </data>
   <data name="SuccessTitle" xml:space="preserve">
-    <value>Success</value>
+	<value>Success</value>
   </data>
   <data name="GeneralConversionError" xml:space="preserve">
-    <value>General error during conversion: {0}</value>
+	<value>General error during conversion: {0}</value>
   </data>
   <data name="SelectedFilesText" xml:space="preserve">
-    <value>Selected files: {0}</value>
+	<value>Selected files: {0}</value>
   </data>
   <data name="OutputDirText" xml:space="preserve">
-    <value>Output: {0}</value>
+	<value>Output: {0}</value>
   </data>
   <data name="ConversionProgressTitle" xml:space="preserve">
-    <value>Conversion Progress</value>
+	<value>Conversion Progress</value>
   </data>
   <data name="ConvertingFilesTitle" xml:space="preserve">
-    <value>Converting Files</value>
+	<value>Converting Files</value>
   </data>
   <data name="ProgressInitialText" xml:space="preserve">
-    <value>Progress: 0/{0}</value>
+	<value>Progress: 0/{0}</value>
   </data>
   <data name="ConvertingFileProgress" xml:space="preserve">
-    <value>Converting {0} to {1}...</value>
+	<value>Converting {0} to {1}...</value>
   </data>
   <data name="CompletedFileProgress" xml:space="preserve">
-    <value>Completed: {0}</value>
+	<value>Completed: {0}</value>
   </data>
   <data name="ErrorConvertingFileProgress" xml:space="preserve">
-    <value>Error converting {0}: {1}</value>
+	<value>Error converting {0}: {1}</value>
   </data>
   <data name="ProgressUpdateText" xml:space="preserve">
-    <value>Progress: {0}/{1}</value>
+	<value>Progress: {0}/{1}</value>
   </data>
   <data name="FileConverterInitialized" xml:space="preserve">
-    <value>FileConverter initialized successfully.</value>
+	<value>FileConverter initialized successfully.</value>
   </data>
   <data name="FilesSelectedLog" xml:space="preserve">
-    <value>Selected {0} files.</value>
+	<value>Selected {0} files.</value>
   </data>
   <data name="OutputDirSelectedLog" xml:space="preserve">
-    <value>Output directory selected: {0}</value>
+	<value>Output directory selected: {0}</value>
   </data>
   <data name="ProgressWindowCreated" xml:space="preserve">
-    <value>Progress window created successfully.</value>
+	<value>Progress window created successfully.</value>
   </data>
   <data name="AutoClickerInitialized" xml:space="preserve">
-    <value>AutoClicker initialized successfully.</value>
+	<value>AutoClicker initialized successfully.</value>
   </data>
   <data name="HotkeyRegisteredSuccess" xml:space="preserve">
-    <value>Hotkey registered successfully.</value>
+	<value>Hotkey registered successfully.</value>
   </data>
   <data name="HotkeyActivated" xml:space="preserve">
-    <value>Hotkey {0} activated.</value>
+	<value>Hotkey {0} activated.</value>
   </data>
   <data name="HotkeyRegistered" xml:space="preserve">
-    <value>Hotkey registered: {0}</value>
+	<value>Hotkey registered: {0}</value>
   </data>
   <data name="IntervalUpdated" xml:space="preserve">
-    <value>Interval updated to {0}ms.</value>
+	<value>Interval updated to {0}ms.</value>
   </data>
   <data name="SelectValidActivationKey" xml:space="preserve">
-    <value>Select a valid activation key!</value>
+	<value>Select a valid activation key!</value>
   </data>
   <data name="ErrorSettingUpUIComponents" xml:space="preserve">
-    <value>Error setting up UI components</value>
+	<value>Error setting up UI components</value>
   </data>
   <data name="ErrorSettingUpTimers" xml:space="preserve">
-    <value>Error setting up timers</value>
+	<value>Error setting up timers</value>
   </data>
   <data name="ErrorSettingUpHotkey" xml:space="preserve">
-    <value>Error setting up hotkey</value>
+	<value>Error setting up hotkey</value>
   </data>
   <data name="ErrorPerformingClick" xml:space="preserve">
-    <value>Error performing click</value>
+	<value>Error performing click</value>
   </data>
   <data name="ErrorProcessingHotkey" xml:space="preserve">
-    <value>Error processing hotkey</value>
+	<value>Error processing hotkey</value>
   </data>
   <data name="ErrorRegisteringHotkey" xml:space="preserve">
-    <value>Error registering hotkey</value>
+	<value>Error registering hotkey</value>
   </data>
   <data name="ErrorChangingActivationKey" xml:space="preserve">
-    <value>Error changing activation key</value>
+	<value>Error changing activation key</value>
   </data>
   <data name="ErrorProcessingIntervalChange" xml:space="preserve">
-    <value>Error processing interval change</value>
+	<value>Error processing interval change</value>
   </data>
   <data name="ErrorValidatingInterval" xml:space="preserve">
-    <value>Error validating interval</value>
+	<value>Error validating interval</value>
   </data>
   <data name="ErrorGettingActivationKey" xml:space="preserve">
-    <value>Error getting activation key</value>
+	<value>Error getting activation key</value>
   </data>
   <data name="ErrorUpdatingUIStatus" xml:space="preserve">
-    <value>Error updating UI status</value>
+	<value>Error updating UI status</value>
   </data>
   <data name="MetaDataEditorTitle" xml:space="preserve">
-    <value>MetaData Editor</value>
+	<value>MetaData Editor</value>
   </data>
   <data name="SaveMetadataButton" xml:space="preserve">
-    <value>Save Metadata</value>
+	<value>Save Metadata</value>
   </data>
   <data name="SelectFileButton" xml:space="preserve">
-    <value>Select File</value>
+	<value>Select File</value>
   </data>
   <data name="PropertyColumnHeader" xml:space="preserve">
-    <value>Property</value>
+	<value>Property</value>
   </data>
   <data name="ValueColumnHeader" xml:space="preserve">
-    <value>Value</value>
+	<value>Value</value>
   </data>
   <data name="DllInjectorTitle" xml:space="preserve">
-    <value>DLL Injector</value>
+	<value>DLL Injector</value>
   </data>
   <data name="ProcessNameLabel" xml:space="preserve">
-    <value>Process Name:</value>
+	<value>Process Name:</value>
   </data>
   <data name="DllPathLabel" xml:space="preserve">
-    <value>DLL Path:</value>
+	<value>DLL Path:</value>
   </data>
   <data name="BrowseButton" xml:space="preserve">
-    <value>Browse</value>
+	<value>Browse</value>
   </data>
   <data name="InjectDllButton" xml:space="preserve">
-    <value>INJECT DLL</value>
+	<value>INJECT DLL</value>
   </data>
   <data name="InjectingStatus" xml:space="preserve">
-    <value>Injecting...</value>
+	<value>Injecting...</value>
   </data>
   <data name="InjectionSuccessStatus" xml:space="preserve">
-    <value>Injection completed successfully</value>
+	<value>Injection completed successfully</value>
   </data>
   <data name="ProcessNotFoundStatus" xml:space="preserve">
-    <value>Process not found</value>
+	<value>Process not found</value>
   </data>
   <data name="InjectionFailedStatus" xml:space="preserve">
-    <value>Injection failed</value>
+	<value>Injection failed</value>
   </data>
   <data name="ProcessNameToolTip" xml:space="preserve">
-    <value>Enter the process name (e.g., notepad.exe)</value>
+	<value>Enter the process name (e.g., notepad.exe)</value>
   </data>
   <data name="ReadyStatus" xml:space="preserve">
-    <value>Ready</value>
+	<value>Ready</value>
   </data>
   <data name="InjectionFailedWithError" xml:space="preserve">
-    <value>Injection failed: {0}</value>
+	<value>Injection failed: {0}</value>
   </data>
   <data name="ErrorStatus" xml:space="preserve">
-    <value>Error: {0}</value>
+	<value>Error: {0}</value>
   </data>
   <data name="DllFileFilter" xml:space="preserve">
-    <value>DLL files (*.dll)|*.dll|All files (*.*)|*.*</value>
+	<value>DLL files (*.dll)|*.dll|All files (*.*)|*.*</value>
   </data>
   <data name="SelectDllTitle" xml:space="preserve">
-    <value>Select the DLL to inject</value>
+	<value>Select the DLL to inject</value>
   </data>
   <data name="ErrorBuildingPage" xml:space="preserve">
-    <value>Error building the page: {0}</value>
+	<value>Error building the page: {0}</value>
   </data>
   <data name="ErrorLoadingTextEditor" xml:space="preserve">
-    <value>Error loading TextEditor: {0}</value>
+	<value>Error loading TextEditor: {0}</value>
   </data>
   <data name="ErrorCreatingDocsFolder" xml:space="preserve">
-    <value>Error creating DarkHubDocs folder: {0}</value>
+	<value>Error creating DarkHubDocs folder: {0}</value>
   </data>
   <data name="ErrorLoadingFiles" xml:space="preserve">
-    <value>Error loading files: {0}</value>
+	<value>Error loading files: {0}</value>
   </data>
   <data name="PageLoadedSuccess" xml:space="preserve">
-    <value>Page loaded successfully.</value>
+	<value>Page loaded successfully.</value>
   </data>
   <data name="NoEditorSelectedToSave" xml:space="preserve">
-    <value>No editor selected to save.</value>
+	<value>No editor selected to save.</value>
   </data>
   <data name="FileSavedAt" xml:space="preserve">
-    <value>File saved at: {0}</value>
+	<value>File saved at: {0}</value>
   </data>
   <data name="NoEditorSelectedToRename" xml:space="preserve">
-    <value>No editor selected to rename.</value>
+	<value>No editor selected to rename.</value>
   </data>
   <data name="EnterNewDocumentNamePrompt" xml:space="preserve">
-    <value>Enter the new document name:</value>
+	<value>Enter the new document name:</value>
   </data>
   <data name="RenameDocumentTitle" xml:space="preserve">
-    <value>Rename Document</value>
+	<value>Rename Document</value>
   </data>
   <data name="FileRenamedTo" xml:space="preserve">
-    <value>File renamed to: {0}</value>
+	<value>File renamed to: {0}</value>
   </data>
   <data name="NoTabSelectedToDelete" xml:space="preserve">
-    <value>No tab selected to delete.</value>
+	<value>No tab selected to delete.</value>
   </data>
   <data name="ConfirmDeleteMessage" xml:space="preserve">
-    <value>Are you sure you want to delete '{0}'?</value>
+	<value>Are you sure you want to delete '{0}'?</value>
   </data>
   <data name="ConfirmDeleteTitle" xml:space="preserve">
-    <value>Confirm Deletion</value>
+	<value>Confirm Deletion</value>
   </data>
   <data name="DeleteCancelled" xml:space="preserve">
-    <value>Deletion cancelled.</value>
+	<value>Deletion cancelled.</value>
   </data>
   <data name="FileDeletedSuccess" xml:space="preserve">
-    <value>File '{0}' deleted successfully.</value>
+	<value>File '{0}' deleted successfully.</value>
   </data>
   <data name="TabClosedNoFile" xml:space="preserve">
-    <value>Tab '{0}' closed (file did not exist in the system).</value>
+	<value>Tab '{0}' closed (file did not exist in the system).</value>
   </data>
   <data name="NoEditorSelectedToRun" xml:space="preserve">
-    <value>No editor selected to run or invalid document type.</value>
+	<value>No editor selected to run or invalid document type.</value>
   </data>
   <data name="NotPythonDocument" xml:space="preserve">
-    <value>This document is not a Python file.</value>
+	<value>This document is not a Python file.</value>
   </data>
   <data name="RunningPythonCode" xml:space="preserve">
-    <value>Running Python code...</value>
+	<value>Running Python code...</value>
   </data>
   <data name="PythonExecutionError" xml:space="preserve">
-    <value>Error executing:{0}</value>
+	<value>Error executing:{0}</value>
   </data>
   <data name="PythonNotInstalled" xml:space="preserve">
-    <value>Python is not installed or not found on the system. Please install Python to run scripts.</value>
+	<value>Python is not installed or not found on the system. Please install Python to run scripts.</value>
   </data>
   <data name="ErrorRunningPython" xml:space="preserve">
-    <value>Error trying to run Python: {0}</value>
+	<value>Error trying to run Python: {0}</value>
   </data>
   <data name="PythonInstallInstructions" xml:space="preserve">
-    <value>Make sure Python is installed and added to the PATH. You can download it at python.org.</value>
+	<value>Make sure Python is installed and added to the PATH. You can download it at python.org.</value>
   </data>
   <data name="ErrorAddingTab" xml:space="preserve">
-    <value>Error adding tab: {0}</value>
+	<value>Error adding tab: {0}</value>
   </data>
   <data name="ErrorCreatingNewTab" xml:space="preserve">
-    <value>Error creating new tab: {0}</value>
+	<value>Error creating new tab: {0}</value>
   </data>
   <data name="ErrorSavingFile" xml:space="preserve">
-    <value>Error saving file: {0}</value>
+	<value>Error saving file: {0}</value>
   </data>
   <data name="ErrorRenamingFile" xml:space="preserve">
-    <value>Error renaming file: {0}</value>
+	<value>Error renaming file: {0}</value>
   </data>
   <data name="ErrorDeletingFile" xml:space="preserve">
-    <value>Error deleting {0}: {1}</value>
+	<value>Error deleting {0}: {1}</value>
   </data>
   <data name="ErrorChangingDocType" xml:space="preserve">
-    <value>Error changing document type: {0}</value>
+	<value>Error changing document type: {0}</value>
   </data>
   <data name="ErrorSwitchingTab" xml:space="preserve">
-    <value>Error switching tab: {0}</value>
+	<value>Error switching tab: {0}</value>
   </data>
   <data name="ErrorSyncingComboBox" xml:space="preserve">
-    <value>Error syncing ComboBox: {0}</value>
+	<value>Error syncing ComboBox: {0}</value>
   </data>
   <data name="ErrorChangingFontSize" xml:space="preserve">
-    <value>Error changing font size: {0}</value>
+	<value>Error changing font size: {0}</value>
   </data>
   <data name="TextEditorTitle" xml:space="preserve">
-    <value>Text Editor</value>
+	<value>Text Editor</value>
   </data>
   <data name="NewTabButton" xml:space="preserve">
-    <value>New Tab</value>
+	<value>New Tab</value>
   </data>
   <data name="NewTabToolTip" xml:space="preserve">
-    <value>New Tab</value>
+	<value>New Tab</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
-    <value>Save</value>
+	<value>Save</value>
   </data>
   <data name="SaveToolTip" xml:space="preserve">
-    <value>Save</value>
+	<value>Save</value>
   </data>
   <data name="RenameButton" xml:space="preserve">
-    <value>Rename</value>
+	<value>Rename</value>
   </data>
   <data name="RenameToolTip" xml:space="preserve">
-    <value>Rename</value>
+	<value>Rename</value>
   </data>
   <data name="RunPythonButton" xml:space="preserve">
-    <value>Execute</value>
+	<value>Execute</value>
   </data>
   <data name="RunPythonToolTip" xml:space="preserve">
-    <value>Execute Python</value>
+	<value>Execute Python</value>
   </data>
   <data name="PlainTextOption" xml:space="preserve">
-    <value>Plain Text</value>
+	<value>Plain Text</value>
   </data>
   <data name="PythonOption" xml:space="preserve">
-    <value>Python</value>
+	<value>Python</value>
   </data>
   <data name="NewDocumentHeader" xml:space="preserve">
-    <value>New Document</value>
+	<value>New Document</value>
   </data>
   <data name="ErrorInitializingOptimizer" xml:space="preserve">
-    <value>Error initializing Optimizer: {0}</value>
+	<value>Error initializing Optimizer: {0}</value>
   </data>
   <data name="CriticalErrorTitle" xml:space="preserve">
-    <value>Critical Error</value>
+	<value>Critical Error</value>
   </data>
   <data name="ErrorGettingSystemInfo" xml:space="preserve">
-    <value>Error getting system information: {0}</value>
+	<value>Error getting system information: {0}</value>
   </data>
   <data name="ErrorTitle" xml:space="preserve">
-    <value>Error</value>
+	<value>Error</value>
   </data>
   <data name="SystemInfoTitle" xml:space="preserve">
-    <value>System Information</value>
+	<value>System Information</value>
   </data>
   <data name="NoDataAvailable" xml:space="preserve">
-    <value>No data available</value>
+	<value>No data available</value>
   </data>
   <data name="ErrorShowingInfoWindow" xml:space="preserve">
-    <value>Error showing info window: {0}</value>
+	<value>Error showing info window: {0}</value>
   </data>
   <data name="CleaningProgressTitle" xml:space="preserve">
-    <value>Cleaning Progress</value>
+	<value>Cleaning Progress</value>
   </data>
   <data name="StartingCleanup" xml:space="preserve">
-    <value>Starting cleanup...</value>
+	<value>Starting cleanup...</value>
   </data>
   <data name="CleaningWindowsTemp" xml:space="preserve">
-    <value>Cleaning Windows Temp...</value>
+	<value>Cleaning Windows Temp...</value>
   </data>
   <data name="CleaningPrefetchExe" xml:space="preserve">
-    <value>Cleaning Prefetch (*.exe)...</value>
+	<value>Cleaning Prefetch (*.exe)...</value>
   </data>
   <data name="CleaningPrefetchDll" xml:space="preserve">
-    <value>Cleaning Prefetch (*.dll)...</value>
+	<value>Cleaning Prefetch (*.dll)...</value>
   </data>
   <data name="CleaningPrefetchPf" xml:space="preserve">
-    <value>Cleaning Prefetch (*.pf)...</value>
+	<value>Cleaning Prefetch (*.pf)...</value>
   </data>
   <data name="CleaningDllCache" xml:space="preserve">
-    <value>Cleaning dllcache...</value>
+	<value>Cleaning dllcache...</value>
   </data>
   <data name="CleaningSystemDriveTemp" xml:space="preserve">
-    <value>Cleaning SystemDrive Temp...</value>
+	<value>Cleaning SystemDrive Temp...</value>
   </data>
   <data name="CleaningUserTemp" xml:space="preserve">
-    <value>Cleaning %TEMP%...</value>
+	<value>Cleaning %TEMP%...</value>
   </data>
   <data name="CleaningHistory" xml:space="preserve">
-    <value>Cleaning History...</value>
+	<value>Cleaning History...</value>
   </data>
   <data name="CleaningTempInternetFiles" xml:space="preserve">
-    <value>Cleaning Temporary Internet Files...</value>
+	<value>Cleaning Temporary Internet Files...</value>
   </data>
   <data name="CleaningLocalTemp" xml:space="preserve">
-    <value>Cleaning Local Temp...</value>
+	<value>Cleaning Local Temp...</value>
   </data>
   <data name="CleaningRecent" xml:space="preserve">
-    <value>Cleaning Recent...</value>
+	<value>Cleaning Recent...</value>
   </data>
   <data name="CleaningCookies" xml:space="preserve">
-    <value>Cleaning Cookies...</value>
+	<value>Cleaning Cookies...</value>
   </data>
   <data name="CleaningEventLogs" xml:space="preserve">
-    <value>Cleaning event logs...</value>
+	<value>Cleaning event logs...</value>
   </data>
   <data name="TaskCompleted" xml:space="preserve">
-    <value>Completed.</value>
+	<value>Completed.</value>
   </data>
   <data name="DirectoryNotFoundOrInvalid" xml:space="preserve">
-    <value>Directory does not exist or is invalid, skipping...</value>
+	<value>Directory does not exist or is invalid, skipping...</value>
   </data>
   <data name="AccessDeniedToFile" xml:space="preserve">
-    <value>Access denied to file {0}: {1}</value>
+	<value>Access denied to file {0}: {1}</value>
   </data>
   <data name="FileInUse" xml:space="preserve">
-    <value>File in use {0}: {1}</value>
+	<value>File in use {0}: {1}</value>
   </data>
   <data name="ErrorDeletingSubdirectory" xml:space="preserve">
-    <value>Failed to delete subdirectory {0}: {1}</value>
+	<value>Failed to delete subdirectory {0}: {1}</value>
   </data>
   <data name="ErrorCleaningDirectory" xml:space="preserve">
-    <value>Error cleaning {0}: {1}</value>
+	<value>Error cleaning {0}: {1}</value>
   </data>
   <data name="ErrorCleaningFilesByExtension" xml:space="preserve">
-    <value>Error cleaning files {0} in {1}: {2}</value>
+	<value>Error cleaning files {0} in {1}: {2}</value>
   </data>
   <data name="CleaningLog" xml:space="preserve">
-    <value>Cleaning {0}...</value>
+	<value>Cleaning {0}...</value>
   </data>
   <data name="LogError" xml:space="preserve">
-    <value>Error: {0}</value>
+	<value>Error: {0}</value>
   </data>
   <data name="ErrorCleaningLog" xml:space="preserve">
-    <value>Error cleaning {0}: {1}</value>
+	<value>Error cleaning {0}: {1}</value>
   </data>
   <data name="ErrorCleaningLogs" xml:space="preserve">
-    <value>General error cleaning logs: {0}</value>
+	<value>General error cleaning logs: {0}</value>
   </data>
   <data name="CleanupCompletedSuccess" xml:space="preserve">
-    <value>Cleanup completed successfully!</value>
+	<value>Cleanup completed successfully!</value>
   </data>
   <data name="CleanupCompleted" xml:space="preserve">
-    <value>Cleanup completed!</value>
+	<value>Cleanup completed!</value>
   </data>
   <data name="GeneralCleanupError" xml:space="preserve">
-    <value>General error cleaning: {0}</value>
+	<value>General error cleaning: {0}</value>
   </data>
   <data name="ErrorCreatingProgressWindow" xml:space="preserve">
-    <value>Error creating progress window: {0}</value>
+	<value>Error creating progress window: {0}</value>
   </data>
   <data name="VisualEffectsDisabledSuccess" xml:space="preserve">
-    <value>Visual effects disabled for maximum optimization!</value>
+	<value>Visual effects disabled for maximum optimization!</value>
   </data>
   <data name="ErrorDisablingVisualEffects" xml:space="preserve">
-    <value>Error disabling visual effects: {0}</value>
+	<value>Error disabling visual effects: {0}</value>
   </data>
   <data name="RepairingWindowsTitle" xml:space="preserve">
-    <value>Repairing Windows</value>
+	<value>Repairing Windows</value>
   </data>
   <data name="StartingWindowsRepair" xml:space="preserve">
-    <value>Starting Windows repair...</value>
+	<value>Starting Windows repair...</value>
   </data>
   <data name="RunningSFC" xml:space="preserve">
-    <value>Running System File Checker (SFC)...</value>
+	<value>Running System File Checker (SFC)...</value>
   </data>
   <data name="RunningDISM" xml:space="preserve">
-    <value>Running DISM to restore system health...</value>
+	<value>Running DISM to restore system health...</value>
   </data>
   <data name="SchedulingCHKDSK" xml:space="preserve">
-    <value>Scheduling disk check (CHKDSK) for the next reboot...</value>
+	<value>Scheduling disk check (CHKDSK) for the next reboot...</value>
   </data>
   <data name="CheckScheduled" xml:space="preserve">
-    <value>Check scheduled for the next reboot.</value>
+	<value>Check scheduled for the next reboot.</value>
   </data>
   <data name="RepairsCompleted" xml:space="preserve">
-    <value>Repairs completed. Restart the system to apply all changes.</value>
+	<value>Repairs completed. Restart the system to apply all changes.</value>
   </data>
   <data name="RepairCommandsExecuted" xml:space="preserve">
-    <value>Repair commands executed. Restart the system to apply all changes.</value>
+	<value>Repair commands executed. Restart the system to apply all changes.</value>
   </data>
   <data name="GeneralRepairError" xml:space="preserve">
-    <value>General error repairing Windows: {0}</value>
+	<value>General error repairing Windows: {0}</value>
   </data>
   <data name="HighPerformanceModeTitle" xml:space="preserve">
-    <value>Enabling High Performance Mode</value>
+	<value>Enabling High Performance Mode</value>
   </data>
   <data name="StartingHighPerformanceMode" xml:space="preserve">
-    <value>Starting high performance mode activation...</value>
+	<value>Starting high performance mode activation...</value>
   </data>
   <data name="ActivatingPowerPlan" xml:space="preserve">
-    <value>Activating high performance power plan...</value>
+	<value>Activating high performance power plan...</value>
   </data>
   <data name="PowerPlanAlreadyActive" xml:space="preserve">
-    <value>Power plan already active or not found.</value>
+	<value>Power plan already active or not found.</value>
   </data>
   <data name="HighPerformanceModeSuccess" xml:space="preserve">
-    <value>High performance mode activated successfully!</value>
+	<value>High performance mode activated successfully!</value>
   </data>
   <data name="HighPerformanceModeActivated" xml:space="preserve">
-    <value>High performance mode activated!</value>
+	<value>High performance mode activated!</value>
   </data>
   <data name="ErrorActivatingHighPerformanceMode" xml:space="preserve">
-    <value>Error activating high performance mode: {0}</value>
+	<value>Error activating high performance mode: {0}</value>
   </data>
   <data name="TimerResolutionTitle" xml:space="preserve">
-    <value>Adjusting Timer Resolution</value>
+	<value>Adjusting Timer Resolution</value>
   </data>
   <data name="StartingTimerAdjustment" xml:space="preserve">
-    <value>Starting timer resolution adjustment...</value>
+	<value>Starting timer resolution adjustment...</value>
   </data>
   <data name="AdjustingTimer" xml:space="preserve">
-    <value>Trying to adjust timer resolution to 0.5ms...</value>
+	<value>Trying to adjust timer resolution to 0.5ms...</value>
   </data>
   <data name="TimerAdjusted" xml:space="preserve">
-    <value>Resolution adjusted to {0}ms.</value>
+	<value>Resolution adjusted to {0}ms.</value>
   </data>
   <data name="ErrorAdjustingTimerAPI" xml:space="preserve">
-    <value>Error adjusting timer via API: {0}</value>
+	<value>Error adjusting timer via API: {0}</value>
   </data>
   <data name="RunningPowercfgFallback" xml:space="preserve">
-    <value>Running fallback with powercfg...</value>
+	<value>Running fallback with powercfg...</value>
   </data>
   <data name="FallbackCompleted" xml:space="preserve">
-    <value>Fallback completed.</value>
+	<value>Fallback completed.</value>
   </data>
   <data name="TimerAdjustmentCompleted" xml:space="preserve">
-    <value>Timer resolution adjustment completed!</value>
+	<value>Timer resolution adjustment completed!</value>
   </data>
   <data name="TimerResolutionAdjusted" xml:space="preserve">
-    <value>Timer resolution adjusted!</value>
+	<value>Timer resolution adjusted!</value>
   </data>
   <data name="ErrorAdjustingTimerResolution" xml:space="preserve">
-    <value>Error adjusting timer resolution: {0}</value>
+	<value>Error adjusting timer resolution: {0}</value>
   </data>
   <data name="SelectExecutableForPriority" xml:space="preserve">
-    <value>Select Executable to Change Priority</value>
+	<value>Select Executable to Change Priority</value>
   </data>
   <data name="ChangingProcessPriorityTitle" xml:space="preserve">
-    <value>Changing Process Priority</value>
+	<value>Changing Process Priority</value>
   </data>
   <data name="StartingPriorityChange" xml:space="preserve">
-    <value>Starting priority change to {0}...</value>
+	<value>Starting priority change to {0}...</value>
   </data>
   <data name="CheckingProcessRunning" xml:space="preserve">
-    <value>Checking if process '{0}' is running...</value>
+	<value>Checking if process '{0}' is running...</value>
   </data>
   <data name="ProcessNotFound" xml:space="preserve">
-    <value>Process not found.</value>
+	<value>Process not found.</value>
   </data>
   <data name="ChangingPriorityToHigh" xml:space="preserve">
-    <value>Changing priority to 'High' (256)...</value>
+	<value>Changing priority to 'High' (256)...</value>
   </data>
   <data name="PriorityChangeFailed" xml:space="preserve">
-    <value>Failed to change priority.</value>
+	<value>Failed to change priority.</value>
   </data>
   <data name="PriorityChangeCompleted" xml:space="preserve">
-    <value>Priority change completed!</value>
+	<value>Priority change completed!</value>
   </data>
   <data name="PriorityChangedToHigh" xml:space="preserve">
-    <value>Process priority changed to 'High'!</value>
+	<value>Process priority changed to 'High'!</value>
   </data>
   <data name="ErrorChangingPriority" xml:space="preserve">
-    <value>Error changing priority: {0}</value>
+	<value>Error changing priority: {0}</value>
   </data>
   <data name="SelectProgramToUninstall" xml:space="preserve">
-    <value>Select Program to Uninstall</value>
+	<value>Select Program to Uninstall</value>
   </data>
   <data name="ProgramNotFound" xml:space="preserve">
-    <value>Program not found!</value>
+	<value>Program not found!</value>
   </data>
   <data name="UninstallingProgramTitle" xml:space="preserve">
-    <value>Uninstalling Program</value>
+	<value>Uninstalling Program</value>
   </data>
   <data name="StartingUninstallation" xml:space="preserve">
-    <value>Starting uninstallation of {0}...</value>
+	<value>Starting uninstallation of {0}...</value>
   </data>
   <data name="CheckingProgramRegistered" xml:space="preserve">
-    <value>Checking if '{0}' is registered...</value>
+	<value>Checking if '{0}' is registered...</value>
   </data>
   <data name="ProgramNotRegistered" xml:space="preserve">
-    <value>Program not found in the installed product registry.</value>
+	<value>Program not found in the installed product registry.</value>
   </data>
   <data name="RemovingFileDirectly" xml:space="preserve">
-    <value>Attempting to remove file directly...</value>
+	<value>Attempting to remove file directly...</value>
   </data>
   <data name="FileRemovedSuccess" xml:space="preserve">
-    <value>File removed successfully.</value>
+	<value>File removed successfully.</value>
   </data>
   <data name="UninstallingViaWMIC" xml:space="preserve">
-    <value>Uninstalling via WMIC...</value>
+	<value>Uninstalling via WMIC...</value>
   </data>
   <data name="UninstallationFailed" xml:space="preserve">
-    <value>Uninstallation failed.</value>
+	<value>Uninstallation failed.</value>
   </data>
   <data name="UninstallationCompleted" xml:space="preserve">
-    <value>Uninstallation completed!</value>
+	<value>Uninstallation completed!</value>
   </data>
   <data name="ProgramUninstalledSuccess" xml:space="preserve">
-    <value>Program uninstalled successfully!</value>
+	<value>Program uninstalled successfully!</value>
   </data>
   <data name="ErrorUninstallingProgram" xml:space="preserve">
-    <value>Error uninstalling program: {0}</value>
+	<value>Error uninstalling program: {0}</value>
   </data>
   <data name="ErrorActivatingWindows" xml:space="preserve">
-    <value>Error executing activation command: {0}</value>
+	<value>Error executing activation command: {0}</value>
   </data>
   <data name="CleaningRegistryTitle" xml:space="preserve">
-    <value>Cleaning Registry</value>
+	<value>Cleaning Registry</value>
   </data>
   <data name="StartingRegistryCleanup" xml:space="preserve">
-    <value>Starting registry cleanup...</value>
+	<value>Starting registry cleanup...</value>
   </data>
   <data name="ScanningRegistry" xml:space="preserve">
-    <value>Scanning registry for invalid entries...</value>
+	<value>Scanning registry for invalid entries...</value>
   </data>
   <data name="CheckingRegistryPath" xml:space="preserve">
-    <value>Checking {0}...</value>
+	<value>Checking {0}...</value>
   </data>
   <data name="InvalidEntryFound" xml:space="preserve">
-    <value>Invalid entry found: {0} -&gt; {1}</value>
+	<value>Invalid entry found: {0} -&gt; {1}</value>
   </data>
   <data name="InvalidEntriesFound" xml:space="preserve">
-    <value>{0} invalid entries found:</value>
+	<value>{0} invalid entries found:</value>
   </data>
   <data name="InvalidEntryDetail" xml:space="preserve">
-    <value> - {0}\\{1}: {2}</value>
+	<value> - {0}\\{1}: {2}</value>
   </data>
   <data name="ConfirmRemoveInvalidEntries" xml:space="preserve">
-    <value>Do you want to remove {0} invalid entries?</value>
+	<value>Do you want to remove {0} invalid entries?</value>
   </data>
   <data name="ConfirmationTitle" xml:space="preserve">
-    <value>Confirmation</value>
+	<value>Confirmation</value>
   </data>
   <data name="EntryRemoved" xml:space="preserve">
-    <value>Removed: {0}\\{1}</value>
+	<value>Removed: {0}\\{1}</value>
   </data>
   <data name="PermissionDeniedRemovingEntry" xml:space="preserve">
-    <value>Permission denied to remove {0}\\{1}. Run as administrator.</value>
+	<value>Permission denied to remove {0}\\{1}. Run as administrator.</value>
   </data>
   <data name="ErrorRemovingEntry" xml:space="preserve">
-    <value>Error removing {0}\\{1}: {2}</value>
+	<value>Error removing {0}\\{1}: {2}</value>
   </data>
   <data name="CleanupCancelledByUser" xml:space="preserve">
-    <value>Cleanup canceled by user.</value>
+	<value>Cleanup canceled by user.</value>
   </data>
   <data name="RegistryCleanupCompleted" xml:space="preserve">
-    <value>Registry cleanup completed!</value>
+	<value>Registry cleanup completed!</value>
   </data>
   <data name="ErrorCleaningRegistry" xml:space="preserve">
-    <value>Error cleaning registry: {0}</value>
+	<value>Error cleaning registry: {0}</value>
   </data>
   <data name="ManagingStartupProgramsTitle" xml:space="preserve">
-    <value>Managing Startup Programs</value>
+	<value>Managing Startup Programs</value>
   </data>
   <data name="StartingStartupManagement" xml:space="preserve">
-    <value>Starting startup management...</value>
+	<value>Starting startup management...</value>
   </data>
   <data name="ListingStartupPrograms" xml:space="preserve">
-    <value>Listing startup programs...</value>
+	<value>Listing startup programs...</value>
   </data>
   <data name="CheckingStartupPath" xml:space="preserve">
-    <value>Checking {0}...</value>
+	<value>Checking {0}...</value>
   </data>
   <data name="StartupItemFound" xml:space="preserve">
-    <value>Found in {0}: {1} -&gt; {2}</value>
+	<value>Found in {0}: {1} -&gt; {2}</value>
   </data>
   <data name="CheckingStartupFolder" xml:space="preserve">
-    <value>Checking startup folder: {0}...</value>
+	<value>Checking startup folder: {0}...</value>
   </data>
   <data name="StartupFolderItemFound" xml:space="preserve">
-    <value>Found in {0}: {1} -&gt; {2}</value>
+	<value>Found in {0}: {1} -&gt; {2}</value>
   </data>
   <data name="NoStartupProgramsFound" xml:space="preserve">
-    <value>No startup programs found.</value>
+	<value>No startup programs found.</value>
   </data>
   <data name="ProgramDisabledInRegistry" xml:space="preserve">
-    <value>Program '{0}' disabled in the registry.</value>
+	<value>Program '{0}' disabled in the registry.</value>
   </data>
   <data name="ProgramRemovedFromStartupFolder" xml:space="preserve">
-    <value>Program '{0}' removed from the startup folder.</value>
+	<value>Program '{0}' removed from the startup folder.</value>
   </data>
   <data name="ErrorOpeningStartupSource" xml:space="preserve">
-    <value>Error: Could not open {0}.</value>
+	<value>Error: Could not open {0}.</value>
   </data>
   <data name="PermissionDeniedDisablingProgram" xml:space="preserve">
-    <value>Permission denied while disabling '{0}'. Run as administrator.</value>
+	<value>Permission denied while disabling '{0}'. Run as administrator.</value>
   </data>
   <data name="ErrorDisablingProgram" xml:space="preserve">
-    <value>Error disabling '{0}': {1}</value>
+	<value>Error disabling '{0}': {1}</value>
   </data>
   <data name="StartupManagementCompleted" xml:space="preserve">
-    <value>Management completed!</value>
+	<value>Management completed!</value>
   </data>
   <data name="SelectProgramToDisableTitle" xml:space="preserve">
-    <value>Select Program to Disable</value>
+	<value>Select Program to Disable</value>
   </data>
   <data name="DisableSelectedButton" xml:space="preserve">
-    <value>Disable Selected</value>
+	<value>Disable Selected</value>
   </data>
   <data name="ErrorManagingStartupPrograms" xml:space="preserve">
-    <value>Error managing startup programs: {0}</value>
+	<value>Error managing startup programs: {0}</value>
   </data>
   <data name="CleaningNetworkDataTitle" xml:space="preserve">
-    <value>Cleaning Network Data</value>
+	<value>Cleaning Network Data</value>
   </data>
   <data name="StartingNetworkDataCleanup" xml:space="preserve">
-    <value>Starting network data cleanup...</value>
+	<value>Starting network data cleanup...</value>
   </data>
   <data name="FlushingDNSCache" xml:space="preserve">
-    <value>Flushing DNS cache...</value>
+	<value>Flushing DNS cache...</value>
   </data>
   <data name="ReleasingIP" xml:space="preserve">
-    <value>Releasing IP...</value>
+	<value>Releasing IP...</value>
   </data>
   <data name="RenewingIP" xml:space="preserve">
-    <value>Renewing IP...</value>
+	<value>Renewing IP...</value>
   </data>
   <data name="ResettingWinsock" xml:space="preserve">
-    <value>Resetting Winsock...</value>
+	<value>Resetting Winsock...</value>
   </data>
   <data name="ResettingTCPIP" xml:space="preserve">
-    <value>Resetting TCP/IP...</value>
+	<value>Resetting TCP/IP...</value>
   </data>
   <data name="FlushingARP" xml:space="preserve">
-    <value>Flushing ARP cache...</value>
+	<value>Flushing ARP cache...</value>
   </data>
   <data name="ResettingNetBIOS" xml:space="preserve">
-    <value>Resetting NetBIOS...</value>
+	<value>Resetting NetBIOS...</value>
   </data>
   <data name="NetworkDataCleanupCompleted" xml:space="preserve">
-    <value>Network data cleanup completed!</value>
+	<value>Network data cleanup completed!</value>
   </data>
   <data name="NetworkDataCleanupSuccess" xml:space="preserve">
-    <value>Network data cleanup completed successfully!</value>
+	<value>Network data cleanup completed successfully!</value>
   </data>
   <data name="ErrorCleaningNetworkData" xml:space="preserve">
-    <value>Error cleaning network data: {0}</value>
+	<value>Error cleaning network data: {0}</value>
   </data>
   <data name="RunningSpaceSnifferTitle" xml:space="preserve">
-    <value>Running SpaceSniffer</value>
+	<value>Running SpaceSniffer</value>
   </data>
   <data name="StartingSpaceSniffer" xml:space="preserve">
-    <value>Starting SpaceSniffer...</value>
+	<value>Starting SpaceSniffer...</value>
   </data>
   <data name="AssetsFolderNotFound" xml:space="preserve">
-    <value>'assets' folder not found in {0}.</value>
+	<value>'assets' folder not found in {0}.</value>
   </data>
   <data name="SpaceSnifferNotFound" xml:space="preserve">
-    <value>'SpaceSniffer.exe' executable not found in {0}.</value>
+	<value>'SpaceSniffer.exe' executable not found in {0}.</value>
   </data>
   <data name="ExecutingSpaceSniffer" xml:space="preserve">
-    <value>Executing: {0}...</value>
+	<value>Executing: {0}...</value>
   </data>
   <data name="FailedToStartProcess" xml:space="preserve">
-    <value>Failed to start the process.</value>
+	<value>Failed to start the process.</value>
   </data>
   <data name="ProcessCompletedWithExitCode" xml:space="preserve">
-    <value>Process completed with exit code: {0}.</value>
+	<value>Process completed with exit code: {0}.</value>
   </data>
   <data name="SpaceSnifferExecutedSuccess" xml:space="preserve">
-    <value>SpaceSniffer executed successfully!</value>
+	<value>SpaceSniffer executed successfully!</value>
   </data>
   <data name="ErrorRunningSpaceSniffer" xml:space="preserve">
-    <value>Error running SpaceSniffer: {0}</value>
+	<value>Error running SpaceSniffer: {0}</value>
   </data>
   <data name="ErrorOpeningMRT" xml:space="preserve">
-    <value>Error opening MRT: {0}</value>
+	<value>Error opening MRT: {0}</value>
   </data>
   <data name="CheckingInstalledAppsTitle" xml:space="preserve">
-    <value>Checking Installed Apps</value>
+	<value>Checking Installed Apps</value>
   </data>
   <data name="CheckingInstalledApps" xml:space="preserve">
-    <value>Checking installed apps on the system...</value>
+	<value>Checking installed apps on the system...</value>
   </data>
   <data name="AppFound" xml:space="preserve">
-    <value>Found: {0}</value>
+	<value>Found: {0}</value>
   </data>
   <data name="NoBloatwareFound" xml:space="preserve">
-    <value>No bloatware found on the system!</value>
+	<value>No bloatware found on the system!</value>
   </data>
   <data name="InfoTitle" xml:space="preserve">
-    <value>Information</value>
+	<value>Information</value>
   </data>
   <data name="SelectAppsToRemoveTitle" xml:space="preserve">
-    <value>Select Apps to Remove</value>
+	<value>Select Apps to Remove</value>
   </data>
   <data name="AppsFoundToRemove" xml:space="preserve">
-    <value>Found {0} apps that can be removed:</value>
+	<value>Found {0} apps that can be removed:</value>
   </data>
   <data name="SelectAllButton" xml:space="preserve">
-    <value>Select All</value>
+	<value>Select All</value>
   </data>
   <data name="DeselectAllButton" xml:space="preserve">
-    <value>Deselect All</value>
+	<value>Deselect All</value>
   </data>
   <data name="RemoveSelectedButton" xml:space="preserve">
-    <value>Remove Selected</value>
+	<value>Remove Selected</value>
   </data>
   <data name="NoAppsSelectedForRemoval" xml:space="preserve">
-    <value>No apps selected for removal.</value>
+	<value>No apps selected for removal.</value>
   </data>
   <data name="RemovingBloatwareTitle" xml:space="preserve">
-    <value>Removing Bloatware from Windows</value>
+	<value>Removing Bloatware from Windows</value>
   </data>
   <data name="StartingBloatwareRemoval" xml:space="preserve">
-    <value>Starting bloatware removal...</value>
+	<value>Starting bloatware removal...</value>
   </data>
   <data name="RemovingOneDrive" xml:space="preserve">
-    <value>Removing OneDrive...</value>
+	<value>Removing OneDrive...</value>
   </data>
   <data name="RemovingMicrosoftEdge" xml:space="preserve">
-    <value>Removing Microsoft Edge...</value>
+	<value>Removing Microsoft Edge...</value>
   </data>
   <data name="RemovingApp" xml:space="preserve">
-    <value>Removing {0}...</value>
+	<value>Removing {0}...</value>
   </data>
   <data name="CleaningResidualFiles" xml:space="preserve">
-    <value>Cleaning residual files...</value>
+	<value>Cleaning residual files...</value>
   </data>
   <data name="FolderDeleted" xml:space="preserve">
-    <value>Folder deleted: {0}</value>
+	<value>Folder deleted: {0}</value>
   </data>
   <data name="ErrorDeletingFolder" xml:space="preserve">
-    <value>Error deleting {0}: {1}</value>
+	<value>Error deleting {0}: {1}</value>
   </data>
   <data name="BloatwareRemovalCompleted" xml:space="preserve">
-    <value>Bloatware removal completed!</value>
+	<value>Bloatware removal completed!</value>
   </data>
   <data name="RestartRecommended" xml:space="preserve">
-    <value>It is recommended to restart the computer to apply all changes.</value>
+	<value>It is recommended to restart the computer to apply all changes.</value>
   </data>
   <data name="BloatwareRemovalDone" xml:space="preserve">
-    <value>Bloatware removal completed! Do you want to restart the computer now?</value>
+	<value>Bloatware removal completed! Do you want to restart the computer now?</value>
   </data>
   <data name="CompletedTitle" xml:space="preserve">
-    <value>Completed</value>
+	<value>Completed</value>
   </data>
   <data name="RestartingIn10Seconds" xml:space="preserve">
-    <value>The computer will restart in 10 seconds.</value>
+	<value>The computer will restart in 10 seconds.</value>
   </data>
   <data name="RestartingTitle" xml:space="preserve">
-    <value>Restarting</value>
+	<value>Restarting</value>
   </data>
   <data name="ErrorRemovingBloatware" xml:space="preserve">
-    <value>Error removing bloatware: {0}</value>
+	<value>Error removing bloatware: {0}</value>
   </data>
   <data name="OptimizingMemoryTitle" xml:space="preserve">
-    <value>Optimizing System Memory</value>
+	<value>Optimizing System Memory</value>
   </data>
   <data name="StartingMemoryOptimization" xml:space="preserve">
-    <value>Starting memory optimization...</value>
+	<value>Starting memory optimization...</value>
   </data>
   <data name="MemoryUsageBefore" xml:space="preserve">
-    <value>Memory in use before optimization: {0} GB</value>
+	<value>Memory in use before optimization: {0} GB</value>
   </data>
   <data name="MemoryAvailableBefore" xml:space="preserve">
-    <value>Memory available before optimization: {0} GB</value>
+	<value>Memory available before optimization: {0} GB</value>
   </data>
   <data name="OptimizingNonEssentialProcesses" xml:space="preserve">
-    <value>1. Optimizing non-essential processes...</value>
+	<value>1. Optimizing non-essential processes...</value>
   </data>
   <data name="ProcessesOptimized" xml:space="preserve">
-    <value>Optimized processes: {0}</value>
+	<value>Optimized processes: {0}</value>
   </data>
   <data name="TotalProcessesOptimized" xml:space="preserve">
-    <value>Total optimized processes: {0}</value>
+	<value>Total optimized processes: {0}</value>
   </data>
   <data name="ClearingFileSystemCache" xml:space="preserve">
-    <value>2. Clearing file system cache...</value>
+	<value>2. Clearing file system cache...</value>
   </data>
   <data name="ClearingTempFiles" xml:space="preserve">
-    <value>3. Clearing temporary files...</value>
+	<value>3. Clearing temporary files...</value>
   </data>
   <data name="RunningGarbageCollection" xml:space="preserve">
-    <value>4. Running garbage collection...</value>
+	<value>4. Running garbage collection...</value>
   </data>
   <data name="ClearingDNSCacheMemory" xml:space="preserve">
-    <value>5. Clearing DNS cache...</value>
+	<value>5. Clearing DNS cache...</value>
   </data>
   <data name="OptimizationResults" xml:space="preserve">
-    <value>Optimization results:</value>
+	<value>Optimization results:</value>
   </data>
   <data name="MemoryUsageAfter" xml:space="preserve">
-    <value>Memory in use after optimization: {0} GB</value>
+	<value>Memory in use after optimization: {0} GB</value>
   </data>
   <data name="MemoryAvailableAfter" xml:space="preserve">
-    <value>Memory available after optimization: {0} GB</value>
+	<value>Memory available after optimization: {0} GB</value>
   </data>
   <data name="MemoryFreed" xml:space="preserve">
-    <value>Memory freed: {0} GB</value>
+	<value>Memory freed: {0} GB</value>
   </data>
   <data name="MemoryOptimizationSuccess" xml:space="preserve">
-    <value>Memory optimization completed successfully!</value>
+	<value>Memory optimization completed successfully!</value>
   </data>
   <data name="ErrorOptimizingMemory" xml:space="preserve">
-    <value>Error optimizing memory: {0}</value>
+	<value>Error optimizing memory: {0}</value>
   </data>
   <data name="DNSBenchmarkTitle" xml:space="preserve">
-    <value>DNS Benchmark</value>
+	<value>DNS Benchmark</value>
   </data>
   <data name="StartingDNSTest" xml:space="preserve">
-    <value>Starting DNS test...</value>
+	<value>Starting DNS test...</value>
   </data>
   <data name="TestingDNS" xml:space="preserve">
-    <value>Testing {0}...</value>
+	<value>Testing {0}...</value>
   </data>
   <data name="LatencyResult" xml:space="preserve">
-    <value>Latency: {0}ms</value>
+	<value>Latency: {0}ms</value>
   </data>
   <data name="DNSBenchmarkResultsTitle" xml:space="preserve">
-    <value>DNS Benchmark Results</value>
+	<value>DNS Benchmark Results</value>
   </data>
   <data name="DNSNameColumn" xml:space="preserve">
-    <value>Name</value>
+	<value>Name</value>
   </data>
   <data name="DNSPrimaryColumn" xml:space="preserve">
-    <value>Primary DNS</value>
+	<value>Primary DNS</value>
   </data>
   <data name="DNSSecondaryColumn" xml:space="preserve">
-    <value>Secondary DNS</value>
+	<value>Secondary DNS</value>
   </data>
   <data name="DNSLatencyColumn" xml:space="preserve">
-    <value>Latency (ms)</value>
+	<value>Latency (ms)</value>
   </data>
   <data name="ConfigureSelectedDNSButton" xml:space="preserve">
-    <value>Configure Selected DNS</value>
+	<value>Configure Selected DNS</value>
   </data>
   <data name="SelectDNSWarning" xml:space="preserve">
-    <value>Please select a DNS from the list.</value>
+	<value>Please select a DNS from the list.</value>
   </data>
   <data name="ErrorRunningDNSBenchmark" xml:space="preserve">
-    <value>Error running DNS Benchmark: {0}</value>
+	<value>Error running DNS Benchmark: {0}</value>
   </data>
   <data name="DNSConfiguredSuccess" xml:space="preserve">
-    <value>DNS configured successfully!Adapter: {0}Primary: {1}Secondary: {2}</value>
+	<value>DNS configured successfully!Adapter: {0}Primary: {1}Secondary: {2}</value>
   </data>
   <data name="ErrorConfiguringDNS" xml:space="preserve">
-    <value>Error configuring DNS: {0}Please check:1. The program is running as administrator2. You are connected to a network3. The network adapter is enabled4. No other programs are interfering with network settings</value>
+	<value>Error configuring DNS: {0}Please check:1. The program is running as administrator2. You are connected to a network3. The network adapter is enabled4. No other programs are interfering with network settings</value>
   </data>
   <data name="GameServerIPTitle" xml:space="preserve">
-    <value>Game Server IP</value>
+	<value>Game Server IP</value>
   </data>
   <data name="EnterGameServerIP" xml:space="preserve">
-    <value>Enter the game server IP:</value>
+	<value>Enter the game server IP:</value>
   </data>
   <data name="OKButton" xml:space="preserve">
-    <value>OK</value>
+	<value>OK</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
+	<value>Cancel</value>
   </data>
   <data name="InvalidIPWarning" xml:space="preserve">
-    <value>Please enter a valid IP address.</value>
+	<value>Please enter a valid IP address.</value>
   </data>
   <data name="OptimizingGameRouteTitle" xml:space="preserve">
-    <value>Optimizing Game Route</value>
+	<value>Optimizing Game Route</value>
   </data>
   <data name="StartingGameDNSOptimization" xml:space="preserve">
-    <value>Starting DNS optimization test for games...</value>
+	<value>Starting DNS optimization test for games...</value>
   </data>
   <data name="DNSResultsTitle" xml:space="preserve">
-    <value>DNS Test Results</value>
+	<value>DNS Test Results</value>
   </data>
   <data name="DNSResultsLabel" xml:space="preserve">
-    <value>DNSs sorted by latency (lowest to highest):</value>
+	<value>DNSs sorted by latency (lowest to highest):</value>
   </data>
   <data name="ErrorOptimizingGameRoute" xml:space="preserve">
-    <value>Error optimizing route: {0}</value>
+	<value>Error optimizing route: {0}</value>
   </data>
   <data name="YoutubeDownloaderTitle" xml:space="preserve">
-    <value>YouTube Video Downloader</value>
+	<value>YouTube Video Downloader</value>
   </data>
   <data name="YoutubeDownloaderHeader" xml:space="preserve">
-    <value>YouTube Downloader</value>
+	<value>YouTube Downloader</value>
   </data>
   <data name="UrlPlaceholder" xml:space="preserve">
-    <value>Enter video or playlist URL</value>
+	<value>Enter video or playlist URL</value>
   </data>
   <data name="FormatMP4" xml:space="preserve">
-    <value>MP4</value>
+	<value>MP4</value>
   </data>
   <data name="FormatMP3" xml:space="preserve">
-    <value>MP3</value>
+	<value>MP3</value>
   </data>
   <data name="FormatMKV" xml:space="preserve">
-    <value>MKV</value>
+	<value>MKV</value>
   </data>
   <data name="DownloadButtonText" xml:space="preserve">
-    <value>Download</value>
+	<value>Download</value>
   </data>
   <data name="DownloadButtonToolTip" xml:space="preserve">
-    <value>Download Video</value>
+	<value>Download Video</value>
   </data>
   <data name="ErrorInitializingYoutubeDownloader" xml:space="preserve">
-    <value>Error initializing YoutubeVideoDownloader: {0}</value>
+	<value>Error initializing YoutubeVideoDownloader: {0}</value>
   </data>
   <data name="YoutubeDLNotInitializedError" xml:space="preserve">
-    <value>Error: YoutubeDL was not initialized properly.</value>
+	<value>Error: YoutubeDL was not initialized properly.</value>
   </data>
   <data name="InvalidUrlError" xml:space="preserve">
-    <value>Please enter a valid YouTube URL.</value>
+	<value>Please enter a valid YouTube URL.</value>
   </data>
   <data name="NoFormatSelectedError" xml:space="preserve">
-    <value>Please select an output format.</value>
+	<value>Please select an output format.</value>
   </data>
   <data name="StartingDownload" xml:space="preserve">
-    <value>Starting download...</value>
+	<value>Starting download...</value>
   </data>
   <data name="InitialProgress" xml:space="preserve">
-    <value>Progress: 0% - 0 KB/s</value>
+	<value>Progress: 0% - 0 KB/s</value>
   </data>
   <data name="ProgressUpdate" xml:space="preserve">
-    <value>Progress: {0} - {1}</value>
+	<value>Progress: {0} - {1}</value>
   </data>
   <data name="DownloadCompleted" xml:space="preserve">
-    <value>Download completed: {0}</value>
+	<value>Download completed: {0}</value>
   </data>
   <data name="ProgressCompleted" xml:space="preserve">
-    <value>Progress: 100% - Completed</value>
+	<value>Progress: 100% - Completed</value>
   </data>
   <data name="DownloadError" xml:space="preserve">
-    <value>Error during download: {0}</value>
+	<value>Error during download: {0}</value>
   </data>
   <data name="ProgressError" xml:space="preserve">
-    <value>Progress: Error</value>
+	<value>Progress: Error</value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
-    <value>Error downloading video: {0}Make sure yt-dlp.exe and ffmpeg.exe are in 'assets'.</value>
+	<value>Error downloading video: {0}Make sure yt-dlp.exe and ffmpeg.exe are in 'assets'.</value>
   </data>
   <data name="GeneralDownloadError" xml:space="preserve">
-    <value>General error downloading video: {0}</value>
+	<value>General error downloading video: {0}</value>
   </data>
   <data name="ImageTextExtractorTitle" xml:space="preserve">
-    <value>Extract Text from Image</value>
+	<value>Extract Text from Image</value>
   </data>
   <data name="SelectImageButtonText" xml:space="preserve">
-    <value>Select Image</value>
+	<value>Select Image</value>
   </data>
   <data name="SelectImageButtonToolTip" xml:space="preserve">
-    <value>Select Image</value>
+	<value>Select Image</value>
   </data>
   <data name="ExtractTextButtonText" xml:space="preserve">
-    <value>Extract Text</value>
+	<value>Extract Text</value>
   </data>
   <data name="ExtractTextButtonToolTip" xml:space="preserve">
-    <value>Extract Text</value>
+	<value>Extract Text</value>
   </data>
   <data name="ErrorInitializingImageTextExtractor" xml:space="preserve">
-    <value>Error initializing ImageTextExtractor: {0}</value>
+	<value>Error initializing ImageTextExtractor: {0}</value>
   </data>
   <data name="TessdataFolderCreated" xml:space="preserve">
-    <value>The 'tessdata' folder was created.Add the eng.traineddata and por.traineddata files.</value>
+	<value>The 'tessdata' folder was created.Add the eng.traineddata and por.traineddata files.</value>
   </data>
   <data name="FolderCreatedTitle" xml:space="preserve">
-    <value>Folder Created</value>
+	<value>Folder Created</value>
   </data>
   <data name="NoTrainedDataFilesFound" xml:space="preserve">
-    <value>No .traineddata files found.Download from: https://github.com/tesseract-ocr/tessdata</value>
+	<value>No .traineddata files found.Download from: https://github.com/tesseract-ocr/tessdata</value>
   </data>
   <data name="FilesMissingTitle" xml:space="preserve">
-    <value>Missing Files</value>
+	<value>Missing Files</value>
   </data>
   <data name="ErrorLoadingLanguages" xml:space="preserve">
-    <value>Error loading languages: {0}</value>
+	<value>Error loading languages: {0}</value>
   </data>
   <data name="StartingProcessing" xml:space="preserve">
-    <value>Starting processing...</value>
+	<value>Starting processing...</value>
   </data>
   <data name="SelectValidImage" xml:space="preserve">
-    <value>Select a valid image.</value>
+	<value>Select a valid image.</value>
   </data>
   <data name="ImageTooLarge" xml:space="preserve">
-    <value>Image too large (max. 50MB).</value>
+	<value>Image too large (max. 50MB).</value>
   </data>
   <data name="MissingTrainingFiles" xml:space="preserve">
-    <value>Missing training files in 'tessdata'.</value>
+	<value>Missing training files in 'tessdata'.</value>
   </data>
   <data name="ExtractingText" xml:space="preserve">
-    <value>Extracting text...</value>
+	<value>Extracting text...</value>
   </data>
   <data name="NoTextDetected" xml:space="preserve">
-    <value>No text detected.</value>
+	<value>No text detected.</value>
   </data>
   <data name="TextExtracted" xml:space="preserve">
-    <value>Text extracted (Confidence: {0}):{1}</value>
+	<value>Text extracted (Confidence: {0}):{1}</value>
   </data>
   <data name="ErrorExtractingText" xml:space="preserve">
-    <value>Error extracting text: {0}</value>
+	<value>Error extracting text: {0}</value>
   </data>
   <data name="ImageFileFilter" xml:space="preserve">
-    <value>Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|All Files (*.*)|*.*</value>
+	<value>Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|All Files (*.*)|*.*</value>
   </data>
   <data name="SelectImageDialogTitle" xml:space="preserve">
-    <value>Select Image to Extract Text</value>
+	<value>Select Image to Extract Text</value>
   </data>
   <data name="ImageSelected" xml:space="preserve">
-    <value>Image selected: {0}Click 'Extract Text' to process.</value>
+	<value>Image selected: {0}Click 'Extract Text' to process.</value>
   </data>
   <data name="ErrorSelectingImage" xml:space="preserve">
-    <value>Error selecting image: {0}</value>
+	<value>Error selecting image: {0}</value>
   </data>
   <data name="SystemMonitorTitle" xml:space="preserve">
-    <value>System Monitor</value>
+	<value>System Monitor</value>
   </data>
   <data name="SystemMonitorHeader" xml:space="preserve">
-    <value>System Monitor</value>
+	<value>System Monitor</value>
   </data>
   <data name="CPUTitle" xml:space="preserve">
-    <value>CPU</value>
+	<value>CPU</value>
   </data>
   <data name="RAMTitle" xml:space="preserve">
-    <value>RAM</value>
+	<value>RAM</value>
   </data>
   <data name="DiskTitle" xml:space="preserve">
-    <value>Disk</value>
+	<value>Disk</value>
   </data>
   <data name="GPUTitle" xml:space="preserve">
-    <value>GPU</value>
+	<value>GPU</value>
   </data>
   <data name="SystemTitle" xml:space="preserve">
-    <value>System</value>
+	<value>System</value>
   </data>
   <data name="NetworkTitle" xml:space="preserve">
-    <value>Network</value>
+	<value>Network</value>
   </data>
   <data name="BenchmarkTitle" xml:space="preserve">
-    <value>System Benchmark</value>
+	<value>System Benchmark</value>
   </data>
   <data name="RunBenchmarkButtonText" xml:space="preserve">
-    <value>Run Benchmark</value>
+	<value>Run Benchmark</value>
   </data>
   <data name="LoadingSystemInfo" xml:space="preserve">
-    <value>Loading system information...</value>
+	<value>Loading system information...</value>
   </data>
   <data name="ErrorLoadingSystemInfo" xml:space="preserve">
-    <value>Error loading system information: {0}</value>
+	<value>Error loading system information: {0}</value>
   </data>
   <data name="CPUNameFormat" xml:space="preserve">
-    <value>Name: {0}</value>
+	<value>Name: {0}</value>
   </data>
   <data name="CPUCoresFormat" xml:space="preserve">
-    <value>Cores: {0}</value>
+	<value>Cores: {0}</value>
   </data>
   <data name="CPUThreadsFormat" xml:space="preserve">
-    <value>Threads: {0}</value>
+	<value>Threads: {0}</value>
   </data>
   <data name="CPUClockFormat" xml:space="preserve">
-    <value>Clock: {0:F2} GHz</value>
+	<value>Clock: {0:F2} GHz</value>
   </data>
   <data name="CPUUsageFormat" xml:space="preserve">
-    <value>Usage: {0:F1}%</value>
+	<value>Usage: {0:F1}%</value>
   </data>
   <data name="RAMTotalFormat" xml:space="preserve">
-    <value>Total: {0}</value>
+	<value>Total: {0}</value>
   </data>
   <data name="RAMSpeedFormat" xml:space="preserve">
-    <value>Frequency: {0} MHz</value>
+	<value>Frequency: {0} MHz</value>
   </data>
   <data name="RAMCLUnknown" xml:space="preserve">
-    <value>CL: Unknown</value>
+	<value>CL: Unknown</value>
   </data>
   <data name="RAMCL16" xml:space="preserve">
-    <value>CL: 16</value>
+	<value>CL: 16</value>
   </data>
   <data name="RAMCL14" xml:space="preserve">
-    <value>CL: 14</value>
+	<value>CL: 14</value>
   </data>
   <data name="RAMUsedFormat" xml:space="preserve">
-    <value>Used: {0}</value>
+	<value>Used: {0}</value>
   </data>
   <data name="RAMFreeFormat" xml:space="preserve">
-    <value>Free: {0}</value>
+	<value>Free: {0}</value>
   </data>
   <data name="DiskTotalFormat" xml:space="preserve">
-    <value>Total: {0}</value>
+	<value>Total: {0}</value>
   </data>
   <data name="DiskUsedFormat" xml:space="preserve">
-    <value>Used: {0}</value>
+	<value>Used: {0}</value>
   </data>
   <data name="DiskFreeFormat" xml:space="preserve">
-    <value>Free: {0}</value>
+	<value>Free: {0}</value>
   </data>
   <data name="DiskActivityFormat" xml:space="preserve">
-    <value>Activity: {0:F1} MB/s</value>
+	<value>Activity: {0:F1} MB/s</value>
   </data>
   <data name="GPUNameFormat" xml:space="preserve">
-    <value>Name: {0}</value>
+	<value>Name: {0}</value>
   </data>
   <data name="GPUMemoryFormat" xml:space="preserve">
-    <value>Memory: {0}</value>
+	<value>Memory: {0}</value>
   </data>
   <data name="GPUUsageFormat" xml:space="preserve">
-    <value>GPU Usage: {0:F1}%</value>
+	<value>GPU Usage: {0:F1}%</value>
   </data>
   <data name="VRAMUsageFormat" xml:space="preserve">
-    <value>VRAM Usage: {0:F1}%</value>
+	<value>VRAM Usage: {0:F1}%</value>
   </data>
   <data name="SystemVersionFormat" xml:space="preserve">
-    <value>Version: {0}</value>
+	<value>Version: {0}</value>
   </data>
   <data name="SystemArchitectureFormat" xml:space="preserve">
-    <value>Architecture: {0}</value>
+	<value>Architecture: {0}</value>
   </data>
   <data name="SystemBuildFormat" xml:space="preserve">
-    <value>Build: {0}</value>
+	<value>Build: {0}</value>
   </data>
   <data name="SystemMotherboardFormat" xml:space="preserve">
-    <value>Motherboard: {0} {1}</value>
+	<value>Motherboard: {0} {1}</value>
   </data>
   <data name="SystemBIOSFormat" xml:space="preserve">
-    <value>BIOS: {0} {1}</value>
+	<value>BIOS: {0} {1}</value>
   </data>
   <data name="NetworkAdapterFormat" xml:space="preserve">
-    <value>Adapter: {0}</value>
+	<value>Adapter: {0}</value>
   </data>
   <data name="NetworkSpeedFormat" xml:space="preserve">
-    <value>Speed: {0}</value>
+	<value>Speed: {0}</value>
   </data>
   <data name="NetworkIPFormat" xml:space="preserve">
-    <value>IP: {0}</value>
+	<value>IP: {0}</value>
   </data>
   <data name="Unknown" xml:space="preserve">
-    <value>Unknown</value>
+	<value>Unknown</value>
   </data>
   <data name="NotFound" xml:space="preserve">
-    <value>Not Found</value>
+	<value>Not Found</value>
   </data>
   <data name="RunningBenchmark" xml:space="preserve">
-    <value>Running Benchmark...</value>
+	<value>Running Benchmark...</value>
   </data>
   <data name="CPUTesting" xml:space="preserve">
-    <value>CPU: Testing...</value>
+	<value>CPU: Testing...</value>
   </data>
   <data name="RAMTesting" xml:space="preserve">
-    <value>RAM: Testing...</value>
+	<value>RAM: Testing...</value>
   </data>
   <data name="DiskTesting" xml:space="preserve">
-    <value>Disk: Testing...</value>
+	<value>Disk: Testing...</value>
   </data>
   <data name="GPUTesting" xml:space="preserve">
-    <value>GPU: Testing...</value>
+	<value>GPU: Testing...</value>
   </data>
   <data name="CPUScoreFormat" xml:space="preserve">
-    <value>CPU: {0:F2} MOPS</value>
+	<value>CPU: {0:F2} MOPS</value>
   </data>
   <data name="RAMScoreFormat" xml:space="preserve">
-    <value>RAM: {0:F2} MB/s</value>
+	<value>RAM: {0:F2} MB/s</value>
   </data>
   <data name="DiskScoreFormat" xml:space="preserve">
-    <value>Disk: {0:F2} MB/s</value>
+	<value>Disk: {0:F2} MB/s</value>
   </data>
   <data name="GPUScoreFormat" xml:space="preserve">
-    <value>GPU: {0:F2} MPixels/s</value>
+	<value>GPU: {0:F2} MPixels/s</value>
   </data>
   <data name="TotalScoreFormat" xml:space="preserve">
-    <value>Total Score: {0:F2}</value>
+	<value>Total Score: {0:F2}</value>
   </data>
   <data name="ErrorRunningBenchmark" xml:space="preserve">
-    <value>Error running benchmark: {0}</value>
+	<value>Error running benchmark: {0}</value>
   </data>
   <data name="ByteUnits" xml:space="preserve">
-    <value>B|KB|MB|GB|TB</value>
+	<value>B|KB|MB|GB|TB</value>
   </data>
   <data name="ByteFormat" xml:space="preserve">
-    <value>{0:F2} {1}</value>
+	<value>{0:F2} {1}</value>
   </data>
   <data name="ClickerTitle" xml:space="preserve">
-    <value>AutoClicker</value>
+	<value>AutoClicker</value>
   </data>
   <data name="ErrorOpeningSystemMonitor" xml:space="preserve">
-    <value>Error opening system monitor: {0}</value>
+	<value>Error opening system monitor: {0}</value>
   </data>
   <data name="EmptyTextError" xml:space="preserve">
-    <value>Please enter some text to summarize!</value>
+	<value>Please enter some text to summarize!</value>
   </data>
   <data name="NoKeywordsFound" xml:space="preserve">
-    <value>None of the specified keywords were found in the summary.</value>
+	<value>None of the specified keywords were found in the summary.</value>
   </data>
   <data name="PDFSummarizationError" xml:space="preserve">
-    <value>Error summarizing PDF: {0}</value>
+	<value>Error summarizing PDF: {0}</value>
   </data>
   <data name="Processing" xml:space="preserve">
-    <value>Processing...</value>
+	<value>Processing...</value>
   </data>
   <data name="SelectPDFFile" xml:space="preserve">
-    <value>Select PDF File</value>
+	<value>Select PDF File</value>
   </data>
   <data name="SummarizationError" xml:space="preserve">
-    <value>Error summarizing text: {0}</value>
+	<value>Error summarizing text: {0}</value>
   </data>
   <data name="SummarizePDF" xml:space="preserve">
-    <value>Summarize PDF</value>
+	<value>Summarize PDF</value>
   </data>
   <data name="SummarizeText" xml:space="preserve">
-    <value>Summarize Text</value>
+	<value>Summarize Text</value>
   </data>
   <data name="SummXTitle" xml:space="preserve">
-    <value>SummX - Text Summarizer</value>
+	<value>SummX - Text Summarizer</value>
   </data>
   <data name="SettingsTitle" xml:space="preserve">
-    <value>Settings</value>
+	<value>Settings</value>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
-    <value>Language</value>
+	<value>Language</value>
   </data>
   <data name="MaxLengthLabel" xml:space="preserve">
-    <value>Maximum Length (characters)</value>
+	<value>Maximum Length (characters)</value>
   </data>
   <data name="KeywordWeightLabel" xml:space="preserve">
-    <value>Keyword Weight</value>
+	<value>Keyword Weight</value>
   </data>
   <data name="TfidfWeightLabel" xml:space="preserve">
-    <value>TF-IDF Weight</value>
+	<value>TF-IDF Weight</value>
   </data>
   <data name="TextRankWeightLabel" xml:space="preserve">
-    <value>TextRank Weight</value>
+	<value>TextRank Weight</value>
   </data>
   <data name="KeywordsTitle" xml:space="preserve">
-    <value>Keywords</value>
+	<value>Keywords</value>
   </data>
   <data name="KeywordsPlaceholder" xml:space="preserve">
-    <value>Enter keywords separated by commas</value>
+	<value>Enter keywords separated by commas</value>
   </data>
   <data name="InputTextTitle" xml:space="preserve">
-    <value>Input Text</value>
+	<value>Input Text</value>
   </data>
   <data name="InputTextPlaceholder" xml:space="preserve">
-    <value>Type or paste the text you want to summarize</value>
+	<value>Type or paste the text you want to summarize</value>
   </data>
   <data name="SummarizeButton" xml:space="preserve">
-    <value>Summarize Text</value>
+	<value>Summarize Text</value>
   </data>
   <data name="SummarizePdfButton" xml:space="preserve">
-    <value>Summarize PDF</value>
+	<value>Summarize PDF</value>
   </data>
   <data name="SummaryTitle" xml:space="preserve">
-    <value>Summary</value>
+	<value>Summary</value>
   </data>
   <data name="CopyToClipboardTooltip" xml:space="preserve">
-    <value>Copy to clipboard</value>
+	<value>Copy to clipboard</value>
   </data>
   <data name="CopyToClipboardSuccess" xml:space="preserve">
-    <value>Text copied to clipboard!</value>
+	<value>Text copied to clipboard!</value>
   </data>
+	<data name="NoProgramsFound" xml:space="preserve">
+  <value>No installed programs found.</value>
+</data>
+	<data name="RunningOfficialUninstaller" xml:space="preserve">
+  <value>Running the official uninstaller...</value>
+</data>
+	<data name="NoUninstallerFound" xml:space="preserve">
+  <value>No uninstaller found. Proceeding with leftover cleanup...</value>
+</data>
+	<data name="ScanningLeftovers" xml:space="preserve">
+  <value>Scanning for leftover files and registry keys...</value>
+</data>
+	<data name="FoundLeftovers" xml:space="preserve">
+  <value>Leftover files and registry keys found. Removing...</value>
+</data>
+	<data name="NoLeftoversFound" xml:space="preserve">
+  <value>No leftover files or registry keys found.</value>
+</data>
+	<data name="DisableUnnecessaryServices" xml:space="preserve">
+  <value>Disable Unn. Services</value>
+	</data>
+	<data name="OptimizeAdvancedNetworkSettings" xml:space="preserve">
+  <value>Advanced Network Optimization</value>
+	</data>
+	<data name="SenhaCopiada1" xml:space="preserve">
+	<value>Copied password</value>
+  </data>
+	<data name="Asenhafoicopiadapara2" xml:space="preserve">
+	<value>The password was copied to the transfer area!</value>
+  </data>
+	<data name="Fechar3" xml:space="preserve">
+	<value>To close</value>
+  </data>
+	<data name="ConfirmarExclusão4" xml:space="preserve">
+	<value>Confirm exclusion</value>
+  </data>
+	<data name="Confirmar5" xml:space="preserve">
+	<value>Confirm</value>
+  </data>
+	<data name="Cancelar6" xml:space="preserve">
+	<value>Cancel</value>
+  </data>
+	<data name="Senhaexcluídacomsuce7" xml:space="preserve">
+	<value>Password excluded successfully!</value>
+  </data>
+	<data name="OK8" xml:space="preserve">
+	<value>OK</value>
+  </data>
+	<data name="EditarSenha9" xml:space="preserve">
+	<value>Edit password</value>
+  </data>
+	<data name="Título10" xml:space="preserve">
+	<value>Title</value>
+  </data>
+	<data name="Categoria11" xml:space="preserve">
+	<value>Category</value>
+  </data>
+	<data name="Salvar12" xml:space="preserve">
+	<value>Save</value>
+  </data>
+	<data name="GerarNovaSenha13" xml:space="preserve">
+	<value>Generate a new password</value>
+  </data>
+	<data name="Título14" xml:space="preserve">
+	<value>Title</value>
+  </data>
+	<data name="Título15" xml:space="preserve">
+	<value>Title</value>
+  </data>
+	<data name="Categoria16" xml:space="preserve">
+	<value>Category</value>
+  </data>
+	<data name="Categoria17" xml:space="preserve">
+	<value>Category</value>
+  </data>
+	<data name="Comprimentoex1618" xml:space="preserve">
+	<value>Length (Ex: 16)</value>
+  </data>
+	<data name="Dezesseis" xml:space="preserve">
+	<value>16</value>
+  </data>
+	<data name="Comprimentoex1620" xml:space="preserve">
+	<value>Length (Ex: 16)</value>
+  </data>
+	<data name="GerareSalvar21" xml:space="preserve">
+	<value>Generate and save</value>
+  </data>
+	<data name="RecuperarSenhaMestra22" xml:space="preserve">
+	<value>Recover Master Password</value>
+  </data>
+	<data name="Recuperar23" xml:space="preserve">
+	<value>Recover</value>
+  </data>
+	<data name="SenhaDescriptografad24" xml:space="preserve">
+	<value>Decript -craved password</value>
+  </data>
+	<data name="Fechar25" xml:space="preserve">
+	<value>To close</value>
+  </data>
+	<data name="Eye" xml:space="preserve">
+	<value>👁</value>
+  </data>
+	<data name="Senhamestraincorreta32" xml:space="preserve">
+	<value>Incorrect master password!</value>
+  </data>
+	<data name="Oformatodasenhamestr33" xml:space="preserve">
+	<value>The format of the master password is invalid. Please create a new master password.</value>
+  </data>
+	<data name="Backupconcluído34" xml:space="preserve">
+	<value>Backup completed!</value>
+  </data>
+	<data name="Detectamosumformatod35" xml:space="preserve">
+	<value>We detected an old master password format. Please create a new master password.</value>
+  </data>
+	<data name="Sessãobloqueadaporin36" xml:space="preserve">
+	<value>Session blocked by inactivity!</value>
+  </data>
+	<data name="Senhageradacomsucess37" xml:space="preserve">
+	<value>Successful password! You can modify it if you wish.</value>
+  </data>
+	<data name="Senhamestrarecuperad38" xml:space="preserve">
+	<value>Master password successfully recovered! The password was copied to the transfer area.</value>
+  </data>
+	<data name="Aspalavrasderecupera39" xml:space="preserve">
+	<value>The words of recovery are incorrect or not correspond to the registered master password!</value>
+  </data>
+	<data name="Asenhamestradeveterp40" xml:space="preserve">
+	<value>The master password must have at least 8 characters!</value>
+  </data>
+	<data name="Assenhasnãocoincidem41" xml:space="preserve">
+	<value>The passwords do not coincide!</value>
+  </data>
+	<data name="Palavrasderecuperaçã42" xml:space="preserve">
+	<value>Recovery words copied to the transfer area!</value>
+  </data>
+	<data name="Senhamestraregistrad43" xml:space="preserve">
+	<value>Successful master password!</value>
+  </data>
+	<data name="Restauraçãoconcluída44" xml:space="preserve">
+	<value>Completed restoration!</value>
+  </data>
+	<data name="RegistrarSenhaMestra1" xml:space="preserve">
+	<value>Register Master Password</value>
+  </data>
+	<data name="GerarSenha2" xml:space="preserve">
+	<value>Generate Password</value>
+  </data>
+	<data name="Registrar3" xml:space="preserve">
+	<value>Register</value>
+  </data>
+	<data name="Login4" xml:space="preserve">
+	<value>Login</value>
+  </data>
+	<data name="Entrar5" xml:space="preserve">
+	<value>To enter</value>
+  </data>
+	<data name="RecuperarSenha6" xml:space="preserve">
+	<value>Recover password</value>
+  </data>
+	<data name="GerenciadordeSenhas7" xml:space="preserve">
+	<value>Password manager</value>
+  </data>
+	<data name="GerarSenha8" xml:space="preserve">
+	<value>Password</value>
+  </data>
+	<data name="Backup9" xml:space="preserve">
+	<value>Backup</value>
+  </data>
+	<data name="Restaurar10" xml:space="preserve">
+	<value>Restore</value>
+  </data>
+	<data name="Sair11" xml:space="preserve">
+	<value>To go out</value>
+  </data>
+	<data name="copypw" xml:space="preserve">
+		<value>Copy Password</value>
+	</data>
+	<data name="creationtime" xml:space="preserve">
+		<value>Creation Date</value>
+	</data>
+	<data name="Actions" xml:space="preserve">
+		<value>Actions</value>
+	</data>
+	<data name="StorePassword" xml:space="preserve">
+		<value>Keep these words of recovery in a safe place:</value>
+	</data>
+	<data name="RecoverPassword" xml:space="preserve">
+		<value>They can be used to recover your master password.</value>
+	</data>
+	<data name="RecoveryWords" xml:space="preserve">
+		<value>Words of Recovery</value>
+	</data>
+	<data name="DisableServicesTitle" xml:space="preserve">
+		<value>Palavras de Recuperação</value>
+	</data>
+	<data name="DisableServices" xml:space="preserve">
+		<value>Select the services to disable or enable:</value>
+	</data>
+	<data name="Enabled" xml:space="preserve">
+		<value>[Enabled]</value>
+	</data>
+	<data name="Disabled" xml:space="preserve">
+		<value>[Disabled]</value>
+	</data>
+	<data name="DisableSelected" xml:space="preserve">
+		<value>Disable Selected</value>
+	</data>
+	<data name="EnableSelected" xml:space="preserve">
+		<value>Enable Selected</value>
+	</data>
+	<data name="Cancel" xml:space="preserve">
+		<value>Cancel</value>
+	</data>
+	<data name="SelectedServicesEnabled" xml:space="preserve">
+		<value>Selected services successfully enabled!</value>
+	</data>
+	<data name="SelectedServicesDisabled" xml:space="preserve">
+		<value>Selected services successfully disabled!</value>
+	</data>
+	<data name="NoAccessToDisableService" xml:space="preserve">
+		<value>Access denied when disabling services:</value>
+	</data>
+	<data name="NoAccessToEnableService" xml:space="preserve">
+		<value>Access denied when enabling services:</value>
+	</data>
+	<data name="AdvancedNetworkAdvertise" xml:space="preserve">
+		<value>Optimizing advanced network settings?
+This can improve latency and connection performance.</value>
+	</data>
+	<data name="Revert" xml:space="preserve">
+		<value>Revert</value>
+	</data>
+	<data name="Apply" xml:space="preserve">
+		<value>Apply</value>
+	</data>
+	<data name="Enabling" xml:space="preserve">
+		<value>Enabling</value>
+	</data>
+	<data name="Disabling" xml:space="preserve">
+		<value>Disabling</value>
+	</data>
+	<data name="AdvancedNetworkSuccess" xml:space="preserve">
+		<value>Advanced network optimization successfully completed!</value>
+	</data>
+	<data name="AdvancedNetworkApplied" xml:space="preserve">
+		<value>Network settings successfully optimized!
+Restart the system to apply all the changes.</value>
+	</data>
+	<data name="NetworkaAdapterNotFound" xml:space="preserve">
+		<value>Network adapter not found.</value>
+	</data>
 </root>

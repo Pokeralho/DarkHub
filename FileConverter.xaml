@@ -1,39 +1,39 @@
 ﻿<Page x:Class="DarkHub.FileConverter"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:DarkHub"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="FileConverter"
       DataContext="{Binding Source={x:Static local:ResourceManagerHelper.Instance}}">
 
     <Page.Resources>
         <ControlTemplate x:Key="NoHoverBtn" TargetType="Button">
-            <Border Background="{TemplateBinding Background}"  
-                    BorderBrush="{TemplateBinding BorderBrush}"  
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="10">
-                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"  
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
             </Border>
         </ControlTemplate>
 
         <Style TargetType="Button">
-            <Setter Property="Background" Value="#35373c"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template" Value="{StaticResource NoHoverBtn}"/>
-            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Background" Value="#35373c" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template" Value="{StaticResource NoHoverBtn}" />
+            <Setter Property="Padding" Value="10,5" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#80848e"/>
-                    <Setter Property="BorderBrush" Value="White"/>
+                    <Setter Property="Background" Value="#80848e" />
+                    <Setter Property="BorderBrush" Value="White" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#80848e"/>
+                    <Setter Property="Background" Value="#80848e" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -43,44 +43,44 @@
 
     <Grid Background="{x:Null}" Margin="20">
         <StackPanel VerticalAlignment="top" HorizontalAlignment="Center" Width="400">
-            <TextBlock Text="{Binding FileConverterTitle}" 
-                       FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold" 
-                       HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White"/>
+            <TextBlock Text="{Binding FileConverterTitle}"
+                       FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold"
+                       HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White" />
 
-            <Button Content="{Binding SelectFilesButton}" 
-                    Width="200" Click="SelectFiles_Click" Margin="0,100,0,10"/>
-            <TextBlock x:Name="SelectedFilesText" Text="{Binding NoFilesSelected}" 
-                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}" 
-                       HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap"/>
+            <Button Content="{Binding SelectFilesButton}"
+                    Width="200" Click="SelectFiles_Click" Margin="0,100,0,10" />
+            <TextBlock x:Name="SelectedFilesText" Text="{Binding NoFilesSelected}"
+                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}"
+                       HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap" />
 
-            <Button Content="{Binding ChooseOutputDirButton}" 
-                    Width="200" Click="SelectOutputDir_Click" Margin="0,0,0,10"/>
-            <TextBlock x:Name="OutputDirText" Text="{Binding DefaultOutputDir}" 
-                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}" 
-                       HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap"/>
+            <Button Content="{Binding ChooseOutputDirButton}"
+                    Width="200" Click="SelectOutputDir_Click" Margin="0,0,0,10" />
+            <TextBlock x:Name="OutputDirText" Text="{Binding DefaultOutputDir}"
+                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}"
+                       HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap" />
 
-            <TextBlock Text="{Binding OutputFormatLabel}" 
-                       Foreground="White" FontSize="14" FontFamily="{StaticResource JetBrainsMono}" 
-                       HorizontalAlignment="Center" Margin="0,0,0,5"/>
-            <ComboBox x:Name="OutputFormatCombo" Width="200" Margin="0,0,0,20" 
+            <TextBlock Text="{Binding OutputFormatLabel}"
+                       Foreground="White" FontSize="14" FontFamily="{StaticResource JetBrainsMono}"
+                       HorizontalAlignment="Center" Margin="0,0,0,5" />
+            <ComboBox x:Name="OutputFormatCombo" Width="200" Margin="0,0,0,20"
                       FontFamily="{StaticResource JetBrainsMono}">
-                <ComboBoxItem Content="PNG"/>
-                <ComboBoxItem Content="JPG"/>
-                <ComboBoxItem Content="WEBP"/>
-                <ComboBoxItem Content="BMP"/>
-                <ComboBoxItem Content="GIF"/>
-                <ComboBoxItem Content="TIFF"/>
-                <ComboBoxItem Content="PDF"/>
-                <ComboBoxItem Content="MP4"/>
-                <ComboBoxItem Content="AVI"/>
-                <ComboBoxItem Content="MKV"/>
-                <ComboBoxItem Content="MP3"/>
-                <ComboBoxItem Content="WAV"/>
-                <ComboBoxItem Content="AAC"/>
+                <ComboBoxItem Content="PNG" />
+                <ComboBoxItem Content="JPG" />
+                <ComboBoxItem Content="WEBP" />
+                <ComboBoxItem Content="BMP" />
+                <ComboBoxItem Content="GIF" />
+                <ComboBoxItem Content="TIFF" />
+                <ComboBoxItem Content="PDF" />
+                <ComboBoxItem Content="MP4" />
+                <ComboBoxItem Content="AVI" />
+                <ComboBoxItem Content="MKV" />
+                <ComboBoxItem Content="MP3" />
+                <ComboBoxItem Content="WAV" />
+                <ComboBoxItem Content="AAC" />
             </ComboBox>
 
-            <Button Content="{Binding ConvertButton}" 
-                    Width="200" Click="ConvertFiles_Click"/>
+            <Button Content="{Binding ConvertButton}"
+                    Width="200" Click="ConvertFiles_Click" />
         </StackPanel>
     </Grid>
 </Page>

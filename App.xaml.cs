@@ -1,14 +1,8 @@
-﻿using System;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Threading;
 using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
+using System.Windows;
 
 namespace DarkHubRmk
 {
@@ -125,7 +119,7 @@ namespace DarkHubRmk
                 string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
                 Directory.CreateDirectory(logPath);
                 string logFile = Path.Combine(logPath, "app_log.txt");
-                
+
                 File.AppendAllText(logFile, $"{DateTime.Now}: {message}\n");
             }
             catch (Exception ex)

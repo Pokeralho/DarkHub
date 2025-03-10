@@ -1,99 +1,99 @@
 ﻿<Page x:Class="DarkHub.ImageTextExtractor"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:DarkHub"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ImageTextExtractorTitle}" 
+      Title="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ImageTextExtractorTitle}"
       Background="{x:Null}">
 
     <Page.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#35373c"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="5,0,0,0"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="#35373c" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="5,0,0,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}" 
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#5A6896"/>
-                    <Setter Property="BorderBrush" Value="White"/>
+                    <Setter Property="Background" Value="#5A6896" />
+                    <Setter Property="BorderBrush" Value="White" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#3E4A6D"/>
+                    <Setter Property="Background" Value="#3E4A6D" />
                 </Trigger>
             </Style.Triggers>
         </Style>
 
         <Style TargetType="TextBox">
-            <Setter Property="Background" Value="#2A2A2E"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="#80848e"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontFamily" Value="Consolas"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="#2A2A2E" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#80848e" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="IsReadOnly" Value="True" />
         </Style>
     </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Extrator de Texto de Imagens" 
+        <TextBlock Text="Extrator de Texto de Imagens"
                    Grid.Row="0"
-                   FontSize="24" 
-                   FontWeight="Bold" 
+                   FontSize="24"
+                   FontWeight="Bold"
                    Margin="20,10,20,20"
                    HorizontalAlignment="Center"
-                   Foreground="White"/>
+                   Foreground="White" />
 
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Border Grid.Row="0" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,0,10">
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="btnSelectImage" Click="SelectImage_Click" Style="{StaticResource MenuButtonStyle}" Width="135" 
+                    <Button x:Name="btnSelectImage" Click="SelectImage_Click" Style="{StaticResource MenuButtonStyle}" Width="135"
                             ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SelectImageButtonToolTip}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/assets/selectimg.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                            <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SelectImageButtonText}"/>
+                            <Image Source="/assets/selectimg.png" Width="20" Height="20" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SelectImageButtonText}" />
                         </StackPanel>
                     </Button>
-                    <Button x:Name="btnExtractText" Click="ExtractText_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Margin="10,0,0,0" 
+                    <Button x:Name="btnExtractText" Click="ExtractText_Click" Style="{StaticResource MenuButtonStyle}" Width="120" Margin="10,0,0,0"
                             ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ExtractTextButtonToolTip}">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/assets/extrairtxtinv.png" Width="20" Height="20" Margin="0,0,5,0"/>
-                            <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ExtractTextButtonText}"/>
+                            <Image Source="/assets/extrairtxtinv.png" Width="20" Height="20" Margin="0,0,5,0" />
+                            <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ExtractTextButtonText}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
             </Border>
 
-            <TextBox x:Name="extractedTextBox" Grid.Row="1" Margin="1,1,10,37"/>
+            <TextBox x:Name="extractedTextBox" Grid.Row="1" Margin="1,1,10,37" />
         </Grid>
     </Grid>
 </Page>

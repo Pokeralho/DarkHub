@@ -70,7 +70,16 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Ativar Windows.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Ações.
+        /// </summary>
+        public static string Actions {
+            get {
+                return ResourceManager.GetString("Actions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Ativar Windows/Office.
         /// </summary>
         public static string ActivateWindowsButton {
             get {
@@ -106,6 +115,35 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Otimizar configurações avançadas de rede?
+        ///Isso pode melhorar a latência e o desempenho da conexão..
+        /// </summary>
+        public static string AdvancedNetworkAdvertise {
+            get {
+                return ResourceManager.GetString("AdvancedNetworkAdvertise", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Configurações de rede otimizadas com sucesso!
+        ///Reinicie o sistema para aplicar todas as alterações..
+        /// </summary>
+        public static string AdvancedNetworkApplied {
+            get {
+                return ResourceManager.GetString("AdvancedNetworkApplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Otimização avançada da rede concluída com sucesso!.
+        /// </summary>
+        public static string AdvancedNetworkSuccess {
+            get {
+                return ResourceManager.GetString("AdvancedNetworkSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Antivírus.
         /// </summary>
         public static string AntivirusButton {
@@ -124,11 +162,56 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Aplicar.
+        /// </summary>
+        public static string Apply {
+            get {
+                return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Encontrados {0} aplicativos que podem ser removidos:.
         /// </summary>
         public static string AppsFoundToRemove {
             get {
                 return ResourceManager.GetString("AppsFoundToRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A senha foi copiada para a área de transferência!.
+        /// </summary>
+        public static string Asenhafoicopiadapara2 {
+            get {
+                return ResourceManager.GetString("Asenhafoicopiadapara2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A senha mestra deve ter pelo menos 8 caracteres!.
+        /// </summary>
+        public static string Asenhamestradeveterp40 {
+            get {
+                return ResourceManager.GetString("Asenhamestradeveterp40", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a As palavras de recuperação estão incorretas ou não correspondem à senha mestra registrada!.
+        /// </summary>
+        public static string Aspalavrasderecupera39 {
+            get {
+                return ResourceManager.GetString("Aspalavrasderecupera39", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a As senhas não coincidem!.
+        /// </summary>
+        public static string Assenhasnãocoincidem41 {
+            get {
+                return ResourceManager.GetString("Assenhasnãocoincidem41", resourceCulture);
             }
         }
         
@@ -165,6 +248,24 @@ namespace DarkHub.Properties {
         public static string AutoClickerStopped {
             get {
                 return ResourceManager.GetString("AutoClickerStopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Backup.
+        /// </summary>
+        public static string Backup9 {
+            get {
+                return ResourceManager.GetString("Backup9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Backup concluído!.
+        /// </summary>
+        public static string Backupconcluído34 {
+            get {
+                return ResourceManager.GetString("Backupconcluído34", resourceCulture);
             }
         }
         
@@ -225,9 +326,54 @@ namespace DarkHub.Properties {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Cancelar.
         /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Cancelar.
+        /// </summary>
+        public static string Cancelar6 {
+            get {
+                return ResourceManager.GetString("Cancelar6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Cancelar.
+        /// </summary>
         public static string CancelButton {
             get {
                 return ResourceManager.GetString("CancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Categoria.
+        /// </summary>
+        public static string Categoria11 {
+            get {
+                return ResourceManager.GetString("Categoria11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Categoria.
+        /// </summary>
+        public static string Categoria16 {
+            get {
+                return ResourceManager.GetString("Categoria16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Categoria.
+        /// </summary>
+        public static string Categoria17 {
+            get {
+                return ResourceManager.GetString("Categoria17", resourceCulture);
             }
         }
         
@@ -637,11 +783,47 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Comprimento (ex: 16).
+        /// </summary>
+        public static string Comprimentoex1618 {
+            get {
+                return ResourceManager.GetString("Comprimentoex1618", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Comprimento (ex: 16).
+        /// </summary>
+        public static string Comprimentoex1620 {
+            get {
+                return ResourceManager.GetString("Comprimentoex1620", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Configurar DNS Selecionado.
         /// </summary>
         public static string ConfigureSelectedDNSButton {
             get {
                 return ResourceManager.GetString("ConfigureSelectedDNSButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Confirmar.
+        /// </summary>
+        public static string Confirmar5 {
+            get {
+                return ResourceManager.GetString("Confirmar5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Confirmar Exclusão.
+        /// </summary>
+        public static string ConfirmarExclusão4 {
+            get {
+                return ResourceManager.GetString("ConfirmarExclusão4", resourceCulture);
             }
         }
         
@@ -723,6 +905,15 @@ namespace DarkHub.Properties {
         public static string ConvertingFilesTitle {
             get {
                 return ResourceManager.GetString("ConvertingFilesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Copiar Senha.
+        /// </summary>
+        public static string copypw {
+            get {
+                return ResourceManager.GetString("copypw", resourceCulture);
             }
         }
         
@@ -817,6 +1008,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Data de Criação.
+        /// </summary>
+        public static string creationtime {
+            get {
+                return ResourceManager.GetString("creationtime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Erro Crítico.
         /// </summary>
         public static string CriticalErrorTitle {
@@ -880,11 +1080,47 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Detectamos um formato de senha mestra antigo. Por favor, crie uma nova senha mestra..
+        /// </summary>
+        public static string Detectamosumformatod35 {
+            get {
+                return ResourceManager.GetString("Detectamosumformatod35", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a 16.
+        /// </summary>
+        public static string Dezesseis {
+            get {
+                return ResourceManager.GetString("Dezesseis", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Diretório não existe ou é inválido, pulando....
         /// </summary>
         public static string DirectoryNotFoundOrInvalid {
             get {
                 return ResourceManager.GetString("DirectoryNotFoundOrInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [Desabilitado].
+        /// </summary>
+        public static string Disabled {
+            get {
+                return ResourceManager.GetString("Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Desabilitar Selecionados.
+        /// </summary>
+        public static string DisableSelected {
+            get {
+                return ResourceManager.GetString("DisableSelected", resourceCulture);
             }
         }
         
@@ -898,11 +1134,47 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Selecione os serviços para desabilitar ou ativar:.
+        /// </summary>
+        public static string DisableServices {
+            get {
+                return ResourceManager.GetString("DisableServices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Disable Unnecessary Services.
+        /// </summary>
+        public static string DisableServicesTitle {
+            get {
+                return ResourceManager.GetString("DisableServicesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Desabilitar Serviços Desnec..
+        /// </summary>
+        public static string DisableUnnecessaryServices {
+            get {
+                return ResourceManager.GetString("DisableUnnecessaryServices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Desativar Belezas Visuais.
         /// </summary>
         public static string DisableVisualEffectsButton {
             get {
                 return ResourceManager.GetString("DisableVisualEffectsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Desativando.
+        /// </summary>
+        public static string Disabling {
+            get {
+                return ResourceManager.GetString("Disabling", resourceCulture);
             }
         }
         
@@ -1141,11 +1413,47 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Editar Senha.
+        /// </summary>
+        public static string EditarSenha9 {
+            get {
+                return ResourceManager.GetString("EditarSenha9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Por favor, insira um texto para resumir!.
         /// </summary>
         public static string EmptyTextError {
             get {
                 return ResourceManager.GetString("EmptyTextError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [Habilitado].
+        /// </summary>
+        public static string Enabled {
+            get {
+                return ResourceManager.GetString("Enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Habilitar Selecionados.
+        /// </summary>
+        public static string EnableSelected {
+            get {
+                return ResourceManager.GetString("EnableSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Ativando.
+        /// </summary>
+        public static string Enabling {
+            get {
+                return ResourceManager.GetString("Enabling", resourceCulture);
             }
         }
         
@@ -1164,6 +1472,15 @@ namespace DarkHub.Properties {
         public static string EnterNewDocumentNamePrompt {
             get {
                 return ResourceManager.GetString("EnterNewDocumentNamePrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Entrar.
+        /// </summary>
+        public static string Entrar5 {
+            get {
+                return ResourceManager.GetString("Entrar5", resourceCulture);
             }
         }
         
@@ -1852,6 +2169,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a 👁.
+        /// </summary>
+        public static string Eye {
+            get {
+                return ResourceManager.GetString("Eye", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Falha ao iniciar o processo..
         /// </summary>
         public static string FailedToStartProcess {
@@ -1866,6 +2192,24 @@ namespace DarkHub.Properties {
         public static string FallbackCompleted {
             get {
                 return ResourceManager.GetString("FallbackCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Fechar.
+        /// </summary>
+        public static string Fechar25 {
+            get {
+                return ResourceManager.GetString("Fechar25", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Fechar.
+        /// </summary>
+        public static string Fechar3 {
+            get {
+                return ResourceManager.GetString("Fechar3", resourceCulture);
             }
         }
         
@@ -2023,6 +2367,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Arquivos e chaves de registro restantes encontrados. Removendo....
+        /// </summary>
+        public static string FoundLeftovers {
+            get {
+                return ResourceManager.GetString("FoundLeftovers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a IP do Servidor de Jogo.
         /// </summary>
         public static string GameServerIPTitle {
@@ -2064,6 +2417,51 @@ namespace DarkHub.Properties {
         public static string GeneralRepairError {
             get {
                 return ResourceManager.GetString("GeneralRepairError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Gerar e Salvar.
+        /// </summary>
+        public static string GerareSalvar21 {
+            get {
+                return ResourceManager.GetString("GerareSalvar21", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Gerar Nova Senha.
+        /// </summary>
+        public static string GerarNovaSenha13 {
+            get {
+                return ResourceManager.GetString("GerarNovaSenha13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Gerar Senha.
+        /// </summary>
+        public static string GerarSenha2 {
+            get {
+                return ResourceManager.GetString("GerarSenha2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Gerar Senha.
+        /// </summary>
+        public static string GerarSenha8 {
+            get {
+                return ResourceManager.GetString("GerarSenha8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Gerenciador de Senhas.
+        /// </summary>
+        public static string GerenciadordeSenhas7 {
+            get {
+                return ResourceManager.GetString("GerenciadordeSenhas7", resourceCulture);
             }
         }
         
@@ -2482,6 +2880,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Login.
+        /// </summary>
+        public static string Login4 {
+            get {
+                return ResourceManager.GetString("Login4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Gerenciando Programas de Inicialização.
         /// </summary>
         public static string ManagingStartupProgramsTitle {
@@ -2581,6 +2988,15 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Adaptador de rede não encontrado..
+        /// </summary>
+        public static string NetworkAdapterNotFound {
+            get {
+                return ResourceManager.GetString("NetworkAdapterNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Limpeza de dados de rede concluída!.
         /// </summary>
         public static string NetworkDataCleanupCompleted {
@@ -2649,6 +3065,24 @@ namespace DarkHub.Properties {
         public static string NewTabToolTip {
             get {
                 return ResourceManager.GetString("NewTabToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Acesso negado ao desabilitar serviços:.
+        /// </summary>
+        public static string NoAccessToDisableService {
+            get {
+                return ResourceManager.GetString("NoAccessToDisableService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Acesso negado ao habilitar serviços:.
+        /// </summary>
+        public static string NoAccessToEnableService {
+            get {
+                return ResourceManager.GetString("NoAccessToEnableService", resourceCulture);
             }
         }
         
@@ -2734,6 +3168,24 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum arquivo ou chave de registro restante encontrado..
+        /// </summary>
+        public static string NoLeftoversFound {
+            get {
+                return ResourceManager.GetString("NoLeftoversFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum programa instalado encontrado..
+        /// </summary>
+        public static string NoProgramsFound {
+            get {
+                return ResourceManager.GetString("NoProgramsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum programa de inicialização encontrado..
         /// </summary>
         public static string NoStartupProgramsFound {
@@ -2788,6 +3240,33 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum desinstalador encontrado. Prosseguindo com a remoção de sobras....
+        /// </summary>
+        public static string NoUninstallerFound {
+            get {
+                return ResourceManager.GetString("NoUninstallerFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O formato da senha mestra é inválido. Por favor, crie uma nova senha mestra..
+        /// </summary>
+        public static string Oformatodasenhamestr33 {
+            get {
+                return ResourceManager.GetString("Oformatodasenhamestr33", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a OK.
+        /// </summary>
+        public static string OK8 {
+            get {
+                return ResourceManager.GetString("OK8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a OK.
         /// </summary>
         public static string OKButton {
@@ -2802,6 +3281,15 @@ namespace DarkHub.Properties {
         public static string OptimizationResults {
             get {
                 return ResourceManager.GetString("OptimizationResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Otimização Avançada de Rede.
+        /// </summary>
+        public static string OptimizeAdvancedNetworkSettings {
+            get {
+                return ResourceManager.GetString("OptimizeAdvancedNetworkSettings", resourceCulture);
             }
         }
         
@@ -2892,6 +3380,15 @@ namespace DarkHub.Properties {
         public static string PageLoadedSuccess {
             get {
                 return ResourceManager.GetString("PageLoadedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Palavras de recuperação copiadas para a área de transferência!.
+        /// </summary>
+        public static string Palavrasderecuperaçã42 {
+            get {
+                return ResourceManager.GetString("Palavrasderecuperaçã42", resourceCulture);
             }
         }
         
@@ -3274,6 +3771,69 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Guarde estas palavras de recuperação em um local seguro:.
+        /// </summary>
+        public static string RecoverPassword {
+            get {
+                return ResourceManager.GetString("RecoverPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Palavras de Recuperação.
+        /// </summary>
+        public static string RecoveryWords {
+            get {
+                return ResourceManager.GetString("RecoveryWords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Recuperar.
+        /// </summary>
+        public static string Recuperar23 {
+            get {
+                return ResourceManager.GetString("Recuperar23", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Recuperar Senha.
+        /// </summary>
+        public static string RecuperarSenha6 {
+            get {
+                return ResourceManager.GetString("RecuperarSenha6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Recuperar Senha Mestra.
+        /// </summary>
+        public static string RecuperarSenhaMestra22 {
+            get {
+                return ResourceManager.GetString("RecuperarSenhaMestra22", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Registrar.
+        /// </summary>
+        public static string Registrar3 {
+            get {
+                return ResourceManager.GetString("Registrar3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Registrar Senha Mestra.
+        /// </summary>
+        public static string RegistrarSenhaMestra1 {
+            get {
+                return ResourceManager.GetString("RegistrarSenhaMestra1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Limpeza do registro concluída!.
         /// </summary>
         public static string RegistryCleanupCompleted {
@@ -3481,6 +4041,33 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Restauração concluída!.
+        /// </summary>
+        public static string Restauraçãoconcluída44 {
+            get {
+                return ResourceManager.GetString("Restauraçãoconcluída44", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Restaurar.
+        /// </summary>
+        public static string Restaurar10 {
+            get {
+                return ResourceManager.GetString("Restaurar10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Reverter.
+        /// </summary>
+        public static string Revert {
+            get {
+                return ResourceManager.GetString("Revert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Executar Benchmark.
         /// </summary>
         public static string RunBenchmarkButtonText {
@@ -3513,6 +4100,15 @@ namespace DarkHub.Properties {
         public static string RunningGarbageCollection {
             get {
                 return ResourceManager.GetString("RunningGarbageCollection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Executando o desinstalador oficial....
+        /// </summary>
+        public static string RunningOfficialUninstaller {
+            get {
+                return ResourceManager.GetString("RunningOfficialUninstaller", resourceCulture);
             }
         }
         
@@ -3571,6 +4167,24 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Sair.
+        /// </summary>
+        public static string Sair11 {
+            get {
+                return ResourceManager.GetString("Sair11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Salvar.
+        /// </summary>
+        public static string Salvar12 {
+            get {
+                return ResourceManager.GetString("Salvar12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Salvar.
         /// </summary>
         public static string SaveButton {
@@ -3594,6 +4208,15 @@ namespace DarkHub.Properties {
         public static string SaveToolTip {
             get {
                 return ResourceManager.GetString("SaveToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Procurando por arquivos e chaves de registro restantes....
+        /// </summary>
+        public static string ScanningLeftovers {
+            get {
+                return ResourceManager.GetString("ScanningLeftovers", resourceCulture);
             }
         }
         
@@ -3657,6 +4280,24 @@ namespace DarkHub.Properties {
         public static string SelectedFilesText {
             get {
                 return ResourceManager.GetString("SelectedFilesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Serviços selecionados desabilitados com sucesso!.
+        /// </summary>
+        public static string SelectedServicesDisabled {
+            get {
+                return ResourceManager.GetString("SelectedServicesDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Serviços selecionados habilitados com sucesso!.
+        /// </summary>
+        public static string SelectedServicesEnabled {
+            get {
+                return ResourceManager.GetString("SelectedServicesEnabled", resourceCulture);
             }
         }
         
@@ -3765,6 +4406,78 @@ namespace DarkHub.Properties {
         public static string SelectValidImage {
             get {
                 return ResourceManager.GetString("SelectValidImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha Copiada.
+        /// </summary>
+        public static string SenhaCopiada1 {
+            get {
+                return ResourceManager.GetString("SenhaCopiada1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha Descriptografada.
+        /// </summary>
+        public static string SenhaDescriptografad24 {
+            get {
+                return ResourceManager.GetString("SenhaDescriptografad24", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha excluída com sucesso!.
+        /// </summary>
+        public static string Senhaexcluídacomsuce7 {
+            get {
+                return ResourceManager.GetString("Senhaexcluídacomsuce7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha gerada com sucesso! Você pode modificá-la se desejar..
+        /// </summary>
+        public static string Senhageradacomsucess37 {
+            get {
+                return ResourceManager.GetString("Senhageradacomsucess37", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha mestra incorreta!.
+        /// </summary>
+        public static string Senhamestraincorreta32 {
+            get {
+                return ResourceManager.GetString("Senhamestraincorreta32", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha mestra recuperada com sucesso! A senha foi copiada para a área de transferência..
+        /// </summary>
+        public static string Senhamestrarecuperad38 {
+            get {
+                return ResourceManager.GetString("Senhamestrarecuperad38", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha mestra registrada com sucesso!.
+        /// </summary>
+        public static string Senhamestraregistrad43 {
+            get {
+                return ResourceManager.GetString("Senhamestraregistrad43", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Sessão bloqueada por inatividade!.
+        /// </summary>
+        public static string Sessãobloqueadaporin36 {
+            get {
+                return ResourceManager.GetString("Sessãobloqueadaporin36", resourceCulture);
             }
         }
         
@@ -3999,6 +4712,15 @@ namespace DarkHub.Properties {
         public static string StopButton {
             get {
                 return ResourceManager.GetString("StopButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Guarde estas palavras de recuperação em um local seguro:.
+        /// </summary>
+        public static string StorePassword {
+            get {
+                return ResourceManager.GetString("StorePassword", resourceCulture);
             }
         }
         
@@ -4278,6 +5000,33 @@ namespace DarkHub.Properties {
         public static string TimerResolutionTitle {
             get {
                 return ResourceManager.GetString("TimerResolutionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Título.
+        /// </summary>
+        public static string Título10 {
+            get {
+                return ResourceManager.GetString("Título10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Título.
+        /// </summary>
+        public static string Título14 {
+            get {
+                return ResourceManager.GetString("Título14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha.
+        /// </summary>
+        public static string Título15 {
+            get {
+                return ResourceManager.GetString("Título15", resourceCulture);
             }
         }
         

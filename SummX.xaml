@@ -1,7 +1,7 @@
 <Page x:Class="DarkHub.SummX"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:DarkHub"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -16,71 +16,71 @@
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/DarkHub;component/Styles/SummXStyles.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/DarkHub;component/Styles/SummXStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
 
     <Grid Background="{StaticResource BackgroundColor}" x:Name="MainGrid" ClipToBounds="True">
-        <ScrollViewer x:Name="MainScrollViewer" 
-                     VerticalScrollBarVisibility="Hidden" 
+        <ScrollViewer x:Name="MainScrollViewer"
+                     VerticalScrollBarVisibility="Hidden"
                      ScrollChanged="MainScrollViewer_ScrollChanged"
                      Background="Transparent"
                      Panel.ZIndex="1">
             <StackPanel Margin="20" Background="Transparent">
                 <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SummXTitle}"
                          Style="{StaticResource HeaderTextBlockStyle}"
-                         Margin="0,0,0,20"/>
+                         Margin="0,0,0,20" />
 
                 <Border Style="{StaticResource CardBorderStyle}">
                     <StackPanel Margin="15">
                         <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SettingsTitle}"
                                  Style="{StaticResource SubHeaderTextBlockStyle}"
-                                 Margin="0,0,0,15"/>
+                                 Margin="0,0,0,15" />
 
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
                             <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,10,10">
-                                <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=LanguageLabel}" 
-                                         Style="{StaticResource LabelTextBlockStyle}"/>
+                                <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=LanguageLabel}"
+                                         Style="{StaticResource LabelTextBlockStyle}" />
                                 <ComboBox x:Name="LanguageComboBox" Style="{StaticResource ComboBoxStyle}">
-                                    <ComboBoxItem Content="Português" IsSelected="True"/>
-                                    <ComboBoxItem Content="English"/>
-                                    <ComboBoxItem Content="Español"/>
+                                    <ComboBoxItem Content="Português" IsSelected="True" />
+                                    <ComboBoxItem Content="English" />
+                                    <ComboBoxItem Content="Español" />
                                 </ComboBox>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Grid.Row="0" Margin="10,0,0,10">
                                 <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=MaxLengthLabel}"
-                                         Style="{StaticResource LabelTextBlockStyle}"/>
-                                <TextBox x:Name="MaxLengthTextBox" Text="150" Style="{StaticResource TextBoxStyle}"/>
+                                         Style="{StaticResource LabelTextBlockStyle}" />
+                                <TextBox x:Name="MaxLengthTextBox" Text="150" Style="{StaticResource TextBoxStyle}" />
                             </StackPanel>
 
                             <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,10,10">
                                 <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=KeywordWeightLabel}"
-                                         Style="{StaticResource LabelTextBlockStyle}"/>
-                                <TextBox x:Name="KeywordWeightTextBox" Text="1.5" Style="{StaticResource TextBoxStyle}"/>
+                                         Style="{StaticResource LabelTextBlockStyle}" />
+                                <TextBox x:Name="KeywordWeightTextBox" Text="1.5" Style="{StaticResource TextBoxStyle}" />
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Grid.Row="1" Margin="10,0,0,10">
                                 <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=TfidfWeightLabel}"
-                                         Style="{StaticResource LabelTextBlockStyle}"/>
-                                <TextBox x:Name="TfidfWeightTextBox" Text="1.0" Style="{StaticResource TextBoxStyle}"/>
+                                         Style="{StaticResource LabelTextBlockStyle}" />
+                                <TextBox x:Name="TfidfWeightTextBox" Text="1.0" Style="{StaticResource TextBoxStyle}" />
                             </StackPanel>
 
                             <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,10,0">
                                 <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=TextRankWeightLabel}"
-                                         Style="{StaticResource LabelTextBlockStyle}"/>
-                                <TextBox x:Name="TextRankWeightTextBox" Text="1.0" Style="{StaticResource TextBoxStyle}"/>
+                                         Style="{StaticResource LabelTextBlockStyle}" />
+                                <TextBox x:Name="TextRankWeightTextBox" Text="1.0" Style="{StaticResource TextBoxStyle}" />
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -90,14 +90,14 @@
                     <StackPanel Margin="15">
                         <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=KeywordsTitle}"
                                  Style="{StaticResource SubHeaderTextBlockStyle}"
-                                 Margin="0,0,0,15"/>
-                        <TextBox x:Name="KeywordsTextBox" 
+                                 Margin="0,0,0,15" />
+                        <TextBox x:Name="KeywordsTextBox"
                                 Style="{StaticResource TextBoxStyle}"
                                 Height="60"
                                 TextWrapping="Wrap"
                                 AcceptsReturn="True"
                                 VerticalScrollBarVisibility="Auto"
-                                Tag="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=KeywordsPlaceholder}"/>
+                                Tag="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=KeywordsPlaceholder}" />
                     </StackPanel>
                 </Border>
 
@@ -105,33 +105,33 @@
                     <StackPanel Margin="15">
                         <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=InputTextTitle}"
                                  Style="{StaticResource SubHeaderTextBlockStyle}"
-                                 Margin="0,0,0,15"/>
-                        <TextBox x:Name="InputTextBox" 
+                                 Margin="0,0,0,15" />
+                        <TextBox x:Name="InputTextBox"
                                 Style="{StaticResource TextBoxStyle}"
                                 Height="150"
                                 TextWrapping="Wrap"
                                 AcceptsReturn="True"
                                 VerticalScrollBarVisibility="Auto"
-                                Tag="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=InputTextPlaceholder}"/>
+                                Tag="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=InputTextPlaceholder}" />
                     </StackPanel>
                 </Border>
 
                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                    <Button x:Name="SummarizeButton" 
+                    <Button x:Name="SummarizeButton"
                             Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SummarizeButton}"
                             Style="{StaticResource PrimaryButtonStyle}"
                             Click="SummarizeButton_Click"
                             Cursor="Hand"
                             Height="40"
                             Width="150"
-                            Margin="0,0,10,0"/>
-                    <Button x:Name="SummarizePdfButton" 
+                            Margin="0,0,10,0" />
+                    <Button x:Name="SummarizePdfButton"
                             Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SummarizePdfButton}"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Cursor="Hand"
                             Height="40"
                             Width="150"
-                            Click="SummarizePdfButton_Click"/>
+                            Click="SummarizePdfButton_Click" />
                 </StackPanel>
 
                 <Border Style="{StaticResource CardBorderStyle}" Margin="0,20,0,25">
@@ -146,12 +146,12 @@
                                     Cursor="Hand"
                                     Height="40"
                                     ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=CopyToClipboardTooltip}">
-                                <Image Source="/assets/copiar.png" Width="20" Height="20"/>
+                                <Image Source="/assets/copiar.png" Width="20" Height="20" />
                             </Button>
                             <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SummaryTitle}"
-                                     Style="{StaticResource SubHeaderTextBlockStyle}"/>
+                                     Style="{StaticResource SubHeaderTextBlockStyle}" />
                         </DockPanel>
-                        <TextBox x:Name="OutputTextBox" 
+                        <TextBox x:Name="OutputTextBox"
                                 Style="{StaticResource TextBoxStyle}"
                                 MinHeight="150"
                                 MaxHeight="300"
@@ -160,7 +160,7 @@
                                 VerticalScrollBarVisibility="Auto"
                                 Padding="10"
                                 Margin="0,0,0,10"
-                                IsReadOnly="True"/>
+                                IsReadOnly="True" />
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -168,6 +168,6 @@
 
         <Border x:Name="ScrollIndicator"
                 Style="{StaticResource ScrollIndicatorStyle}"
-                Visibility="Collapsed"/>
+                Visibility="Collapsed" />
     </Grid>
 </Page> 

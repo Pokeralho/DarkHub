@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using YoutubeDLSharp;
@@ -117,12 +115,15 @@ namespace DarkHub
                                 options.ExtractAudio = true;
                                 options.AudioFormat = AudioConversionFormat.Mp3;
                                 break;
+
                             case "mp4":
                                 options.MergeOutputFormat = DownloadMergeFormat.Mp4;
                                 break;
+
                             case "mkv":
                                 options.MergeOutputFormat = DownloadMergeFormat.Mkv;
                                 break;
+
                             default:
                                 throw new ArgumentException("Formato não suportado.");
                         }

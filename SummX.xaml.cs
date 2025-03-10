@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Win32;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
-using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Diagnostics;
-using static System.Windows.Clipboard;
 
 namespace DarkHub
 {
@@ -188,4 +182,4 @@ namespace DarkHub
             return keywords.Any(k => text.ToLower().Contains(k.ToLower()));
         }
     }
-} 
+}
