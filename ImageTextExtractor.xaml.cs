@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using Microsoft.Win32;
-using Tesseract;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Windows;
+using Tesseract;
 
 namespace DarkHub
 {

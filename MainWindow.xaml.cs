@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
-using System.Windows.Forms;
 using Forms = System.Windows.Forms;
+
 using WPF = System.Windows;
 
 namespace DarkHub
@@ -143,6 +139,7 @@ namespace DarkHub
                 btnCrunchyrollAcc.Tag = null;
                 btnSystemMonitor.Tag = null;
                 btnSummX.Tag = null;
+                btnPassMng.Tag = null;
 
                 clickedButton.Tag = "Active";
 
@@ -168,6 +165,8 @@ namespace DarkHub
                     await NavigateToPageAsync(new SystemMonitor());
                 else if (clickedButton == btnSummX)
                     await NavigateToPageAsync(new SummX());
+                else if (clickedButton == btnPassMng)
+                    await NavigateToPageAsync(new PasswordManager());
             }
             catch (Exception ex)
             {
@@ -226,45 +225,60 @@ namespace DarkHub
             btnCrunchyrollAcc.Tag = null;
             btnSystemMonitor.Tag = null;
             btnSummX.Tag = null;
+            btnPassMng.Tag = null;
 
             switch (pageName)
             {
                 case "Optimizer":
                     btnOptimizer.Tag = "Active";
                     break;
+
                 case "AutoClicker":
                     btnClicker.Tag = "Active";
                     break;
+
                 case "FileConverter":
                     btnFileConverter.Tag = "Active";
                     break;
+
                 case "MetaDataEditor":
                     btnMetaDataEditor.Tag = "Active";
                     break;
+
                 case "TextEditor":
                     btnTextEditor.Tag = "Active";
                     break;
+
                 case "ImageTextExtractor":
                     btnExtrairTexto.Tag = "Active";
                     break;
+
                 case "YoutubeVideoDownloader":
                     btnYTDownloader.Tag = "Active";
                     break;
+
                 case "SystemMonitor":
                     btnSystemMonitor.Tag = "Active";
                     break;
+
                 case "SummX":
                     btnSummX.Tag = "Active";
                     break;
+
+                case "PasswordManager":
+                    btnPassMng.Tag = "Active";
+                    break;
+
                 case "DllInjector":
                     btnDllInjector.Tag = "Active";
                     break;
+
                 case "CrunchyrollAcc":
                     btnCrunchyrollAcc.Tag = "Active";
                     break;
             }
 
-            var paginasOcultas = new List<string> { "SummX", "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
+            var paginasOcultas = new List<string> { "PasswordManager", "SummX", "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
 
             if (paginasOcultas.Contains(pageName))
             {

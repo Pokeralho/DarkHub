@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using Microsoft.Win32;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.VisualBasic.Devices;
 using System.Net;
 using System.Net.Sockets;
-using System.Windows.Data;
+using System.Runtime.InteropServices;
+using System.ServiceProcess;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DarkHub
 {
@@ -37,11 +32,231 @@ namespace DarkHub
             }
         }
 
+        private void DisableUnnecessaryServices(object sender, RoutedEventArgs e)
+        {
+            var servicesWindow = new Window
+            {
+                Title = ResourceManagerHelper.Instance.DisableServicesTitle,
+                Width = 500,
+                Height = 300,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize,
+                Owner = Window.GetWindow(this),
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
+                BorderThickness = new Thickness(1)
+            };
+
+            var stackPanel = new StackPanel { Margin = new Thickness(10) };
+            stackPanel.Children.Add(new TextBlock
+            {
+                Text = ResourceManagerHelper.Instance.DisableServices,
+                Margin = new Thickness(0, 0, 0, 10),
+                Foreground = Brushes.White
+            });
+
+            var listBox = new ListBox
+            {
+                Height = 150,
+                Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+            var unnecessaryServices = GetUnnecessaryServices();
+
+            foreach (var service in unnecessaryServices)
+            {
+                string statusText = service.Status == ServiceControllerStatus.Running ? ResourceManagerHelper.Instance.Enabled : ResourceManagerHelper.Instance.Disabled;
+                var checkBox = new CheckBox
+                {
+                    Content = $"{service.DisplayName} ({service.ServiceName}) {statusText}",
+                    Tag = service.ServiceName,
+                    IsChecked = false,
+                    Foreground = Brushes.White
+                };
+                listBox.Items.Add(checkBox);
+            }
+
+            stackPanel.Children.Add(listBox);
+
+            var buttonPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+            var disableButton = new Button
+            {
+                Content = ResourceManagerHelper.Instance.DisableSelected,
+                Width = 170,
+                Margin = new Thickness(0, 0, 10, 0),
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+            var enableButton = new Button
+            {
+                Content = ResourceManagerHelper.Instance.EnableSelected,
+                Width = 170,
+                Margin = new Thickness(0, 0, 10, 0),
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+            var cancelButton = new Button
+            {
+                Content = ResourceManagerHelper.Instance.Cancel,
+                Width = 100,
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+
+            buttonPanel.Children.Add(disableButton);
+            buttonPanel.Children.Add(enableButton);
+            buttonPanel.Children.Add(cancelButton);
+            stackPanel.Children.Add(buttonPanel);
+            servicesWindow.Content = stackPanel;
+
+            disableButton.Click += (s, ev) =>
+            {
+                var selectedServices = listBox.Items.Cast<CheckBox>()
+                    .Where(cb => cb.IsChecked == true)
+                    .Select(cb => cb.Tag.ToString())
+                    .ToList();
+                DisableSelectedServices(selectedServices);
+                servicesWindow.Close();
+            };
+
+            enableButton.Click += (s, ev) =>
+            {
+                var selectedServices = listBox.Items.Cast<CheckBox>()
+                    .Where(cb => cb.IsChecked == true)
+                    .Select(cb => cb.Tag.ToString())
+                    .ToList();
+                EnableSelectedServices(selectedServices);
+                servicesWindow.Close();
+            };
+
+            cancelButton.Click += (s, ev) => servicesWindow.Close();
+
+            servicesWindow.ShowDialog();
+        }
+
+        private List<ServiceController> GetUnnecessaryServices()
+        {
+            var allServices = ServiceController.GetServices();
+            var unnecessaryServiceNames = new List<string>
+            {
+        "WSearch",
+        "SysMain",
+        "WbioSrvc",
+        "MapsBroker",
+        "dmwappushservice",
+        "DiagTrack",
+        "GeolocationSvc",
+        "RetailDemo",
+        "XblAuthManager",
+        "XblGameSave",
+        "XboxGipSvc",
+        "XboxNetApiSvc",
+        "GamingServices",
+        "GameBarPresenceWriter",
+        "PcaSvc",
+        "diagnosticshub.standardcollector.service",
+        "WerSvc",
+        "Fax",
+        "Spooler",
+        "TabletInputService",
+        "SensrSvc",
+        "HomeGroupListener",
+        "HomeGroupProvider",
+        "RemoteRegistry",
+        "SSDPSRV",
+        "upnphost",
+        "wuauserv",
+        "OneSyncSvc",
+        "PushToInstall"
+    };
+            return allServices
+                .Where(s => unnecessaryServiceNames.Contains(s.ServiceName))
+                .ToList();
+        }
+
+        private void DisableSelectedServices(List<string> serviceNames)
+        {
+            try
+            {
+                foreach (var serviceName in serviceNames)
+                {
+                    using var service = new ServiceController(serviceName);
+                    if (service.Status != ServiceControllerStatus.Stopped)
+                    {
+                        service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                    }
+                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}", writable: true);
+                    if (key != null)
+                    {
+                        key.SetValue("Start", 4, RegistryValueKind.DWord);
+                    }
+                }
+
+                MessageBox.Show(ResourceManagerHelper.Instance.SelectedServicesDisabled,
+                    ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show(ResourceManagerHelper.Instance.NoAccessToDisableService + " " + ex.Message,
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ResourceManagerHelper.Instance.NoAccessToDisableService + " " + ex.Message,
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void EnableSelectedServices(List<string> serviceNames)
+        {
+            try
+            {
+                foreach (var serviceName in serviceNames)
+                {
+                    using var service = new ServiceController(serviceName);
+                    if (service.Status == ServiceControllerStatus.Stopped)
+                    {
+                        using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}", writable: true);
+                        if (key != null)
+                        {
+                            key.SetValue("Start", 2, RegistryValueKind.DWord);
+                        }
+
+                        service.Start();
+                        service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+                    }
+                }
+
+                MessageBox.Show(ResourceManagerHelper.Instance.SelectedServicesEnabled,
+                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show(ResourceManagerHelper.Instance.NoAccessToEnableService + " " + ex.Message,
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ResourceManagerHelper.Instance.NoAccessToEnableService + " " + ex.Message,
+                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private async void SystemInfo(object sender, RoutedEventArgs e)
         {
             try
             {
-                var systemInfo = new StringBuilder();   
+                var systemInfo = new StringBuilder();
 
                 var os = Environment.OSVersion;
                 systemInfo.AppendLine($"SO: {os.VersionString}");
@@ -111,13 +326,13 @@ namespace DarkHub
                     Height = 500,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
                     WindowStyle = WindowStyle.ToolWindow,
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 14
                 };
 
-                infoWindow.BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142));  
+                infoWindow.BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142));
                 infoWindow.BorderThickness = new Thickness(1);
 
                 var grid = new Grid();
@@ -144,12 +359,12 @@ namespace DarkHub
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),  
+                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),
                     Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     Padding = new Thickness(10),
                     FontSize = 14,
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
                     BorderThickness = new Thickness(1)
                 };
                 Grid.SetRow(textBox, 1);
@@ -265,8 +480,8 @@ namespace DarkHub
                     Height = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
                     ResizeMode = ResizeMode.NoResize,
-                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
+                    Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
                     BorderThickness = new Thickness(1)
                 };
 
@@ -292,13 +507,13 @@ namespace DarkHub
                     Name = "ProgressTextBox",
                     IsReadOnly = true,
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),  
+                    Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),
                     Foreground = Brushes.White,
                     Margin = new Thickness(10),
                     Padding = new Thickness(5),
                     FontFamily = new FontFamily("JetBrains Mono"),
                     FontSize = 12,
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
                     BorderThickness = new Thickness(1)
                 };
                 Grid.SetRow(textBox, 1);
@@ -486,45 +701,209 @@ namespace DarkHub
 
         private async void DisableVisualEffects(object sender, RoutedEventArgs e)
         {
+            var confirmationWindow = new Window
+            {
+                Title = "Confirmação",
+                Width = 300,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize,
+                Owner = Window.GetWindow(this)
+            };
+
+            var stackPanel = new StackPanel { Margin = new Thickness(10) };
+            stackPanel.Children.Add(new TextBlock
+            {
+                Text = "Deseja realmente desativar todos os efeitos visuais?",
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            var buttonPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+            var applyButton = new Button { Content = "Aplicar", Width = 80, Margin = new Thickness(0, 0, 10, 0) };
+            var cancelButton = new Button { Content = "Cancelar", Width = 80 };
+            var revertButton = new Button
+            {
+                Content = "Reverter",
+                Width = 80,
+                Margin = new Thickness(10, 0, 0, 0),
+                IsEnabled = true
+            };
+
+            buttonPanel.Children.Add(applyButton);
+            buttonPanel.Children.Add(cancelButton);
+            buttonPanel.Children.Add(revertButton);
+            stackPanel.Children.Add(buttonPanel);
+            confirmationWindow.Content = stackPanel;
+
+            applyButton.Click += async (s, ev) =>
+            {
+                await DisableVisualEffectsAsync();
+            };
+            cancelButton.Click += (s, ev) => confirmationWindow.Close();
+            revertButton.Click += async (s, ev) =>
+            {
+                await RevertVisualEffectsAsync();
+            };
+
+            confirmationWindow.ShowDialog();
+        }
+
+        private async Task DisableVisualEffectsAsync()
+        {
             try
             {
-                const string desktopKeyPath = @"HKEY_CURRENT_USER\Control Panel\Desktop";
-                const string windowMetricsKeyPath = @"HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics";
-                const string advancedExplorerKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
-                const string visualEffectsKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects";
-                const string dwmKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM";
+                const string DesktopKeyPath = @"HKEY_CURRENT_USER\Control Panel\Desktop";
+                const string WindowMetricsKeyPath = @"HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics";
+                const string AdvancedExplorerKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+                const string VisualEffectsKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects";
+                const string DwmKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM";
+                const string CursorsKeyPath = @"HKEY_CURRENT_USER\Control Panel\Cursors";
+                const string AccessibilityKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Accessibility";
 
-                byte[] optimizedUserPrefs = new byte[] { 0x90, 0x12, 0x03, 0x80, 0x10, 0x00, 0x00, 0x00 };
+                var registrySettings = new Dictionary<(string Key, string Name), (object Value, RegistryValueKind Kind)>
+                {
+                    {(DesktopKeyPath, "UserPreferencesMask"), (new byte[] { 0x90, 0x12, 0x03, 0x80, 0x10, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary)},
+                    {(VisualEffectsKeyPath, "VisualFXSetting"), (2, RegistryValueKind.DWord)},
+                    {(WindowMetricsKeyPath, "MinAnimate"), ("0", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "TaskbarAnimations"), (0, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "EnableAeroPeek"), (0, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "AlwaysHibernateThumbnails"), (0, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "IconsOnly"), (1, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "ListviewAlphaSelect"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "DragFullWindows"), ("0", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "FontSmoothing"), ("0", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "ListviewShadow"), (0, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "EnableTransparency"), (0, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "ColorizationOpaqueBlend"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "DisableAnimations"), (1, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "Composition"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "MenuAnimation"), ("0", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "ExtendedUIHoverTime"), (10000, RegistryValueKind.DWord)},
+                    {(CursorsKeyPath, "CursorShadow"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "SmoothScroll"), (0, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "ListviewFade"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "WallpaperStyle"), ("0", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "TileWallpaper"), ("0", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "WallpaperSlideshow"), (0, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "ShowInfoTip"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "ComboBoxAnimation"), ("0", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "ListBoxSmoothScrolling"), ("0", RegistryValueKind.String)},
+                    {(WindowMetricsKeyPath, "FadeFullScreen"), ("0", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "IconQuality"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "VisualSoundEffects"), (0, RegistryValueKind.DWord)},
+                    {(AccessibilityKeyPath, "HighContrast"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "DropShadow"), ("0", RegistryValueKind.String)}
+                };
+
                 await Task.Run(() =>
                 {
-                    SetRegistryValue(desktopKeyPath, "UserPreferencesMask", optimizedUserPrefs, RegistryValueKind.Binary);
-                    SetRegistryValue(visualEffectsKeyPath, "VisualFXSetting", 2, RegistryValueKind.DWord);
-                    SetRegistryValue(windowMetricsKeyPath, "MinAnimate", "0", RegistryValueKind.String);
-                    SetRegistryValue(advancedExplorerKeyPath, "TaskbarAnimations", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(dwmKeyPath, "EnableAeroPeek", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(dwmKeyPath, "AlwaysHibernateThumbnails", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(advancedExplorerKeyPath, "IconsOnly", 1, RegistryValueKind.DWord);
-                    SetRegistryValue(advancedExplorerKeyPath, "ListviewAlphaSelect", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(desktopKeyPath, "DragFullWindows", "0", RegistryValueKind.String);
-                    SetRegistryValue(desktopKeyPath, "FontSmoothing", "0", RegistryValueKind.String);
-                    SetRegistryValue(advancedExplorerKeyPath, "ListviewShadow", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(dwmKeyPath, "EnableTransparency", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(dwmKeyPath, "ColorizationOpaqueBlend", 1, RegistryValueKind.DWord);
-                    SetRegistryValue(desktopKeyPath, "DisableAnimations", 1, RegistryValueKind.DWord);
-                    SetRegistryValue(dwmKeyPath, "Composition", 0, RegistryValueKind.DWord);
-                    SetRegistryValue(desktopKeyPath, "MenuAnimation", "0", RegistryValueKind.String);
-                    SetRegistryValue(advancedExplorerKeyPath, "ExtendedUIHoverTime", 10000, RegistryValueKind.DWord);
+                    Parallel.ForEach(registrySettings, setting =>
+                    {
+                        var (keyPath, name) = setting.Key;
+                        var (newValue, kind) = setting.Value;
+                        SetRegistryValue(keyPath, name, newValue, kind);
+                    });
 
                     SystemParametersInfo(0x200, 0, IntPtr.Zero, 0x2);
+                    SystemParametersInfo(0x1012, 0, IntPtr.Zero, 0x2);
+                    SystemParametersInfo(0x101E, 0, IntPtr.Zero, 0x2);
+                    SystemParametersInfo(0x1026, 0, IntPtr.Zero, 0x2);
                 });
 
                 MessageBox.Show(ResourceManagerHelper.Instance.VisualEffectsDisabledSuccess,
-                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show($"Acesso negado ao Registro: {ex.Message}", ResourceManagerHelper.Instance.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorDisablingVisualEffects, ex.Message),
-                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Erro ao desativar efeitos visuais: {ex.Message}", ResourceManagerHelper.Instance.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task RevertVisualEffectsAsync()
+        {
+            try
+            {
+                const string DesktopKeyPath = @"HKEY_CURRENT_USER\Control Panel\Desktop";
+                const string WindowMetricsKeyPath = @"HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics";
+                const string AdvancedExplorerKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced";
+                const string VisualEffectsKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects";
+                const string DwmKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM";
+                const string CursorsKeyPath = @"HKEY_CURRENT_USER\Control Panel\Cursors";
+                const string AccessibilityKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Accessibility";
+
+                var defaultSettings = new Dictionary<(string Key, string Name), (object Value, RegistryValueKind Kind)>
+                {
+                    {(DesktopKeyPath, "UserPreferencesMask"), (new byte[] { 0x9E, 0x3E, 0x07, 0x80, 0x12, 0x00, 0x00, 0x00 }, RegistryValueKind.Binary)},
+                    {(VisualEffectsKeyPath, "VisualFXSetting"), (0, RegistryValueKind.DWord)},
+                    {(WindowMetricsKeyPath, "MinAnimate"), ("1", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "TaskbarAnimations"), (1, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "EnableAeroPeek"), (1, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "AlwaysHibernateThumbnails"), (0, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "IconsOnly"), (0, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "ListviewAlphaSelect"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "DragFullWindows"), ("1", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "FontSmoothing"), ("2", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "ListviewShadow"), (1, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "EnableTransparency"), (1, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "ColorizationOpaqueBlend"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "DisableAnimations"), (0, RegistryValueKind.DWord)},
+                    {(DwmKeyPath, "Composition"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "MenuAnimation"), ("1", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "ExtendedUIHoverTime"), (400, RegistryValueKind.DWord)},
+                    {(CursorsKeyPath, "CursorShadow"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "SmoothScroll"), (1, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "ListviewFade"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "WallpaperStyle"), ("10", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "TileWallpaper"), ("0", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "WallpaperSlideshow"), (0, RegistryValueKind.DWord)},
+                    {(AdvancedExplorerKeyPath, "ShowInfoTip"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "ComboBoxAnimation"), ("1", RegistryValueKind.String)},
+                    {(DesktopKeyPath, "ListBoxSmoothScrolling"), ("1", RegistryValueKind.String)},
+                    {(WindowMetricsKeyPath, "FadeFullScreen"), ("1", RegistryValueKind.String)},
+                    {(AdvancedExplorerKeyPath, "IconQuality"), (1, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "VisualSoundEffects"), (1, RegistryValueKind.DWord)},
+                    {(AccessibilityKeyPath, "HighContrast"), (0, RegistryValueKind.DWord)},
+                    {(DesktopKeyPath, "DropShadow"), ("1", RegistryValueKind.String)}
+                };
+
+                await Task.Run(() =>
+                {
+                    Parallel.ForEach(defaultSettings, setting =>
+                    {
+                        var (keyPath, name) = setting.Key;
+                        var (defaultValue, kind) = setting.Value;
+                        SetRegistryValue(keyPath, name, defaultValue, kind);
+                    });
+
+                    SystemParametersInfo(0x200, 1, IntPtr.Zero, 0x2);
+                    SystemParametersInfo(0x1012, 1, IntPtr.Zero, 0x2);
+                    SystemParametersInfo(0x101E, 1, IntPtr.Zero, 0x2);
+                    SystemParametersInfo(0x1026, 1, IntPtr.Zero, 0x2);
+                });
+
+                MessageBox.Show("Efeitos visuais restaurados para os padrões do Windows!", ResourceManagerHelper.Instance.SuccessTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show($"Acesso negado ao Registro ao reverter: {ex.Message}", ResourceManagerHelper.Instance.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao reverter efeitos visuais: {ex.Message}", ResourceManagerHelper.Instance.ErrorTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -873,10 +1252,7 @@ namespace DarkHub
         private async void UninstallProgram(object sender, RoutedEventArgs e)
         {
             Button? button = sender as Button;
-            if (button == null)
-            {
-                return;
-            }
+            if (button == null) return;
 
             button.IsEnabled = false;
             TextBox? progressTextBox = null;
@@ -884,65 +1260,79 @@ namespace DarkHub
 
             try
             {
-                var fileDialog = new OpenFileDialog
+                var installedPrograms = await GetInstalledProgramsAsync();
+                if (installedPrograms.Count == 0)
                 {
-                    Filter = "Aplicativos (*.exe)|*.exe",
-                    Title = ResourceManagerHelper.Instance.SelectProgramToUninstall
-                };
+                    MessageBox.Show(ResourceManagerHelper.Instance.NoProgramsFound,
+                        ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    button.IsEnabled = true;
+                    return;
+                }
 
-                if (fileDialog.ShowDialog() != true)
+                var selectionWindow = CreateProgramSelectionWindow(installedPrograms);
+                if (selectionWindow.ShowDialog() != true || selectionWindow.Tag == null)
                 {
                     button.IsEnabled = true;
                     return;
                 }
 
-                string programPath = fileDialog.FileName;
-                string programName = Path.GetFileNameWithoutExtension(programPath);
-
-                if (!File.Exists(programPath))
-                {
-                    MessageBox.Show(ResourceManagerHelper.Instance.ProgramNotFound,
-                    ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                    button.IsEnabled = true;
-                    return;
-                }
+                var selectedProgram = (InstalledProgram)selectionWindow.Tag;
+                string programName = selectedProgram.Name;
+                string? uninstallString = selectedProgram.UninstallString;
+                string? installLocation = selectedProgram.InstallLocation;
 
                 (progressWindow, progressTextBox) = CreateProgressWindow(ResourceManagerHelper.Instance.UninstallingProgramTitle);
                 await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
                 AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.StartingUninstallation, programName));
 
-                await Task.Run(async () =>
+                bool uninstallerExecuted = false;
+                if (!string.IsNullOrEmpty(uninstallString))
                 {
-                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CheckingProgramRegistered, programName));
-                    string checkResult = ExecuteCommandWithOutput($"wmic product where \"Name like '%{programName}%'\" get Name", progressTextBox);
-                    if (string.IsNullOrEmpty(checkResult) || !checkResult.Contains(programName, StringComparison.OrdinalIgnoreCase))
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RunningOfficialUninstaller);
+                    uninstallerExecuted = await ExecuteUninstallerAsync(uninstallString, installLocation, progressTextBox);
+                    if (!uninstallerExecuted)
                     {
-                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ProgramNotRegistered);
-                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.RemovingFileDirectly);
-                        File.Delete(programPath);
-                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.FileRemovedSuccess);
-                        return;
+                        AppendProgress(progressTextBox, "Uninstaller failed or not found. Proceeding with deep cleanup.");
                     }
-
-                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.UninstallingViaWMIC);
-                    string result = ExecuteCommandWithOutput($"wmic product where \"Name like '%{programName}%'\" call uninstall", progressTextBox);
-                    if (result.Contains("ReturnValue = 0"))
-                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.TaskCompleted);
                     else
-                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.UninstallationFailed);
+                    {
+                        AppendProgress(progressTextBox, "Uninstaller executed. Verifying removal...");
+                        if (!string.IsNullOrEmpty(installLocation) && Directory.Exists(installLocation))
+                        {
+                            AppendProgress(progressTextBox, "Program files still detected. Forcing deep cleanup.");
+                            uninstallerExecuted = false;
+                        }
+                    }
+                }
+                else
+                {
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.NoUninstallerFound);
+                    AppendProgress(progressTextBox, "Proceeding with deep cleanup due to missing uninstaller.");
+                }
 
-                    await Task.Delay(100);
-                });
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ScanningLeftovers);
+                var leftovers = await ScanForLeftoversAsync(programName, installLocation, progressTextBox);
+                if (leftovers.HasLeftovers || !uninstallerExecuted)
+                {
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.FoundLeftovers);
+                    await CleanupLeftoversAsync(leftovers, progressTextBox);
+                }
+                else
+                {
+                    AppendProgress(progressTextBox, ResourceManagerHelper.Instance.NoLeftoversFound);
+                }
+
+                await RemoveFromInstalledProgramsAsync(programName, progressTextBox);
 
                 AppendProgress(progressTextBox, ResourceManagerHelper.Instance.UninstallationCompleted);
                 await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.ProgramUninstalledSuccess,
-                ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
+                    ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
             }
             catch (Exception ex)
             {
                 AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorUninstallingProgram, ex.Message));
                 MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorUninstallingProgram, ex.Message),
-                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                    ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -953,6 +1343,520 @@ namespace DarkHub
                 }
             }
         }
+
+        public class InstalledProgram
+        {
+            public string Name { get; set; }
+            public string? UninstallString { get; set; }
+            public string? InstallLocation { get; set; }
+        }
+
+        public class Leftovers
+        {
+            public List<string> Files { get; set; } = new List<string>();
+            public List<string> RegistryKeys { get; set; } = new List<string>();
+            public bool HasLeftovers => Files.Count > 0 || RegistryKeys.Count > 0;
+        }
+
+        private async Task<Leftovers> ScanForLeftoversAsync(string programName, string? installLocation, TextBox progressTextBox)
+        {
+            var leftovers = new Leftovers();
+            await Task.Run(() =>
+            {
+                AppendProgress(progressTextBox, $"Scanning for leftovers of '{programName}'...");
+
+                string[] commonPaths = {
+            @"C:\Program Files",
+            @"C:\Program Files (x86)",
+            @"C:\ProgramData",
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles),
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86)
+        };
+
+                if (!string.IsNullOrEmpty(installLocation) && Directory.Exists(installLocation))
+                {
+                    AppendProgress(progressTextBox, $"Explicitly scanning InstallLocation: '{installLocation}'");
+                    try
+                    {
+                        var dirs = Directory.GetDirectories(installLocation, $"*{programName}*", SearchOption.AllDirectories);
+                        leftovers.Files.AddRange(dirs);
+                        AppendProgress(progressTextBox, $"Found {dirs.Length} directories in InstallLocation");
+
+                        var files = Directory.GetFiles(installLocation, "*.*", SearchOption.AllDirectories)
+                            .Where(f => f.Contains(programName, StringComparison.OrdinalIgnoreCase) ||
+                                       Path.GetExtension(f).ToLower() is ".log" or ".tmp");
+                        leftovers.Files.AddRange(files);
+                        AppendProgress(progressTextBox, $"Found {files.Count()} files in InstallLocation");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendProgress(progressTextBox, $"Error scanning InstallLocation: {ex.Message}");
+                    }
+                }
+
+                foreach (var path in commonPaths)
+                {
+                    if (Directory.Exists(path))
+                    {
+                        try
+                        {
+                            var dirs = Directory.GetDirectories(path, $"*{programName}*", SearchOption.AllDirectories);
+                            leftovers.Files.AddRange(dirs);
+                            AppendProgress(progressTextBox, $"Found {dirs.Length} directories in '{path}'");
+
+                            var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
+                                .Where(f => f.Contains(programName, StringComparison.OrdinalIgnoreCase) ||
+                                           Path.GetExtension(f).ToLower() is ".log" or ".tmp");
+                            leftovers.Files.AddRange(files);
+                            AppendProgress(progressTextBox, $"Found {files.Count()} files in '{path}'");
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendProgress(progressTextBox, $"Error scanning '{path}': {ex.Message}");
+                        }
+                    }
+                }
+
+                string[] regPaths = { @"SOFTWARE", @"SOFTWARE\Wow6432Node" };
+                foreach (var regPath in regPaths)
+                {
+                    using (var key = Registry.LocalMachine.OpenSubKey(regPath))
+                    {
+                        if (key != null)
+                        {
+                            try
+                            {
+                                var matchingKeys = key.GetSubKeyNames()
+                                    .Where(k => k.Contains(programName, StringComparison.OrdinalIgnoreCase));
+                                leftovers.RegistryKeys.AddRange(matchingKeys.Select(k => $@"HKEY_LOCAL_MACHINE\{regPath}\{k}"));
+                                AppendProgress(progressTextBox, $"Found {matchingKeys.Count()} registry keys in '{regPath}'");
+                            }
+                            catch (Exception ex)
+                            {
+                                AppendProgress(progressTextBox, $"Error scanning registry '{regPath}': {ex.Message}");
+                            }
+                        }
+                    }
+                }
+            });
+            return leftovers;
+        }
+
+        private async Task<List<InstalledProgram>> GetInstalledProgramsAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var programs = new List<InstalledProgram>();
+                using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"))
+                {
+                    if (key != null)
+                    {
+                        foreach (var subKeyName in key.GetSubKeyNames())
+                        {
+                            using (var subKey = key.OpenSubKey(subKeyName))
+                            {
+                                var name = subKey?.GetValue("DisplayName")?.ToString();
+                                if (!string.IsNullOrEmpty(name))
+                                {
+                                    programs.Add(new InstalledProgram
+                                    {
+                                        Name = name,
+                                        UninstallString = subKey?.GetValue("UninstallString")?.ToString(),
+                                        InstallLocation = subKey?.GetValue("InstallLocation")?.ToString()
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+                return programs.OrderBy(p => p.Name).ToList();
+            });
+        }
+
+        private Window CreateProgramSelectionWindow(List<InstalledProgram> programs)
+        {
+            var window = new Window
+            {
+                Title = ResourceManagerHelper.Instance.SelectProgramToUninstall,
+                Width = 400,
+                Height = 300,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Background = new SolidColorBrush(Color.FromRgb(30, 30, 30)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(50, 50, 50)),
+                BorderThickness = new Thickness(1)
+            };
+
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            window.Content = grid;
+
+            var searchBox = new TextBox
+            {
+                Margin = new Thickness(10, 10, 10, 5),
+                Background = new SolidColorBrush(Color.FromRgb(40, 40, 40)),
+                Foreground = Brushes.WhiteSmoke,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(50, 50, 50)),
+                Padding = new Thickness(5),
+                Text = "Pesquisar programas..."
+            };
+            searchBox.GotFocus += (s, e) => { if (searchBox.Text == "Pesquisar programas...") searchBox.Text = ""; };
+            searchBox.LostFocus += (s, e) => { if (string.IsNullOrEmpty(searchBox.Text)) searchBox.Text = "Pesquisar programas..."; };
+            Grid.SetRow(searchBox, 0);
+            grid.Children.Add(searchBox);
+
+            var listBox = new ListBox
+            {
+                ItemsSource = programs,
+                DisplayMemberPath = "Name",
+                Margin = new Thickness(10, 0, 10, 10),
+                Background = new SolidColorBrush(Color.FromRgb(40, 40, 40)),
+                Foreground = Brushes.WhiteSmoke,
+                BorderThickness = new Thickness(0)
+            };
+            listBox.SetValue(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Hidden);
+            listBox.SetValue(ScrollViewer.CanContentScrollProperty, true);
+
+            var listBoxItemStyle = new Style(typeof(ListBoxItem));
+            listBoxItemStyle.Setters.Add(new Setter(ListBoxItem.BackgroundProperty, Brushes.Transparent));
+            listBoxItemStyle.Setters.Add(new Setter(ListBoxItem.ForegroundProperty, Brushes.WhiteSmoke));
+            listBoxItemStyle.Setters.Add(new Setter(ListBoxItem.PaddingProperty, new Thickness(5)));
+            var hoverTrigger = new Trigger { Property = ListBoxItem.IsMouseOverProperty, Value = true };
+            hoverTrigger.Setters.Add(new Setter(ListBoxItem.BackgroundProperty, new SolidColorBrush(Color.FromRgb(50, 50, 50))));
+            listBoxItemStyle.Triggers.Add(hoverTrigger);
+            var selectedTrigger = new Trigger { Property = ListBoxItem.IsSelectedProperty, Value = true };
+            selectedTrigger.Setters.Add(new Setter(ListBoxItem.BackgroundProperty, new SolidColorBrush(Color.FromRgb(70, 130, 180))));
+            selectedTrigger.Setters.Add(new Setter(ListBoxItem.ForegroundProperty, Brushes.White));
+            listBoxItemStyle.Triggers.Add(selectedTrigger);
+            listBox.ItemContainerStyle = listBoxItemStyle;
+
+            Grid.SetRow(listBox, 1);
+            grid.Children.Add(listBox);
+
+            searchBox.TextChanged += (s, e) =>
+            {
+                if (searchBox.Text == "Pesquisar programas..." || string.IsNullOrEmpty(searchBox.Text))
+                {
+                    listBox.ItemsSource = programs;
+                }
+                else
+                {
+                    listBox.ItemsSource = programs.Where(p => p.Name.Contains(searchBox.Text, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+            };
+
+            var confirmButton = new Button
+            {
+                Content = "Desinstalar",
+                Width = 100,
+                Height = 30,
+                Margin = new Thickness(0, 0, 10, 10),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Background = new SolidColorBrush(Color.FromRgb(60, 60, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(80, 80, 80)),
+                BorderThickness = new Thickness(1),
+                Cursor = Cursors.Hand
+            };
+            var buttonStyle = new Style(typeof(Button));
+            buttonStyle.Setters.Add(new Setter(Button.TemplateProperty, CreateButtonTemplate()));
+            confirmButton.Style = buttonStyle;
+
+            confirmButton.Click += (s, e) =>
+            {
+                window.DialogResult = true;
+                window.Close();
+            };
+            Grid.SetRow(confirmButton, 2);
+            grid.Children.Add(confirmButton);
+
+            window.Tag = null;
+            listBox.SelectionChanged += (s, e) =>
+            {
+                if (listBox.SelectedItem != null)
+                {
+                    window.Tag = listBox.SelectedItem as InstalledProgram;
+                }
+            };
+
+            return window;
+        }
+
+        private ControlTemplate CreateButtonTemplate()
+        {
+            var template = new ControlTemplate(typeof(Button));
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.SetValue(Border.BackgroundProperty, new SolidColorBrush(Color.FromRgb(60, 60, 60)));
+            border.SetValue(Border.BorderBrushProperty, new SolidColorBrush(Color.FromRgb(80, 80, 80)));
+            border.SetValue(Border.BorderThicknessProperty, new Thickness(1));
+
+            var contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            border.AppendChild(contentPresenter);
+
+            var trigger = new Trigger { Property = Button.IsMouseOverProperty, Value = true };
+            trigger.Setters.Add(new Setter(Border.BackgroundProperty, new SolidColorBrush(Color.FromRgb(80, 80, 80))));
+            template.Triggers.Add(trigger);
+
+            template.VisualTree = border;
+            return template;
+        }
+
+        private async Task<bool> ExecuteUninstallerAsync(string uninstallString, string? installLocation, TextBox progressTextBox)
+        {
+            try
+            {
+                AppendProgress(progressTextBox, $"Raw uninstall string from registry: '{uninstallString}'");
+                uninstallString = uninstallString.Trim();
+
+                string fileName = uninstallString;
+                string arguments = "";
+                if (uninstallString.Contains(" "))
+                {
+                    if (uninstallString.StartsWith("\""))
+                    {
+                        int endQuote = uninstallString.IndexOf("\"", 1);
+                        if (endQuote != -1)
+                        {
+                            fileName = uninstallString.Substring(1, endQuote - 1);
+                            arguments = uninstallString.Substring(endQuote + 1).Trim();
+                        }
+                    }
+                    else
+                    {
+                        fileName = uninstallString.Substring(0, uninstallString.IndexOf(" ")).Trim();
+                        arguments = uninstallString.Substring(uninstallString.IndexOf(" ")).Trim();
+                    }
+                }
+
+                AppendProgress(progressTextBox, $"Parsed fileName: '{fileName}'");
+                AppendProgress(progressTextBox, $"Parsed arguments: '{arguments}'");
+
+                if (!File.Exists(fileName))
+                {
+                    AppendProgress(progressTextBox, $"Uninstaller file not found at: '{fileName}'");
+
+                    if (!string.IsNullOrEmpty(installLocation) && Directory.Exists(installLocation))
+                    {
+                        AppendProgress(progressTextBox, $"Checking InstallLocation: '{installLocation}'");
+                        var possibleUninstaller = Path.Combine(installLocation, "tesseract-uninstall.exe");
+                        if (!File.Exists(possibleUninstaller))
+                        {
+                            possibleUninstaller = Path.Combine(installLocation, "uninstall.exe");
+                        }
+
+                        if (File.Exists(possibleUninstaller))
+                        {
+                            fileName = possibleUninstaller;
+                            arguments = "";
+                            AppendProgress(progressTextBox, $"Found alternative uninstaller: '{fileName}'");
+                        }
+                        else
+                        {
+                            AppendProgress(progressTextBox, "No alternative uninstaller found in InstallLocation.");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        AppendProgress(progressTextBox, "InstallLocation not provided or invalid.");
+                        return false;
+                    }
+                }
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = fileName,
+                        Arguments = arguments,
+                        UseShellExecute = true,
+                        CreateNoWindow = false,
+                        Verb = "runas"
+                    }
+                };
+
+                AppendProgress(progressTextBox, $"Starting uninstaller: '{fileName} {arguments}'");
+                process.Start();
+                await process.WaitForExitAsync();
+
+                AppendProgress(progressTextBox, $"Uninstaller finished with exit code: {process.ExitCode}");
+                bool initialSuccess = process.ExitCode == 0 || process.ExitCode == 3010;
+
+                if (initialSuccess && !string.IsNullOrEmpty(installLocation) && Directory.Exists(installLocation))
+                {
+                    AppendProgress(progressTextBox, $"Installation directory still exists: '{installLocation}'");
+                    return false;
+                }
+
+                return initialSuccess;
+            }
+            catch (Exception ex)
+            {
+                AppendProgress(progressTextBox, $"Uninstaller error: {ex.Message}");
+                if (ex.Message.Contains("access is denied"))
+                {
+                    AppendProgress(progressTextBox, "Please run the application as administrator.");
+                }
+                return false;
+            }
+        }
+
+        private async Task RemoveFromInstalledProgramsAsync(string programName, TextBox progressTextBox)
+        {
+            await Task.Run(() =>
+            {
+                AppendProgress(progressTextBox, $"Removing {programName} from installed programs list...");
+                try
+                {
+                    using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", true))
+                    {
+                        if (key != null)
+                        {
+                            foreach (var subKeyName in key.GetSubKeyNames())
+                            {
+                                using (var subKey = key.OpenSubKey(subKeyName, true))
+                                {
+                                    if (subKey != null)
+                                    {
+                                        var name = subKey.GetValue("DisplayName")?.ToString();
+                                        if (!string.IsNullOrEmpty(name) && name.Contains(programName, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            key.DeleteSubKeyTree(subKeyName);
+                                            AppendProgress(progressTextBox, $"Removed registry entry: HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{subKeyName}");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall", true))
+                    {
+                        if (key != null)
+                        {
+                            foreach (var subKeyName in key.GetSubKeyNames())
+                            {
+                                using (var subKey = key.OpenSubKey(subKeyName, true))
+                                {
+                                    if (subKey != null)
+                                    {
+                                        var name = subKey.GetValue("DisplayName")?.ToString();
+                                        if (!string.IsNullOrEmpty(name) && name.Contains(programName, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            key.DeleteSubKeyTree(subKeyName);
+                                            AppendProgress(progressTextBox, $"Removed registry entry: HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{subKeyName}");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppendProgress(progressTextBox, $"Error removing from installed programs: {ex.Message}");
+                }
+            });
+        }
+
+        private async Task CleanupLeftoversAsync(Leftovers leftovers, TextBox progressTextBox)
+        {
+            await Task.Run(() =>
+            {
+                foreach (var file in leftovers.Files.Where(f => File.Exists(f)))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        AppendProgress(progressTextBox, $"Removed file: '{file}'");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendProgress(progressTextBox, $"Failed to remove file '{file}': {ex.Message}");
+                    }
+                }
+
+                foreach (var dir in leftovers.Files.Where(f => Directory.Exists(f)))
+                {
+                    try
+                    {
+                        Directory.Delete(dir, true);
+                        AppendProgress(progressTextBox, $"Removed directory and contents: '{dir}'");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendProgress(progressTextBox, $"Failed to remove directory '{dir}': {ex.Message}");
+                        try
+                        {
+                            foreach (var subFile in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+                            {
+                                try
+                                {
+                                    File.Delete(subFile);
+                                    AppendProgress(progressTextBox, $"Forced removal of file: '{subFile}'");
+                                }
+                                catch (Exception subEx)
+                                {
+                                    AppendProgress(progressTextBox, $"Failed to force remove '{subFile}': {subEx.Message}");
+                                }
+                            }
+                            Directory.Delete(dir, true);
+                            AppendProgress(progressTextBox, $"Successfully forced removal of directory: '{dir}'");
+                        }
+                        catch (Exception subEx)
+                        {
+                            AppendProgress(progressTextBox, $"Final failure to remove '{dir}': {subEx.Message}");
+                        }
+                    }
+                }
+
+                foreach (var keyPath in leftovers.RegistryKeys)
+                {
+                    try
+                    {
+                        using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE", true))
+                        {
+                            if (key != null && keyPath.StartsWith(@"HKEY_LOCAL_MACHINE\SOFTWARE\"))
+                            {
+                                key.DeleteSubKeyTree(keyPath.Replace(@"HKEY_LOCAL_MACHINE\SOFTWARE\", ""), false);
+                                AppendProgress(progressTextBox, $"Removed registry key: '{keyPath}'");
+                            }
+                        }
+                        using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node", true))
+                        {
+                            if (key != null && keyPath.StartsWith(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\"))
+                            {
+                                key.DeleteSubKeyTree(keyPath.Replace(@"HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\", ""), false);
+                                AppendProgress(progressTextBox, $"Removed registry key: '{keyPath}'");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppendProgress(progressTextBox, $"Failed to remove registry key '{keyPath}': {ex.Message}");
+                    }
+                }
+            });
+        }
+
+        private static readonly DependencyProperty SelectedProgramProperty =
+            DependencyProperty.Register("SelectedProgram", typeof(InstalledProgram), typeof(Window));
+
+        public static InstalledProgram? GetSelectedProgram(Window window) =>
+            (InstalledProgram?)window.GetValue(SelectedProgramProperty);
+
+        public static void SetSelectedProgram(Window window, InstalledProgram? value) =>
+            window.SetValue(SelectedProgramProperty, value);
 
         private async void AtivarWindows(object sender, RoutedEventArgs e)
         {
@@ -1221,8 +2125,8 @@ namespace DarkHub
                             Width = 400,
                             Height = 300,
                             WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
-                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
+                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
                             BorderThickness = new Thickness(1)
                         };
 
@@ -1230,17 +2134,17 @@ namespace DarkHub
                         var listBox = new ListBox
                         {
                             Height = 200,
-                            Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),  
+                            Background = new SolidColorBrush(Color.FromRgb(42, 42, 46)),
                             Foreground = Brushes.White,
-                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))  
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
                         };
                         var disableButton = new Button
                         {
                             Content = ResourceManagerHelper.Instance.DisableSelectedButton,
                             Margin = new Thickness(0, 10, 0, 0),
-                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),  
+                            Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
                             Foreground = Brushes.White,
-                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),  
+                            BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
                             BorderThickness = new Thickness(1),
                             Padding = new Thickness(5)
                         };
@@ -1887,34 +2791,34 @@ namespace DarkHub
         }
 
         [DllImport("psapi.dll")]
-        static extern int EmptyWorkingSet(IntPtr hwProc);
+        private static extern int EmptyWorkingSet(IntPtr hwProc);
 
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetCurrentProcess();
+        private static extern IntPtr GetCurrentProcess();
 
         [DllImport("kernel32.dll")]
-        static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
+        private static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
 
         private async Task<(double UsedMemory, double AvailableMemory)> GetMemoryInfo()
         {
             try
             {
                 string result = await RunCommandAsync("powershell -Command \"Get-CimInstance Win32_OperatingSystem | Select-Object -Property TotalVisibleMemorySize,FreePhysicalMemory | ConvertTo-Json\"");
-                
+
                 result = result.Trim().Replace("\r", "").Replace("\n", "");
-                
+
                 int totalIndex = result.IndexOf("TotalVisibleMemorySize") + "TotalVisibleMemorySize".Length + 2;
                 int freeIndex = result.IndexOf("FreePhysicalMemory") + "FreePhysicalMemory".Length + 2;
-                
+
                 string totalStr = result.Substring(totalIndex, result.IndexOf(",", totalIndex) - totalIndex);
                 string freeStr = result.Substring(freeIndex, result.IndexOf("}", freeIndex) - freeIndex);
-                
+
                 if (double.TryParse(totalStr, out double totalMemoryKB) && double.TryParse(freeStr, out double freeMemoryKB))
                 {
                     double totalMemoryGB = totalMemoryKB / (1024 * 1024);
                     double freeMemoryGB = freeMemoryKB / (1024 * 1024);
                     double usedMemoryGB = totalMemoryGB - freeMemoryGB;
-                    
+
                     return (usedMemoryGB, freeMemoryGB);
                 }
             }
@@ -1922,20 +2826,20 @@ namespace DarkHub
             {
                 Debug.WriteLine($"Erro em GetMemoryInfo {ex.Message}");
             }
-            
+
             try
             {
                 var computerInfo = new Microsoft.VisualBasic.Devices.ComputerInfo();
                 double totalMemoryGB = computerInfo.TotalPhysicalMemory / (1024.0 * 1024 * 1024);
                 double availableMemoryGB = computerInfo.AvailablePhysicalMemory / (1024.0 * 1024 * 1024);
                 double usedMemoryGB = totalMemoryGB - availableMemoryGB;
-                
+
                 return (usedMemoryGB, availableMemoryGB);
             }
             catch (Exception ex)
             {
             }
-            
+
             return (0, 0);
         }
 
@@ -1976,13 +2880,13 @@ namespace DarkHub
                     {
                         try
                         {
-                            if (!process.HasExited && 
-                                process.Id != Process.GetCurrentProcess().Id && 
+                            if (!process.HasExited &&
+                                process.Id != Process.GetCurrentProcess().Id &&
                                 safeProcesses.Contains(process.ProcessName.ToLower()))
                             {
                                 EmptyWorkingSet(process.Handle);
                                 processesOptimized++;
-                                
+
                                 if (processesOptimized % 5 == 0)
                                 {
                                     AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProcessesOptimized, processesOptimized));
@@ -2014,8 +2918,8 @@ namespace DarkHub
                             {
                                 foreach (string file in Directory.GetFiles(tempPath))
                                 {
-                                    try 
-                                    { 
+                                    try
+                                    {
                                         var fileInfo = new FileInfo(file);
                                         if ((DateTime.Now - fileInfo.LastAccessTime).TotalDays > 1)
                                         {
@@ -2333,21 +3237,20 @@ namespace DarkHub
 
                 string adapterName = "";
                 string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                
+
                 foreach (string line in lines)
                 {
-                    
                     if (line.Contains("Enabled") || line.Contains("Conectado"))
                     {
                         string[] parts = line.Split(new[] { "  ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
                         if (parts.Length >= 2)
                         {
                             string name = parts[1].Trim();
-                            
-                            if (name.Contains("Wi-Fi") || 
-                                name.Contains("Ethernet") || 
-                                name.Contains("Wireless") || 
-                                name.Contains("Rede") || 
+
+                            if (name.Contains("Wi-Fi") ||
+                                name.Contains("Ethernet") ||
+                                name.Contains("Wireless") ||
+                                name.Contains("Rede") ||
                                 name.Contains("Network") ||
                                 name.Contains("Conectado"))
                             {
@@ -2430,13 +3333,18 @@ namespace DarkHub
         {
             public IntPtr Next;
             public int ComboIndex;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string AdapterName;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 132)]
             public string Description;
+
             public uint AddressLength;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
             public byte[] Address;
+
             public int Index;
             public uint Type;
             public uint DhcpEnabled;
@@ -2455,10 +3363,13 @@ namespace DarkHub
         private struct IP_ADDR_STRING
         {
             public IntPtr Next;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
             public string IpAddress;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
             public string IpMask;
+
             public int Context;
         }
 
@@ -2786,6 +3697,247 @@ namespace DarkHub
                 MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorOptimizingGameRoute, ex.Message),
                 ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private async void OptimizeAdvancedNetworkSettings(object sender, RoutedEventArgs e)
+        {
+            var window = new Window
+            {
+                Title = ResourceManagerHelper.Instance.OptimizeAdvancedNetworkSettings,
+                Width = 400,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                ResizeMode = ResizeMode.NoResize,
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142)),
+                BorderThickness = new Thickness(1)
+            };
+
+            var stackPanel = new StackPanel { Margin = new Thickness(10) };
+            stackPanel.Children.Add(new TextBlock
+            {
+                Text = ResourceManagerHelper.Instance.AdvancedNetworkAdvertise,
+                Foreground = Brushes.White,
+                Margin = new Thickness(0, 0, 0, 10),
+                TextWrapping = TextWrapping.Wrap
+            });
+
+            var buttonPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+
+            var applyButton = new Button
+            {
+                Content = ResourceManagerHelper.Instance.Apply,
+                Width = 100,
+                Margin = new Thickness(0, 0, 10, 0),
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+
+            var revertButton = new Button
+            {
+                Content = ResourceManagerHelper.Instance.Revert,
+                Width = 100,
+                Margin = new Thickness(0, 0, 10, 0),
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+
+            var cancelButton = new Button
+            {
+                Content = ResourceManagerHelper.Instance.Cancel,
+                Width = 100,
+                Background = new SolidColorBrush(Color.FromRgb(53, 55, 60)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(128, 132, 142))
+            };
+
+            buttonPanel.Children.Add(applyButton);
+            buttonPanel.Children.Add(revertButton);
+            buttonPanel.Children.Add(cancelButton);
+            stackPanel.Children.Add(buttonPanel);
+            window.Content = stackPanel;
+
+            applyButton.Click += async (s, ev) => await ApplyNetworkOptimizations(window);
+            revertButton.Click += async (s, ev) => await RevertNetworkOptimizations(window);
+            cancelButton.Click += (s, ev) => window.Close();
+
+            window.ShowDialog();
+        }
+
+        private async Task ApplyNetworkOptimizations(Window window)
+        {
+            TextBox? progressTextBox = null;
+            Window? progressWindow = null;
+
+            try
+            {
+                (progressWindow, progressTextBox) = CreateProgressWindow("Otimizando Configurações de Rede Avançadas");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando otimização avançada da rede...");
+
+                await Task.Run(async () =>
+                {
+                    AppendProgress(progressTextBox, "Desativando reserva de banda QoS...");
+                    ExecuteCommandWithOutput("reg add \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched\" /v NonBestEffortLimit /t REG_DWORD /d 0 /f", progressTextBox);
+                    AppendProgress(progressTextBox, "QoS ajustado com sucesso.");
+                    AppendProgress(progressTextBox, "Otimizando parâmetros TCP/IP...");
+                    var tcpSettings = new Dictionary<string, (string Value, RegistryValueKind Kind)>
+            {
+                {"TcpAckFrequency", ("1", RegistryValueKind.String)},
+                {"TCPNoDelay", ("1", RegistryValueKind.DWord)},
+                {"MaxConnectionsPerServer", ("16", RegistryValueKind.DWord)},
+                {"DefaultTTL", ("64", RegistryValueKind.DWord)},
+                {"TcpMaxDataRetransmissions", ("3", RegistryValueKind.DWord)}
+            };
+
+                    string tcpKeyPath = @"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters";
+                    foreach (var setting in tcpSettings)
+                    {
+                        SetRegistryValue(tcpKeyPath, setting.Key, setting.Value.Value, setting.Value.Kind);
+                    }
+                    AppendProgress(progressTextBox, "Parâmetros TCP/IP otimizados.");
+                    AppendProgress(progressTextBox, "Ajustando MTU para 1500...");
+                    string adapterName = await GetActiveNetworkAdapterNameAsync();
+                    if (!string.IsNullOrEmpty(adapterName))
+                    {
+                        ExecuteCommandWithOutput($"netsh interface ipv4 set subinterface \"{adapterName}\" mtu=1500 store=persistent", progressTextBox);
+                        AppendProgress(progressTextBox, $"MTU ajustado para {adapterName}.");
+                    }
+                    else
+                    {
+                        AppendProgress(progressTextBox, ResourceManagerHelper.Instance.NetworkAdapterNotFound);
+                    }
+
+                    AppendProgress(progressTextBox, $"{ResourceManagerHelper.Instance.Disabling} Energy-Efficient Ethernet...");
+                    ExecuteCommandWithOutput("powershell -Command \"Set-NetAdapterAdvancedProperty -Name * -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Disabled' -ErrorAction SilentlyContinue\"", progressTextBox);
+                    AppendProgress(progressTextBox, "EEE disabled.");
+                    AppendProgress(progressTextBox, "Cleaning cache ARP...");
+                    ExecuteCommandWithOutput("netsh interface ip delete arpcache", progressTextBox);
+                    AppendProgress(progressTextBox, "Cache ARP cleaned.");
+                    AppendProgress(progressTextBox, $"{ResourceManagerHelper.Instance.Enabling} Receive Side Scaling (RSS)...");
+                    ExecuteCommandWithOutput("netsh int tcp set global rss=enabled", progressTextBox);
+                    ExecuteCommandWithOutput("powershell -Command \"Set-NetAdapterRss -Name * -NumberOfReceiveQueues 4 -ErrorAction SilentlyContinue\"", progressTextBox);
+                    AppendProgress(progressTextBox, "RSS configured.");
+
+                    await Task.Delay(500);
+                });
+
+                AppendProgress(progressTextBox, ResourceManagerHelper.Instance.AdvancedNetworkSuccess);
+                await Task.Run(() => MessageBox.Show(ResourceManagerHelper.Instance.AdvancedNetworkApplied,
+                    ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
+            }
+            catch (Exception ex)
+            {
+                AppendProgress(progressTextBox, $"Erro durante a otimização da rede: {ex.Message}");
+                MessageBox.Show($"Erro ao otimizar configurações de rede: {ex.Message}",
+                    ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
+                window.Close();
+            }
+        }
+
+        private async Task RevertNetworkOptimizations(Window window)
+        {
+            TextBox? progressTextBox = null;
+            Window? progressWindow = null;
+
+            try
+            {
+                (progressWindow, progressTextBox) = CreateProgressWindow("Revertendo Configurações de Rede Avançadas");
+                await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Show()));
+                AppendProgress(progressTextBox, "Iniciando reversão das configurações de rede...");
+
+                await Task.Run(async () =>
+                {
+                    AppendProgress(progressTextBox, "Restaurando configuração QoS padrão...");
+                    ExecuteCommandWithOutput("reg delete \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched\" /v NonBestEffortLimit /f", progressTextBox);
+                    AppendProgress(progressTextBox, "QoS restaurado.");
+                    AppendProgress(progressTextBox, "Restaurando parâmetros TCP/IP padrão...");
+                    var tcpSettings = new[] { "TcpAckFrequency", "TCPNoDelay", "MaxConnectionsPerServer", "DefaultTTL", "TcpMaxDataRetransmissions" };
+                    string tcpKeyPath = @"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters";
+                    foreach (var setting in tcpSettings)
+                    {
+                        using (var key = Registry.LocalMachine.OpenSubKey(tcpKeyPath, true))
+                        {
+                            key?.DeleteValue(setting, false);
+                        }
+                    }
+                    AppendProgress(progressTextBox, "Parâmetros TCP/IP restaurados.");
+                    AppendProgress(progressTextBox, "Restaurando MTU para automático...");
+                    string adapterName = await GetActiveNetworkAdapterNameAsync();
+                    if (!string.IsNullOrEmpty(adapterName))
+                    {
+                        ExecuteCommandWithOutput($"netsh interface ipv4 set subinterface \"{adapterName}\" mtu=store=persistent", progressTextBox);
+                        AppendProgress(progressTextBox, $"MTU restaurado para {adapterName}.");
+                    }
+                    else
+                    {
+                        AppendProgress(progressTextBox, "Adaptador de rede não encontrado.");
+                    }
+                    AppendProgress(progressTextBox, "Reativando Energy-Efficient Ethernet...");
+                    ExecuteCommandWithOutput("powershell -Command \"Set-NetAdapterAdvancedProperty -Name * -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Enabled' -ErrorAction SilentlyContinue\"", progressTextBox);
+                    AppendProgress(progressTextBox, "EEE reativado.");
+                    AppendProgress(progressTextBox, "Limpando cache ARP...");
+                    ExecuteCommandWithOutput("netsh interface ip delete arpcache", progressTextBox);
+                    AppendProgress(progressTextBox, "Cache ARP limpo.");
+                    AppendProgress(progressTextBox, "Restaurando Receive Side Scaling (RSS) para padrão...");
+                    ExecuteCommandWithOutput("netsh int tcp set global rss=default", progressTextBox);
+                    ExecuteCommandWithOutput("powershell -Command \"Set-NetAdapterRss -Name * -NumberOfReceiveQueues 2 -ErrorAction SilentlyContinue\"", progressTextBox);
+                    AppendProgress(progressTextBox, "RSS restaurado.");
+
+                    await Task.Delay(500);
+                });
+
+                AppendProgress(progressTextBox, "Reversão das configurações de rede concluída com sucesso!");
+                await Task.Run(() => MessageBox.Show(
+                    "Configurações de rede restauradas para os padrões do Windows!\nReinicie o sistema para aplicar todas as alterações.",
+                    ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information));
+            }
+            catch (Exception ex)
+            {
+                AppendProgress(progressTextBox, $"Erro durante a reversão da rede: {ex.Message}");
+                MessageBox.Show($"Erro ao reverter configurações de rede: {ex.Message}",
+                    ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (progressWindow != null)
+                {
+                    await Task.Run(() => progressWindow.Dispatcher.Invoke(() => progressWindow.Close()));
+                }
+                window.Close();
+            }
+        }
+
+        private async Task<string> GetActiveNetworkAdapterNameAsync()
+        {
+            string output = await RunCommandAsync("netsh interface show interface");
+            string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                if (line.Contains("Conectado") || line.Contains("Connected"))
+                {
+                    string[] parts = line.Split(new[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 2)
+                    {
+                        return parts[parts.Length - 1].Trim();
+                    }
+                }
+            }
+            return null;
         }
     }
 }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using iText.Kernel.Pdf;
+﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using System.Text;
 
 namespace DarkHub
 {
@@ -36,8 +33,10 @@ namespace DarkHub
             {
                 case "pt":
                     return new List<string> { "e", "ou", "de", "a", "o", "em", "para", "com", "que", "as", "os" };
+
                 case "en":
                     return new List<string> { "and", "or", "the", "a", "an", "in", "to" };
+
                 default:
                     return new List<string>();
             }
@@ -94,7 +93,7 @@ namespace DarkHub
         {
             var sentences = text.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
                                .Select(s => s.Trim())
-                               .Where(s => s.Length > 15 && !s.StartsWith("•") && !s.Contains("US$")) // Filtra sentenças curtas e ruídos
+                               .Where(s => s.Length > 15 && !s.StartsWith("•") && !s.Contains("US$"))      
                                .ToList();
 
             var words = sentences.Select(s => s.Split(new[] { ' ', ',', ';', ':', '-', '–' }, StringSplitOptions.RemoveEmptyEntries)
@@ -131,8 +130,8 @@ namespace DarkHub
                 double tfidf = tfidfScores[sentences[i]] * TfidfWeight;
                 double textRank = textRankScores[sentences[i]] * TextRankWeight;
                 double keywordScore = CalculateKeywordScore(sentences[i]) * KeywordWeight;
-                double positionScore = CalculatePositionScore(i, sentences.Count); // Prioriza sentenças iniciais
-                double lengthScore = CalculateLengthScore(sentences[i]); // Prioriza sentenças de tamanho médio
+                double positionScore = CalculatePositionScore(i, sentences.Count);    
+                double lengthScore = CalculateLengthScore(sentences[i]);      
 
                 scores[sentences[i]] = tfidf + textRank + keywordScore + positionScore + lengthScore;
             }
@@ -142,13 +141,13 @@ namespace DarkHub
 
         private double CalculatePositionScore(int index, int totalSentences)
         {
-            return (totalSentences - index) / (double)totalSentences * 0.5; // Maior peso para sentenças iniciais
+            return (totalSentences - index) / (double)totalSentences * 0.5;      
         }
 
         private double CalculateLengthScore(string sentence)
         {
             int wordCount = sentence.Split(' ').Length;
-            return Math.Min(wordCount / 20.0, 1.0); // Favorece sentenças de 10-20 palavras
+            return Math.Min(wordCount / 20.0, 1.0);      
         }
 
         private Dictionary<string, double> CalculateTfidf(List<string> sentences, List<List<string>> words,

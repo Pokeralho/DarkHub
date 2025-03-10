@@ -36,6 +36,7 @@
 		<None Remove="assets\magick.exe" />
 		<None Remove="assets\newtab.png" />
 		<None Remove="assets\optimizer.png" />
+		<None Remove="assets\pass.png" />
 		<None Remove="assets\python.png" />
 		<None Remove="assets\rename.png" />
 		<None Remove="assets\resumir.png" />
@@ -54,6 +55,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
 		<PackageReference Include="IronPython" Version="3.4.2" />
 		<PackageReference Include="iText7" Version="9.1.0" />
 		<PackageReference Include="iTextSharp" Version="5.5.13.4" />
@@ -63,8 +65,10 @@
 		<PackageReference Include="PdfiumViewer.Native.x86_64.v8-xfa" Version="2018.4.8.256" />
 		<PackageReference Include="PdfSharp" Version="6.1.1" />
 		<PackageReference Include="pythonnet" Version="3.0.5" />
+		<PackageReference Include="System.Data.SQLite" Version="1.0.119" />
 		<PackageReference Include="System.Drawing.Common" Version="9.0.2" />
 		<PackageReference Include="System.Management" Version="9.0.2" />
+		<PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.2" />
 		<PackageReference Include="Tesseract" Version="5.2.0" />
 		<PackageReference Include="WPFLocalizeExtension" Version="3.10.0" />
 		<PackageReference Include="YoutubeDLSharp" Version="1.1.1" />
@@ -102,6 +106,9 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\estados-unidos.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\pass.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\resumir.png">
