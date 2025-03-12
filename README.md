@@ -19,6 +19,7 @@ automation and media handling tools, DarkHub offers a complete solution for user
 
 ## Prerequisites
 - Windows 10 or higher.
+- [ASP.NET Core 8.0 Runtime](https://dotnet.microsoft.com/pt-br/download/dotnet/thank-you/runtime-aspnetcore-8.0.14-windows-x64-installer) or higher.
 - [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework) or higher.
 
 ## Prerequisites for using the youtube downloader with the source code `Archives already included in the release` (place both in the `assets` folder):
