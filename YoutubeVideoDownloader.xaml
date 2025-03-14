@@ -10,33 +10,29 @@
       Background="{x:Null}">
 
     <Page.Resources>
-        <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#35373c" />
+        <ControlTemplate x:Key="NoHoverBtn" TargetType="Button">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="10">
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </Border>
+        </ControlTemplate>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#00C4B4" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Height" Value="30" />
-            <Setter Property="Margin" Value="5,0,0,0" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Template" Value="{StaticResource NoHoverBtn}" />
+            <Setter Property="Padding" Value="10,5" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#5A6896" />
                     <Setter Property="BorderBrush" Value="White" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#3E4A6D" />
+                    <Setter Property="Background" Value="#80848e" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -115,6 +111,7 @@
                          Foreground="Black"
                          Style="{StaticResource ComboBoxStyle}"
                          Margin="10,0,10,0"
+                         Height="35"
                          SelectedIndex="0">
                     <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMP4}" />
                     <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMP3}" />
@@ -123,17 +120,17 @@
                 <Button x:Name="btnDownload"
                         DockPanel.Dock="Right"
                         Click="Download_Click"
-                        Style="{StaticResource MenuButtonStyle}"
-                        MinWidth="120"
+                        MinWidth="120" Height="35"
                         ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=DownloadButtonToolTip}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/assets/baixar.png" Width="20" Height="20" Margin="0,0,5,0" />
-                        <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=DownloadButtonText}" />
+                        <Image Source="/assets/baixar.png" Width="20" Height="20" Margin="0,-1,10,0" />
+                        <TextBlock FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono" Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=DownloadButtonText}" />
                     </StackPanel>
                 </Button>
                 <TextBox x:Name="urlTextBox"
                          Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=UrlPlaceholder, Mode=OneTime}"
-                         GotFocus="UrlTextBox_GotFocus" />
+                         GotFocus="UrlTextBox_GotFocus"
+                         Margin="0,0,8,0" />
             </DockPanel>
         </Border>
 

@@ -1,8 +1,11 @@
-﻿using System.Diagnostics;
+﻿using ICSharpCode.AvalonEdit.Highlighting;
+using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace DarkHub
@@ -11,12 +14,14 @@ namespace DarkHub
     {
         private readonly string docsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DarkHubDocs");
         private bool isLoaded = false;
+        private Process pythonProcess;
 
         public TextEditor()
         {
             try
             {
                 InitializeComponent();
+                terminalInput.KeyDown += TerminalInput_KeyDown;
                 Debug.WriteLine("InitializeComponent concluído.");
                 Loaded += TextEditor_Loaded;
             }
@@ -35,7 +40,18 @@ namespace DarkHub
                 Debug.WriteLine("TextEditor_Loaded iniciado.");
                 EnsureDocsFolderExists();
                 await LoadSavedFilesAsync();
-                await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.PageLoadedSuccess);
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    if (tabControl.Items.Count == 0)
+                    {
+                        AddTab(ResourceManagerHelper.Instance.NewDocumentHeader, "", ResourceManagerHelper.Instance.PlainTextOption);
+                        tabControl.SelectedIndex = 0;
+                        if (tabControl.SelectedItem is TabItem selectedTab && selectedTab.Content is RichTextBox richEditor)
+                        {
+                            richEditor.Focus();
+                        }
+                    }
+                });
                 isLoaded = true;
                 SyncComboBoxWithSelectedTab();
                 Debug.WriteLine("TextEditor inicializado com sucesso.");
@@ -64,7 +80,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorCreatingDocsFolder, ex.Message));
                 Debug.WriteLine($"Erro em EnsureDocsFolderExists: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -89,16 +104,10 @@ namespace DarkHub
                         AddTab(fileName, content, extension == ".py" ? ResourceManagerHelper.Instance.PythonOption : ResourceManagerHelper.Instance.PlainTextOption);
                     });
                 }
-
-                if (tabControl.Items.Count == 0)
-                {
-                    await Dispatcher.InvokeAsync(() => AddTab(ResourceManagerHelper.Instance.NewDocumentHeader, "", ResourceManagerHelper.Instance.PlainTextOption));
-                }
                 Debug.WriteLine($"Arquivos carregados: {files.Length}");
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorLoadingFiles, ex.Message));
                 Debug.WriteLine($"Erro em LoadSavedFilesAsync: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
@@ -116,11 +125,11 @@ namespace DarkHub
                 }
 
                 TabItem newTab = new() { Header = header };
-                object? editorContent = null;
+                object editorContent;
 
                 if (docType == ResourceManagerHelper.Instance.PythonOption)
                 {
-                    editorContent = new ICSharpCode.AvalonEdit.TextEditor
+                    var codeEditor = new ICSharpCode.AvalonEdit.TextEditor
                     {
                         ShowLineNumbers = true,
                         FontFamily = new FontFamily("Consolas"),
@@ -128,8 +137,13 @@ namespace DarkHub
                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                         HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                         Text = content ?? "",
-                        SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("Python")
+                        SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Python"),
+                        Background = new SolidColorBrush(Color.FromRgb(30, 30, 30)),
+                        Foreground = Brushes.White,
+                        LineNumbersForeground = Brushes.Gray
                     };
+                    codeEditor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromRgb(86, 156, 214));
+                    editorContent = codeEditor;
                 }
                 else
                 {
@@ -138,7 +152,9 @@ namespace DarkHub
                         FontFamily = new FontFamily("Consolas"),
                         FontSize = 14,
                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        Background = new SolidColorBrush(Color.FromRgb(30, 30, 30)),
+                        Foreground = Brushes.White
                     };
                     ((RichTextBox)editorContent).Document.Blocks.Clear();
                     ((RichTextBox)editorContent).Document.Blocks.Add(new Paragraph(new Run(content ?? "")));
@@ -148,9 +164,9 @@ namespace DarkHub
                 newTab.Content = editorContent ?? throw new InvalidOperationException("Editor content não foi inicializado.");
                 tabControl.Items.Add(newTab);
 
-                if (editorContent is ICSharpCode.AvalonEdit.TextEditor codeEditor)
+                if (editorContent is ICSharpCode.AvalonEdit.TextEditor codeEditorInstance)
                 {
-                    SyncFontSizeComboBox(codeEditor);
+                    SyncFontSizeComboBox(codeEditorInstance);
                 }
                 else if (editorContent is RichTextBox richEditor)
                 {
@@ -160,7 +176,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorAddingTab, ex.Message));
                 Debug.WriteLine($"Erro em AddTab: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -181,11 +196,21 @@ namespace DarkHub
                 {
                     AddTab($"{ResourceManagerHelper.Instance.NewDocumentHeader} {tabControl.Items.Count + 1}", "", docType);
                     tabControl.SelectedIndex = tabControl.Items.Count - 1;
+                    if (tabControl.SelectedItem is TabItem selectedTab)
+                    {
+                        if (selectedTab.Content is ICSharpCode.AvalonEdit.TextEditor codeEditor)
+                        {
+                            codeEditor.Focus();
+                        }
+                        else if (selectedTab.Content is RichTextBox richEditor)
+                        {
+                            richEditor.Focus();
+                        }
+                    }
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorCreatingNewTab, ex.Message));
                 Debug.WriteLine($"Erro em NewTab_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -203,7 +228,6 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoEditorSelectedToSave);
                     Debug.WriteLine("Nenhuma aba selecionada em Save_Click.");
                     return;
                 }
@@ -239,14 +263,12 @@ namespace DarkHub
                             Debug.WriteLine("selectedTab.Content é nulo ou de tipo inesperado em Save_Click!");
                             throw new InvalidOperationException("Conteúdo da aba não é um editor válido.");
                         }
-                        outputBox.Text = string.Format(ResourceManagerHelper.Instance.FileSavedAt, filePath);
                     });
                     Debug.WriteLine($"Arquivo salvo: {filePath}");
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSavingFile, ex.Message));
                 Debug.WriteLine($"Erro em Save_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -264,7 +286,6 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoEditorSelectedToRename);
                     Debug.WriteLine("Nenhuma aba selecionada em Rename_Click.");
                     return;
                 }
@@ -324,14 +345,12 @@ namespace DarkHub
                     await Dispatcher.InvokeAsync(() =>
                     {
                         selectedTab.Header = newName;
-                        outputBox.Text = string.Format(ResourceManagerHelper.Instance.FileRenamedTo, newFilePath);
                     });
                     Debug.WriteLine($"Arquivo renomeado: {oldFilePath} -> {newFilePath}");
                 });
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorRenamingFile, ex.Message));
                 Debug.WriteLine($"Erro em Rename_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -349,7 +368,6 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoTabSelectedToDelete);
                     Debug.WriteLine("Nenhuma aba selecionada em Delete_Click.");
                     return;
                 }
@@ -365,7 +383,6 @@ namespace DarkHub
                     MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes);
                 if (!confirm)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.DeleteCancelled);
                     Debug.WriteLine("Exclusão cancelada pelo usuário em Delete_Click.");
                     return;
                 }
@@ -378,7 +395,6 @@ namespace DarkHub
                         await Dispatcher.InvokeAsync(() =>
                         {
                             tabControl.Items.Remove(selectedTab);
-                            outputBox.Text = string.Format(ResourceManagerHelper.Instance.FileDeletedSuccess, fileName);
                         });
                         Debug.WriteLine($"Arquivo excluído: {filePath}");
                     }
@@ -387,7 +403,6 @@ namespace DarkHub
                         await Dispatcher.InvokeAsync(() =>
                         {
                             tabControl.Items.Remove(selectedTab);
-                            outputBox.Text = string.Format(ResourceManagerHelper.Instance.TabClosedNoFile, fileName);
                         });
                         Debug.WriteLine($"Aba fechada (arquivo não existia): {fileName}");
                     }
@@ -395,13 +410,13 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                await Dispatcher.InvokeAsync(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorDeletingFile, ex.Message));
                 Debug.WriteLine($"Erro em Delete_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
 
         private async void RunPython_Click(object? sender, RoutedEventArgs? e)
         {
+            string tempFilePath = null;
             try
             {
                 Debug.WriteLine("RunPython_Click iniciado.");
@@ -413,67 +428,220 @@ namespace DarkHub
 
                 if (tabControl.SelectedItem is not TabItem selectedTab || selectedTab.Content is not ICSharpCode.AvalonEdit.TextEditor editor)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NoEditorSelectedToRun);
                     Debug.WriteLine("Nenhuma aba válida selecionada em RunPython_Click.");
+                    AppendTextWithAnsi(terminalOutput, "Nenhuma aba Python válida selecionada.");
                     return;
                 }
 
                 if (selectedTab.Tag?.ToString() != ResourceManagerHelper.Instance.PythonOption)
                 {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.NotPythonDocument);
                     Debug.WriteLine("Documento não é Python em RunPython_Click.");
+                    AppendTextWithAnsi(terminalOutput, "O documento selecionado não é um arquivo Python.");
                     return;
                 }
 
                 string pythonCode = editor.Text;
-                await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode + Environment.NewLine + Environment.NewLine);
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    terminalOutput.Document.Blocks.Clear();
+                    AppendTextWithAnsi(terminalOutput, ResourceManagerHelper.Instance.RunningPythonCode);
 
-                string tempFilePath = Path.Combine(Path.GetTempPath(), "temp_script.py");
+                    terminalInput.Text = "";
+                    terminalInput.IsEnabled = true;
+                    terminalInput.Focus();
+
+                    var lines = pythonCode.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var line in lines)
+                    {
+                        string trimmedLine = line.Trim();
+                        if (trimmedLine.Contains("input("))
+                        {
+                            int start = trimmedLine.IndexOf("input('") + 7;
+                            int end = trimmedLine.IndexOf("'", start);
+                            if (start > 6 && end > start)
+                            {
+                                string prompt = trimmedLine.Substring(start, end - start);
+                                AppendTextWithAnsi(terminalOutput, prompt);
+                            }
+                        }
+                    }
+                });
+
+                tempFilePath = Path.Combine(Path.GetTempPath(), "temp_script.py");
+                Debug.WriteLine($"Tentando criar arquivo temporário em: {tempFilePath}");
+
                 await File.WriteAllTextAsync(tempFilePath, pythonCode);
+                if (!File.Exists(tempFilePath))
+                {
+                    throw new FileNotFoundException($"O arquivo temporário {tempFilePath} não foi criado.");
+                }
+                Debug.WriteLine($"Arquivo temporário criado com sucesso em: {tempFilePath}");
 
                 ProcessStartInfo psi = new()
                 {
                     FileName = "python",
-                    Arguments = $"\"{tempFilePath}\"",
+                    Arguments = $"-u \"{tempFilePath}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
+                    RedirectStandardInput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
 
-                using var process = new Process { StartInfo = psi };
-                process.Start();
-                string output = await process.StandardOutput.ReadToEndAsync();
-                string error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
+                pythonProcess = new Process { StartInfo = psi, EnableRaisingEvents = true };
+                pythonProcess.OutputDataReceived += (s, ev) =>
+                {
+                    if (ev.Data != null)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            if (!pythonCode.Contains($"input('{ev.Data}'") && !ev.Data.Contains("Digite um número inteiro") && !ev.Data.Contains("Qual vai ser a base de conversão"))
+                            {
+                                AppendTextWithAnsi(terminalOutput, ev.Data);
+                            }
+                        });
+                    }
+                };
+                pythonProcess.ErrorDataReceived += (s, ev) =>
+                {
+                    if (ev.Data != null)
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            AppendTextWithAnsi(terminalOutput, "Erro: " + ev.Data);
+                        });
+                    }
+                };
+                pythonProcess.Exited += async (s, ev) =>
+                {
+                    if (!string.IsNullOrEmpty(tempFilePath) && File.Exists(tempFilePath))
+                    {
+                        try
+                        {
+                            await Task.Run(() => File.Delete(tempFilePath));
+                            Debug.WriteLine("Arquivo temporário deletado após execução.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Erro ao deletar arquivo temporário após execução: {ex.Message}");
+                        }
+                    }
+                    await Dispatcher.InvokeAsync(() =>
+                    {
+                        terminalInput.IsEnabled = false;
+                        AppendTextWithAnsi(terminalOutput, "Execução concluída.");
+                    });
+                };
 
-                if (!string.IsNullOrEmpty(error))
-                {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode + Environment.NewLine + Environment.NewLine + error);
-                }
-                else
-                {
-                    await Dispatcher.InvokeAsync(() => outputBox.Text = ResourceManagerHelper.Instance.RunningPythonCode + Environment.NewLine + Environment.NewLine + output);
-                }
-
-                try
-                {
-                    File.Delete(tempFilePath);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Erro ao deletar arquivo temporário: {ex.Message}");
-                }
+                pythonProcess.Start();
+                pythonProcess.BeginOutputReadLine();
+                pythonProcess.BeginErrorReadLine();
             }
             catch (Exception ex)
             {
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    outputBox.Text += string.Format(ResourceManagerHelper.Instance.ErrorRunningPython, ex.Message);
-                    outputBox.Text += ResourceManagerHelper.Instance.PythonInstallInstructions;
+                    AppendTextWithAnsi(terminalOutput, string.Format(ResourceManagerHelper.Instance.ErrorRunningPython, ex.Message));
+                    AppendTextWithAnsi(terminalOutput, ResourceManagerHelper.Instance.PythonInstallInstructions);
+                    terminalInput.IsEnabled = false;
                 });
                 Debug.WriteLine($"Erro em RunPython_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
+
+                if (!string.IsNullOrEmpty(tempFilePath) && File.Exists(tempFilePath))
+                {
+                    try
+                    {
+                        await Task.Run(() => File.Delete(tempFilePath));
+                        Debug.WriteLine("Arquivo temporário deletado após erro.");
+                    }
+                    catch (Exception deleteEx)
+                    {
+                        Debug.WriteLine($"Erro ao deletar arquivo temporário após exceção: {deleteEx.Message}");
+                    }
+                }
             }
+        }
+
+        private void TerminalInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && pythonProcess != null && !pythonProcess.HasExited)
+            {
+                string input = terminalInput.Text;
+                pythonProcess.StandardInput.WriteLine(input);
+                Dispatcher.Invoke(() =>
+                {
+                    AppendTextWithAnsi(terminalOutput, $"> {input}");
+                    terminalInput.Text = "";
+                });
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Enter && (pythonProcess == null || pythonProcess.HasExited))
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    AppendTextWithAnsi(terminalOutput, "Processo Python concluído ou não iniciado.");
+                    terminalInput.IsEnabled = false;
+                });
+                e.Handled = true;
+            }
+        }
+
+        private void AppendTextWithAnsi(RichTextBox rtb, string text)
+        {
+            var paragraph = new Paragraph();
+            var currentRun = new Run();
+            string remainingText = text;
+
+            var ansiPattern = @"\x1B\[([0-9;]*)m";
+            var matches = Regex.Matches(text, ansiPattern);
+
+            int lastIndex = 0;
+            foreach (Match match in matches)
+            {
+                if (match.Index > lastIndex)
+                {
+                    currentRun.Text = remainingText.Substring(lastIndex, match.Index - lastIndex);
+                    paragraph.Inlines.Add(currentRun);
+                    currentRun = new Run();
+                }
+
+                string code = match.Groups[1].Value;
+                if (string.IsNullOrEmpty(code) || code == "0")
+                {
+                    currentRun = new Run { Foreground = Brushes.White, Background = Brushes.Transparent, FontWeight = FontWeights.Normal };
+                }
+                else
+                {
+                    var codes = code.Split(';');
+                    foreach (var c in codes)
+                    {
+                        switch (c)
+                        {
+                            case "1": currentRun.FontWeight = FontWeights.Bold; break;
+                            case "4": currentRun.TextDecorations = TextDecorations.Underline; break;
+                            case "31": currentRun.Foreground = Brushes.Red; break;
+                            case "32": currentRun.Foreground = Brushes.Green; break;
+                            case "34": currentRun.Foreground = Brushes.Blue; break;
+                            case "40": currentRun.Background = Brushes.Black; break;
+                        }
+                    }
+                }
+
+                lastIndex = match.Index + match.Length;
+            }
+
+            if (lastIndex < remainingText.Length)
+            {
+                currentRun.Text = remainingText.Substring(lastIndex);
+                paragraph.Inlines.Add(currentRun);
+            }
+            else if (lastIndex == 0)
+            {
+                paragraph.Inlines.Add(new Run(text));
+            }
+
+            rtb.Document.Blocks.Add(paragraph);
+            rtb.ScrollToEnd();
         }
 
         private void DocTypeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs? e)
@@ -510,8 +678,12 @@ namespace DarkHub
                             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                             Text = content,
-                            SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("Python")
+                            SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Python"),
+                            Background = new SolidColorBrush(Color.FromRgb(30, 30, 30)),
+                            Foreground = Brushes.White,
+                            LineNumbersForeground = Brushes.Gray
                         };
+                        codeEditor.TextArea.TextView.LinkTextForegroundBrush = new SolidColorBrush(Color.FromRgb(86, 156, 214));
                         selectedTab.Content = codeEditor;
                         SyncFontSizeComboBox(codeEditor);
                     }
@@ -527,7 +699,9 @@ namespace DarkHub
                             FontFamily = new FontFamily("Consolas"),
                             FontSize = 14,
                             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+                            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                            Background = new SolidColorBrush(Color.FromRgb(30, 30, 30)),
+                            Foreground = Brushes.White
                         };
                         richEditor.Document.Blocks.Clear();
                         richEditor.Document.Blocks.Add(new Paragraph(new Run(content)));
@@ -541,7 +715,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorChangingDocType, ex.Message));
                 Debug.WriteLine($"Erro em DocTypeComboBox_SelectionChanged: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -578,7 +751,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSwitchingTab, ex.Message));
                 Debug.WriteLine($"Erro em TabControl_SelectionChanged: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -619,7 +791,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorSyncingComboBox, ex.Message));
                 Debug.WriteLine($"Erro em SyncComboBoxWithSelectedTab: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
@@ -660,7 +831,6 @@ namespace DarkHub
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => outputBox.Text = string.Format(ResourceManagerHelper.Instance.ErrorChangingFontSize, ex.Message));
                 Debug.WriteLine($"Erro em FontSizeComboBox_SelectionChanged: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }

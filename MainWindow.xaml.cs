@@ -1,5 +1,9 @@
-﻿using System.Diagnostics;
+﻿using DarkHub.UI;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,6 +18,8 @@ namespace DarkHub
     {
         private Type _currentPageType;
         private WindowState _previousWindowState;
+        private static readonly string CertificatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "darkhub.pfx");
+        private static readonly string PasswordFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "certificate_password.txt");
 
         public MainWindow()
         {
@@ -33,11 +39,131 @@ namespace DarkHub
 
                 MinWidth = 800;
                 MinHeight = 600;
+
+                Closing += MainWindow_Closing;
             }
             catch (Exception ex)
             {
                 WPF.MessageBox.Show($"Erro ao inicializar MainWindow: {ex.Message}\nStackTrace: {ex.StackTrace}", "Erro Crítico", WPF.MessageBoxButton.OK, WPF.MessageBoxImage.Error);
                 Close();
+            }
+        }
+
+        private void ActivateCertificateButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!File.Exists(CertificatePath))
+                {
+                    WindowFactory.ShowMessage(this, "O arquivo de certificado 'darkhub.pfx' não foi encontrado na pasta assets.",
+                        "Erro", MessageBoxImage.Error);
+                    return;
+                }
+
+                if (!File.Exists(PasswordFilePath))
+                {
+                    WindowFactory.ShowMessage(this, "O arquivo 'certificate_password.txt' não foi encontrado na pasta assets.",
+                        "Erro", MessageBoxImage.Error);
+                    return;
+                }
+
+                string password = ReadEncryptedPassword();
+                if (string.IsNullOrEmpty(password))
+                {
+                    WindowFactory.ShowMessage(this, "O arquivo 'certificate_password.txt' está vazio. Forneça a senha do certificado.",
+                        "Erro", MessageBoxImage.Error);
+                    return;
+                }
+
+                X509Certificate2 certificate = new X509Certificate2(CertificatePath, password, X509KeyStorageFlags.UserKeySet);
+
+                InstallCertificateToRootStore(certificate);
+
+                WindowFactory.ShowMessage(this, "Certificado ativado e instalado no repositório Root com sucesso!\n" +
+                    $"Subject: {certificate.Subject}\n" +
+                    $"Validade: {certificate.NotAfter}",
+                    "Sucesso", MessageBoxImage.Information);
+            }
+            catch (System.Security.Cryptography.CryptographicException ex)
+            {
+                WindowFactory.ShowMessage(this, $"Erro ao carregar o certificado. Verifique a senha ou o arquivo.\nErro: {ex.Message}",
+                    "Erro", MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                WindowFactory.ShowMessage(this, $"Erro ao ativar o certificado: {ex.Message}", "Erro", MessageBoxImage.Error);
+            }
+        }
+
+        private void InstallCertificateToRootStore(X509Certificate2 certificate)
+        {
+            if (!IsRunningAsAdministrator())
+            {
+                WindowFactory.ShowMessage(this, "Permissões de administrador são necessárias para instalar um certificado no repositório Root.\n" +
+                    "Por favor, execute o programa como administrador.",
+                    "Erro", MessageBoxImage.Error);
+                throw new UnauthorizedAccessException("Permissões de administrador necessárias.");
+            }
+
+            using (var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine))
+            {
+                store.Open(OpenFlags.ReadWrite);
+
+                var existingCert = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
+                if (existingCert.Count == 0)
+                {
+                    store.Add(certificate);
+                    WindowFactory.ShowMessage(this, "Certificado instalado no repositório de Autoridades Raiz Confiáveis.",
+                        "Sucesso", MessageBoxImage.Information);
+                }
+                else
+                {
+                    WindowFactory.ShowMessage(this, "O certificado já está instalado no repositório Root.",
+                        "Aviso", MessageBoxImage.Information);
+                }
+
+                store.Close();
+            }
+        }
+
+        private string ReadEncryptedPassword()
+        {
+            try
+            {
+                byte[] encryptedData = File.ReadAllBytes(PasswordFilePath);
+                byte[] decryptedData = System.Security.Cryptography.ProtectedData.Unprotect(
+                    encryptedData,
+                    null,
+                    System.Security.Cryptography.DataProtectionScope.CurrentUser);
+                string password = System.Text.Encoding.UTF8.GetString(decryptedData);
+                return password;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        private bool IsRunningAsAdministrator()
+        {
+            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+        }
+
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                Debug.WriteLine("MainWindow está sendo fechada.");
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao fechar MainWindow: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                Environment.Exit(0);
             }
         }
 
@@ -118,6 +244,63 @@ namespace DarkHub
             }
         }
 
+        public static async Task<bool> CreateRestorePointAsync(string description = "Ponto de Restauração - DarkHub")
+        {
+            try
+            {
+                if (!IsRunningAsAdmin())
+                {
+                    MessageBox.Show("Este recurso requer privilégios de administrador.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+
+                string psCommand = $@"
+                    Checkpoint-Computer -Description '{description}' -RestorePointType 'MODIFY_SETTINGS' -ErrorAction Stop;
+                ";
+
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-Command \"{psCommand}\"",
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    CreateNoWindow = true
+                };
+
+                using var process = new Process { StartInfo = processStartInfo };
+                process.Start();
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode == 0)
+                {
+                    MessageBox.Show(ResourceManagerHelper.Instance.RestorePointCreated, ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show(ResourceManagerHelper.Instance.RestorePointNotCreated, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"^{ResourceManagerHelper.Instance.RestorePointNotCreated} {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        private async void CreateRestorePointButton_Click(object sender, RoutedEventArgs e)
+        {
+            await CreateRestorePointAsync();
+        }
+
+        private static bool IsRunningAsAdmin()
+        {
+            using var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
         private async void SetActiveButton(object sender, RoutedEventArgs e)
         {
             System.Windows.Controls.Button clickedButton = sender as System.Windows.Controls.Button;
@@ -140,7 +323,6 @@ namespace DarkHub
                 btnSystemMonitor.Tag = null;
                 btnSummX.Tag = null;
                 btnPassMng.Tag = null;
-
                 clickedButton.Tag = "Active";
 
                 if (clickedButton == btnOptimizer)
@@ -167,6 +349,8 @@ namespace DarkHub
                     await NavigateToPageAsync(new SummX());
                 else if (clickedButton == btnPassMng)
                     await NavigateToPageAsync(new PasswordManager());
+                else if (clickedButton == btnAdvancedSec)
+                    await NavigateToPageAsync(new AdvancedSecurity());
             }
             catch (Exception ex)
             {
@@ -226,7 +410,7 @@ namespace DarkHub
             btnSystemMonitor.Tag = null;
             btnSummX.Tag = null;
             btnPassMng.Tag = null;
-
+            btnAdvancedSec.Tag = null;
             switch (pageName)
             {
                 case "Optimizer":
@@ -276,9 +460,13 @@ namespace DarkHub
                 case "CrunchyrollAcc":
                     btnCrunchyrollAcc.Tag = "Active";
                     break;
+
+                case "AdvancedSecurity":
+                    btnAdvancedSec.Tag = "Active";
+                    break;
             }
 
-            var paginasOcultas = new List<string> { "PasswordManager", "SummX", "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
+            var paginasOcultas = new List<string> { "AdvancedSecurity", "PasswordManager", "SummX", "YoutubeVideoDownloader", "TextEditor", "MetaDataEditor", "ImageTextExtractor", "SystemMonitor" };
 
             if (paginasOcultas.Contains(pageName))
             {
@@ -287,6 +475,8 @@ namespace DarkHub
                 btnBr.Visibility = Visibility.Collapsed;
                 btnEua.Visibility = Visibility.Collapsed;
                 btnDiscord.Visibility = Visibility.Collapsed;
+                btnPfx.Visibility = Visibility.Collapsed;
+                btnBackup.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -295,6 +485,8 @@ namespace DarkHub
                 btnBr.Visibility = Visibility.Visible;
                 btnEua.Visibility = Visibility.Visible;
                 btnDiscord.Visibility = Visibility.Visible;
+                btnPfx.Visibility = Visibility.Visible;
+                btnBackup.Visibility = Visibility.Visible;
             }
         }
 

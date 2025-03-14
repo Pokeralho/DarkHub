@@ -10,10 +10,25 @@
 		<ApplicationIcon>assets\DarkHub.ico</ApplicationIcon>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <Optimize>False</Optimize>
+	</PropertyGroup>
+
 	<ItemGroup>
+	  <Compile Remove="functions\security\**" />
+	  <EmbeddedResource Remove="functions\security\**" />
+	  <None Remove="functions\security\**" />
+	  <Page Remove="functions\security\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="assets\advancedsec.png" />
+		<None Remove="assets\assinar.png" />
+		<None Remove="assets\backup.png" />
 		<None Remove="assets\baixar.png" />
 		<None Remove="assets\bench-info.png" />
 		<None Remove="assets\brasil.png" />
+		<None Remove="assets\certificate_password.txt" />
 		<None Remove="assets\clicker.png" />
 		<None Remove="assets\converter.png" />
 		<None Remove="assets\copiar.png" />
@@ -23,6 +38,7 @@
 		<None Remove="assets\delete.png" />
 		<None Remove="assets\discord.png" />
 		<None Remove="assets\DllInjection.png" />
+		<None Remove="assets\download.png" />
 		<None Remove="assets\estados-unidos.png" />
 		<None Remove="assets\exif.png" />
 		<None Remove="assets\extrairtxt.png" />
@@ -75,6 +91,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Content Include="assets\advancedsec.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\assinar.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\backup.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\baixar.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -82,6 +107,9 @@
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\brasil.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\certificate_password.txt">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\clicker.png">
@@ -99,10 +127,16 @@
 		<Content Include="assets\DarkHub.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="assets\DarkHub.pfx">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\discord.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\DllInjection.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\download.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\estados-unidos.png">

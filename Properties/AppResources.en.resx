@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-	Microsoft ResX Schema 
-	
-	Version 2.0
-	
-	The primary goals of this format is to allow a simple XML format 
-	that is mostly human readable. The generation and parsing of the 
-	various data types are done through the TypeConverter classes 
-	associated with the data types.
-	
-	Example:
-	
-	... ado.net/XML headers & schema ...
-	<resheader name="resmimetype">text/microsoft-resx</resheader>
-	<resheader name="version">2.0</resheader>
-	<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-	<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-	<data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-	<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-	<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-		<value>[base64 mime encoded serialized .NET Framework object]</value>
-	</data>
-	<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-		<value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-		<comment>This is a comment</comment>
-	</data>
-				
-	There are any number of "resheader" rows that contain simple 
-	name/value pairs.
-	
-	Each data row contains a name, and value. The row also contains a 
-	type or mimetype. Type corresponds to a .NET class that support 
-	text/value conversion through the TypeConverter architecture. 
-	Classes that don't support this are serialized and stored with the 
-	mimetype set.
-	
-	The mimetype is used for serialized objects, and tells the 
-	ResXResourceReader how to depersist the object. This is currently not 
-	extensible. For a given mimetype the value must be set accordingly:
-	
-	Note - application/x-microsoft.net.object.binary.base64 is the format 
-	that the ResXResourceWriter will generate, however the reader can 
-	read any of the formats listed below.
-	
-	mimetype: application/x-microsoft.net.object.binary.base64
-	value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-			: and then encoded with base64 encoding.
-	
-	mimetype: application/x-microsoft.net.object.soap.base64
-	value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-			: and then encoded with base64 encoding.
-
-	mimetype: application/x-microsoft.net.object.bytearray.base64
-	value   : The object must be serialized into a byte array 
-			: using a System.ComponentModel.TypeConverter
-			: and then encoded with base64 encoding.
-	-->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 	<xsd:element name="root" msdata:IsDataSet="true">
@@ -143,6 +84,9 @@
   </data>
   <data name="CleanRegistryButton" xml:space="preserve">
 	<value>Registry Cleanup</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+	<value>Delete</value>
   </data>
   <data name="ClearTempFilesButton" xml:space="preserve">
 	<value>Clear Temporary Files</value>
@@ -1813,5 +1757,207 @@ Restart the system to apply all the changes.</value>
 	</data>
 	<data name="NetworkaAdapterNotFound" xml:space="preserve">
 		<value>Network adapter not found.</value>
+	</data>
+	<data name="DependenciesNotFound" xml:space="preserve">
+		<value>Some necessary dependencies were not found. Please reinstall the application.
+Initialization error.</value>
+	</data>
+	<data name="AppIniSucc" xml:space="preserve">
+		<value>Application started successfully.</value>
+	</data>
+	<data name="MainLoadedCheckUpd" xml:space="preserve">
+		<value>MainWindow loaded. Starting to check for updates.</value>
+	</data>
+	<data name="NewVersionAvailable1" xml:space="preserve">
+		<value>A new version of DarkHub is available</value>
+	</data>
+	<data name="NewVersionAvailable2" xml:space="preserve">
+		<value>Would you like to download and install it now?</value>
+	</data>
+	<data name="NewVersion" xml:space="preserve">
+		<value>Update Available</value>
+	</data>
+	<data name="SelectAFeature" xml:space="preserve">
+		<value>Select a feature</value>
+	</data>
+	<data name="MawareDetector" xml:space="preserve">
+		<value>Malware Detector</value>
+	</data>
+	<data name="BehavioralAnalysis" xml:space="preserve">
+		<value>Behavioral Analysis</value>
+	</data>
+	<data name="LatencyOptimizer" xml:space="preserve">
+		<value>Latency Optimizer</value>
+	</data>
+	<data name="TrackingBlocker" xml:space="preserve">
+		<value>Tracking Blocker</value>
+	</data>
+	<data name="PhishingIdentifier" xml:space="preserve">
+		<value>Phishing Identifier</value>
+	</data>
+	<data name="ExploitDetector" xml:space="preserve">
+		<value>Exploit Detector</value>
+	</data>
+	<data name="SecurityTools" xml:space="preserve">
+		<value>Security Tools</value>
+	</data>
+	<data name="StartMonitoring" xml:space="preserve">
+		<value>Start Monitoring</value>
+	</data>
+	<data name="StopMonitoring" xml:space="preserve">
+		<value>Stop Monitoring</value>
+	</data>
+	<data name="RemoveSelected" xml:space="preserve">
+		<value>Remove Selected</value>
+	</data>
+	<data name="StartScan" xml:space="preserve">
+		<value>Start scanning</value>
+	</data>
+	<data name="OptimizeNow" xml:space="preserve">
+		<value>Optimize Now</value>
+	</data>
+	<data name="AdvancedConfig" xml:space="preserve">
+		<value>Advanced Configuration</value>
+	</data>
+	<data name="StartAuditing" xml:space="preserve">
+		<value>Start Auditing</value>
+	</data>
+	<data name="BlockAll" xml:space="preserve">
+		<value>Block All</value>
+	</data>
+	<data name="InsertUrl" xml:space="preserve">
+		<value>Enter a URL to check</value>
+	</data>
+	<data name="Verify" xml:space="preserve">
+		<value>Verify</value>
+	</data>
+	<data name="BlockPhishingUrl" xml:space="preserve">
+		<value>Block Phishing Sites</value>
+	</data>
+	<data name="BlockExploit" xml:space="preserve">
+		<value>Block Selected Exploits</value>
+	</data>
+	<data name="Scanning" xml:space="preserve">
+		<value>Scanning on progress...</value>
+	</data>
+	<data name="NoThreatsOrScanning" xml:space="preserve">
+		<value>Nenhuma ameaça para remover ou escaneamento em andamento</value>
+	</data>
+	<data name="SelectThreatsToRemove" xml:space="preserve">
+		<value>Select threats to remove</value>
+	</data>
+	<data name="RemovingSelectedThreats" xml:space="preserve">
+		<value>Removing Selected Threats...</value>
+	</data>
+	<data name="ComportamentalBehavioralStarted" xml:space="preserve">
+		<value>Behavioral monitoring started...</value>
+	</data>
+	<data name="NoThreats" xml:space="preserve">
+		<value>Scanning completed: Nothing threat detected</value>
+	</data>
+	<data name="ScanEnded" xml:space="preserve">
+		<value>Scan completed:</value>
+	</data>
+	<data name="ScanEnded1" xml:space="preserve">
+		<value>possible threats detected</value>
+	</data>
+	<data name="RemoveThreatsConfirm" xml:space="preserve">
+		<value>Do you want to remove</value>
+	</data>
+	<data name="RemoveThreatsConfirm1" xml:space="preserve">
+		<value>selected threats?</value>
+	</data>
+	<data name="RemoveThreatsConfirm2" xml:space="preserve">
+		<value>Confirm</value>
+	</data>
+	<data name="NoPfx" xml:space="preserve">
+		<value>No valid digital signature; </value>
+	</data>
+	<data name="ValidPfx" xml:space="preserve">
+		<value>Trusted signature from a known publisher</value>
+	</data>
+	<data name="ExcessiveMemNoPfx" xml:space="preserve">
+		<value>Excessive use of memory without a valid signature; </value>
+	</data>
+	<data name="SvchostOutWin" xml:space="preserve">
+		<value>svchost outside the Windows directory; </value>
+	</data>
+	<data name="SuspectConnec" xml:space="preserve">
+		<value>Suspicious network connection:</value>
+	</data>
+	<data name="SuspectLoc" xml:space="preserve">
+		<value>Non-standard location; </value>
+	</data>
+	<data name="SuspectCmd" xml:space="preserve">
+		<value>Comando suspeito:</value>
+	</data>
+	<data name="Approved" xml:space="preserve">
+		<value>Approved</value>
+	</data>
+	<data name="ErrorRemoveThreat" xml:space="preserve">
+		<value>Error removing threat</value>
+	</data>
+	<data name="NoConnection" xml:space="preserve">
+		<value>No Connection</value>
+	</data>
+	<data name="Connections" xml:space="preserve">
+		<value>Connections:</value>
+	</data>
+	<data name="StoppingBehavioral" xml:space="preserve">
+		<value>Stopping behavioral monitoring...</value>
+	</data>
+	<data name="BehaviorReport" xml:space="preserve">
+		<value>Behavior Report - Generated on:</value>
+	</data>
+	<data name="ProcessesMonitored" xml:space="preserve">
+		<value>Total processes monitored:</value>
+	</data>
+	<data name="ReportGenerated" xml:space="preserve">
+		<value>Monitoring completed. Report generated on:</value>
+	</data>
+	<data name="ReportNotGenerated" xml:space="preserve">
+		<value>Error generating report:</value>
+	</data>
+	<data name="AuditTracking" xml:space="preserve">
+		<value>Starting advanced audit tracking...</value>
+	</data>
+	<data name="AuditCompleted" xml:space="preserve">
+		<value>Audit completed:</value>
+	</data>
+	<data name="AuditCompleted1" xml:space="preserve">
+		<value>trackers detected</value>
+	</data>
+	<data name="CookiesAudit" xml:space="preserve">
+		<value>Possible tracking cookies detected:</value>
+	</data>
+	<data name="AuditReports" xml:space="preserve">
+		<value>Tracking Audit Report</value>
+	</data>
+	<data name="AuditGenIn" xml:space="preserve">
+		<value>Generated on:</value>
+	</data>
+	<data name="TrackersDetected" xml:space="preserve">
+		<value>Total number of trackers detected:</value>
+	</data>
+	<data name="Category" xml:space="preserve">
+		<value>Category:</value>
+	</data>
+	<data name="ReportSaved" xml:space="preserve">
+		<value>Report saved in:</value>
+	</data>
+	<data name="BlockingTracking" xml:space="preserve">
+		<value>Blocking tracking techniques...</value>
+	</data>
+	<data name="EnterURL" xml:space="preserve">
+		<value>Enter a URL to check</value>
+	</data>
+	<data name="MonitoringExploits" xml:space="preserve">
+		<value>Monitoring exploits in real time...</value>
+	</data>
+	<data name="RestorePointCreated" xml:space="preserve">
+		<value>Restore point created successfully!</value>
+	</data>
+	<data name="RestorePointNotCreated" xml:space="preserve">
+		<value>Falha ao criar o ponto de restauração. Verifique se a Restauração do Sistema está habilitada.</value>
 	</data>
 </root>

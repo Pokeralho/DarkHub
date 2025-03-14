@@ -4,17 +4,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace DarkHub
 {
     public partial class AutoClicker : Page, IDisposable
     {
         private bool _isClicking = false;
-        private int _clickIntervalMs = 100;
+        private int _clickIntervalMs = 1;
         private readonly object _syncLock = new();
-        private DispatcherTimer? _clickTimer;
-        private DispatcherTimer? _debounceTimer;
+        private CancellationTokenSource? _clickCancellationTokenSource;
         private IntPtr _hWnd;
         private HwndSource? _hwndSource;
         private const int HOTKEY_ID = 9000;
@@ -23,7 +21,7 @@ namespace DarkHub
         private Key _currentActivationKey = Key.F6;
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
+        private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
         [DllImport("user32.dll")]
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
@@ -31,6 +29,25 @@ namespace DarkHub
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct INPUT
+        {
+            public int type;
+            public MOUSEINPUT mi;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MOUSEINPUT
+        {
+            public int dx;
+            public int dy;
+            public uint mouseData;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        private const int INPUT_MOUSE = 0;
         private const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
         private const uint MOUSEEVENTF_LEFTUP = 0x0004;
 
@@ -38,7 +55,6 @@ namespace DarkHub
         {
             InitializeComponent();
             SetupUIComponents();
-            SetupTimers();
             Loaded += AutoClicker_Loaded;
             Log(ResourceManagerHelper.Instance.AutoClickerInitialized);
         }
@@ -58,22 +74,6 @@ namespace DarkHub
             catch (Exception ex)
             {
                 HandleError(ResourceManagerHelper.Instance.ErrorSettingUpUIComponents, ex);
-            }
-        }
-
-        private void SetupTimers()
-        {
-            try
-            {
-                _clickTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(_clickIntervalMs) };
-                _clickTimer.Tick += PerformClick;
-
-                _debounceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(DEBOUNCE_DELAY_MS) };
-                _debounceTimer.Tick += ProcessIntervalChange;
-            }
-            catch (Exception ex)
-            {
-                HandleError(ResourceManagerHelper.Instance.ErrorSettingUpTimers, ex);
             }
         }
 
@@ -112,11 +112,9 @@ namespace DarkHub
                     }
 
                     _isClicking = true;
-                    if (_clickTimer != null)
-                    {
-                        _clickTimer.Interval = TimeSpan.FromMilliseconds(_clickIntervalMs);
-                        _clickTimer.Start();
-                    }
+                    _clickCancellationTokenSource = new CancellationTokenSource();
+                    Task.Run(() => ClickLoop(_clickCancellationTokenSource.Token));
+
                     UpdateUIStatus();
                     Log(ResourceManagerHelper.Instance.AutoClickerStarted);
                 }
@@ -137,7 +135,7 @@ namespace DarkHub
                 try
                 {
                     _isClicking = false;
-                    _clickTimer?.Stop();
+                    _clickCancellationTokenSource?.Cancel();
                     UpdateUIStatus();
                     Log(ResourceManagerHelper.Instance.AutoClickerStopped);
                 }
@@ -148,23 +146,40 @@ namespace DarkHub
             }
         }
 
-        private void PerformClick(object? sender, EventArgs e)
+        private void ClickLoop(CancellationToken token)
         {
-            try
+            var stopwatch = Stopwatch.StartNew();
+
+            while (!token.IsCancellationRequested)
             {
-                lock (_syncLock)
+                long elapsedMs = stopwatch.ElapsedMilliseconds;
+                if (elapsedMs >= _clickIntervalMs)
                 {
-                    if (!_isClicking) return;
-                    mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, UIntPtr.Zero);
-                    Thread.Sleep(5);
-                    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, UIntPtr.Zero);
+                    lock (_syncLock)
+                    {
+                        if (!_isClicking) break;
+                        SimulateClick();
+                    }
+                    stopwatch.Restart();
+                }
+                else
+                {
+                    Thread.Sleep(1);
                 }
             }
-            catch (Exception ex)
-            {
-                HandleError(ResourceManagerHelper.Instance.ErrorPerformingClick, ex);
-                StopClicking(null, null);
-            }
+        }
+
+        private void SimulateClick()
+        {
+            INPUT[] inputs = new INPUT[2];
+
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi = new MOUSEINPUT { dwFlags = MOUSEEVENTF_LEFTDOWN };
+
+            inputs[1].type = INPUT_MOUSE;
+            inputs[1].mi = new MOUSEINPUT { dwFlags = MOUSEEVENTF_LEFTUP };
+
+            SendInput(2, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -229,13 +244,6 @@ namespace DarkHub
 
         private void TxtInterval_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _debounceTimer?.Stop();
-            _debounceTimer?.Start();
-        }
-
-        private void ProcessIntervalChange(object? sender, EventArgs e)
-        {
-            _debounceTimer?.Stop();
             try
             {
                 lock (_syncLock)
@@ -250,10 +258,6 @@ namespace DarkHub
                     if (_isClicking && newInterval != _clickIntervalMs)
                     {
                         _clickIntervalMs = newInterval;
-                        if (_clickTimer != null)
-                        {
-                            _clickTimer.Interval = TimeSpan.FromMilliseconds(_clickIntervalMs);
-                        }
                         UpdateUIStatus();
                         Log(string.Format(ResourceManagerHelper.Instance.IntervalUpdated, _clickIntervalMs));
                     }
@@ -270,7 +274,10 @@ namespace DarkHub
             try
             {
                 if (int.TryParse(txtInterval.Text, out int value) && value > 0)
+                {
+                    _clickIntervalMs = value;
                     return value;
+                }
 
                 ShowWarning("IntervalMustBeGreaterThanZero");
                 return _clickIntervalMs;
@@ -363,21 +370,14 @@ namespace DarkHub
             {
                 lock (_syncLock)
                 {
-                    if (_clickTimer != null)
+                    if (_isClicking)
                     {
-                        _clickTimer.Stop();
-                        _clickTimer.Tick -= PerformClick;
-                        _clickTimer = null;
-                        Log(ResourceManagerHelper.Instance.TimerDisposed);
+                        _clickCancellationTokenSource?.Cancel();
+                        _isClicking = false;
                     }
-
-                    if (_debounceTimer != null)
-                    {
-                        _debounceTimer.Stop();
-                        _debounceTimer.Tick -= ProcessIntervalChange;
-                        _debounceTimer = null;
-                        Log(ResourceManagerHelper.Instance.DebounceTimerDisposed);
-                    }
+                    _clickCancellationTokenSource?.Dispose();
+                    _clickCancellationTokenSource = null;
+                    Log(ResourceManagerHelper.Instance.TimerDisposed);
                 }
 
                 if (_hWnd != IntPtr.Zero)

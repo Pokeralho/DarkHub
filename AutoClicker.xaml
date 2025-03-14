@@ -91,6 +91,7 @@
                 <Button x:Name="btnStop"
                         Content="{Binding StopButton}"
                         Click="StopClicking"
+                        Cursor="Hand"
                         Width="100"
                         Margin="0"
                         Background="#F44336"

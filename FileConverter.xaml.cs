@@ -37,7 +37,8 @@ namespace DarkHub
                 OpenFileDialog openFileDialog = new()
                 {
                     Multiselect = true,
-                    Title = "Selecionar Arquivos para Conversão"
+                    Title = "Selecionar Arquivos para Conversão",
+                    Filter = "Todos os Arquivos (*.*)|*.*|Imagens (*.png;*.jpg;*.raw)|*.png;*.jpg;*.raw|Binários (*.bin)|*.bin|PDF (*.pdf)|*.pdf|Vídeo (*.mp4;*.avi)|*.mp4;*.avi|Áudio (*.mp3;*.wav)|*.mp3;*.wav"
                 };
                 if (openFileDialog.ShowDialog() == true)
                 {
@@ -103,51 +104,88 @@ namespace DarkHub
                 TextBox? progressTextBox = progressWindow.FindName("ProgressTextBox") as TextBox;
 
                 int completed = 0;
-                await Task.Run(() =>
+
+                if (IsDocumentFormat(outputFormat) && outputFormat == "pdf")
                 {
-                    Parallel.ForEach(inputFiles, inputFile =>
+                    string outputFile = Path.Combine(string.IsNullOrEmpty(outputDir) ? Path.GetDirectoryName(inputFiles[0]) ?? string.Empty : outputDir,
+                                                     $"CombinedImages_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
+                    AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ConvertingFileProgress,
+                                                                  "Imagens selecionadas", "pdf"));
+
+                    await Task.Run(() =>
                     {
                         try
                         {
-                            string outputFile = GetOutputFilePath(inputFile, outputFormat);
-                            AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ConvertingFileProgress,
-                                                                          Path.GetFileName(inputFile), outputFormat));
-
-                            if (IsImageFormat(outputFormat))
-                            {
-                                if (Path.GetExtension(inputFile).ToLower() == ".pdf")
-                                    ConvertPdfToImages(inputFile, outputDir, outputFormat);
-                                else
-                                    ConvertImage(inputFile, outputFile);
-                            }
-                            else if (IsDocumentFormat(outputFormat) && outputFormat == "pdf")
-                            {
-                                ConvertImagesToPdf(inputFiles, outputFile);
-                                completed = inputFiles.Count;
-                                return;
-                            }
-                            else if (IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat))
-                            {
-                                ConvertMedia(inputFile, outputFile, outputFormat);
-                            }
-
+                            ConvertImagesToPdf(inputFiles, outputFile);
                             AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CompletedFileProgress,
                                                                           Path.GetFileName(outputFile)));
                         }
                         catch (Exception ex)
                         {
                             AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorConvertingFileProgress,
-                                                                          Path.GetFileName(inputFile), ex.Message));
-                            Debug.WriteLine($"Erro na conversão de {inputFile}: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                                                                          "Imagens selecionadas", ex.Message));
+                            Debug.WriteLine($"Erro ao converter imagens para PDF: {ex.Message}\nStackTrace: {ex.StackTrace}");
                         }
                         finally
                         {
-                            Interlocked.Increment(ref completed);
+                            completed = inputFiles.Count;
                             AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProgressUpdateText,
                                                                           completed, inputFiles.Count));
                         }
                     });
-                });
+                }
+                else
+                {
+                    await Task.Run(() =>
+                    {
+                        Parallel.ForEach(inputFiles, inputFile =>
+                        {
+                            try
+                            {
+                                string outputFile = GetOutputFilePath(inputFile, outputFormat);
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ConvertingFileProgress,
+                                                                              Path.GetFileName(inputFile), outputFormat));
+
+                                string inputExtension = Path.GetExtension(inputFile).ToLower();
+                                if (IsImageFormat(outputFormat))
+                                {
+                                    if (inputExtension == ".pdf")
+                                        ConvertPdfToImages(inputFile, outputDir, outputFormat);
+                                    else if (inputExtension == ".bin" || inputExtension == ".raw")
+                                        ConvertBinOrRawToImage(inputFile, outputFile, outputFormat);
+                                    else
+                                        ConvertImage(inputFile, outputFile);
+                                }
+                                else if (IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat))
+                                {
+                                    if (inputExtension == ".bin" || inputExtension == ".raw")
+                                        ConvertBinOrRawToMedia(inputFile, outputFile, outputFormat);
+                                    else
+                                        ConvertMedia(inputFile, outputFile, outputFormat);
+                                }
+                                else if (outputFormat == "raw" || outputFormat == "bin")
+                                {
+                                    ConvertToRawOrBin(inputFile, outputFile, outputFormat);
+                                }
+
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.CompletedFileProgress,
+                                                                              Path.GetFileName(outputFile)));
+                            }
+                            catch (Exception ex)
+                            {
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorConvertingFileProgress,
+                                                                              Path.GetFileName(inputFile), ex.Message));
+                                Debug.WriteLine($"Erro na conversão de {inputFile}: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                            }
+                            finally
+                            {
+                                Interlocked.Increment(ref completed);
+                                AppendProgress(progressTextBox, string.Format(ResourceManagerHelper.Instance.ProgressUpdateText,
+                                                                              completed, inputFiles.Count));
+                            }
+                        });
+                    });
+                }
 
                 AppendProgress(progressTextBox, ResourceManagerHelper.Instance.ConversionCompleted);
                 await Task.Run(() => Dispatcher.Invoke(() => MessageBox.Show(ResourceManagerHelper.Instance.ConversionCompleted,
@@ -221,6 +259,13 @@ namespace DarkHub
             _ => false
         };
 
+        private static bool IsRawOrBinFormat(string format) => format switch
+        {
+            "raw" => true,
+            "bin" => true,
+            _ => false
+        };
+
         private void ConvertImage(string inputFile, string outputFile)
         {
             try
@@ -280,6 +325,235 @@ namespace DarkHub
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro em ConvertMedia: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        private void ConvertBinOrRawToImage(string inputFile, string outputFile, string outputFormat)
+        {
+            try
+            {
+                byte[] rawData = File.ReadAllBytes(inputFile);
+
+                using (var stream = new MemoryStream(rawData))
+                {
+                    using (var reader = new BinaryReader(stream))
+                    {
+                        int width = reader.ReadInt32();
+                        int height = reader.ReadInt32();
+                        int bytesPerPixel = 3;
+                        int expectedSize = width * height * bytesPerPixel;
+                        byte[] imageData = reader.ReadBytes(expectedSize);
+
+                        if (imageData.Length != expectedSize)
+                            throw new Exception($"Dados insuficientes no arquivo {inputFile}. Esperado: {expectedSize} bytes, encontrado: {imageData.Length} bytes");
+
+                        using (var bitmap = new System.Drawing.Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
+                        {
+                            var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, width, height),
+                                                             ImageLockMode.WriteOnly, bitmap.PixelFormat);
+                            IntPtr ptr = bitmapData.Scan0;
+                            int stride = bitmapData.Stride;
+
+                            for (int y = 0; y < height; y++)
+                            {
+                                int sourceOffset = y * width * bytesPerPixel;
+                                IntPtr destPtr = IntPtr.Add(ptr, y * stride);
+                                System.Runtime.InteropServices.Marshal.Copy(imageData, sourceOffset, destPtr, width * bytesPerPixel);
+                            }
+
+                            bitmap.UnlockBits(bitmapData);
+                            bitmap.Save(outputFile, GetImageFormat(outputFormat));
+                        }
+                    }
+                }
+                Debug.WriteLine($"Arquivo .bin/.raw convertido para imagem: {inputFile} -> {outputFile}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em ConvertBinOrRawToImage: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        private void ConvertBinOrRawToMedia(string inputFile, string outputFile, string outputFormat)
+        {
+            try
+            {
+                string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
+                if (!File.Exists(ffmpegPath))
+                    throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}");
+
+                string arguments = outputFormat switch
+                {
+                    "mp3" => $"-f s16le -ar 44100 -ac 1 -i \"{inputFile}\" -acodec mp3 -ab 192k \"{outputFile}\"",
+                    "wav" => $"-f s16le -ar 44100 -ac 1 -i \"{inputFile}\" -acodec pcm_s16le \"{outputFile}\"",
+                    "aac" => $"-f s16le -ar 44100 -ac 1 -i \"{inputFile}\" -acodec aac -ab 128k \"{outputFile}\"",
+                    "mp4" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v libx264 -preset fast -c:a aac \"{outputFile}\"",
+                    "avi" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v mpeg4 -c:a mp3 \"{outputFile}\"",
+                    "mkv" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v copy -c:a copy \"{outputFile}\"",
+                    _ => throw new ArgumentException($"Formato de mídia não suportado para .bin/.raw: {outputFormat}")
+                };
+
+                using var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = ffmpegPath,
+                        Arguments = arguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    }
+                };
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                if (process.ExitCode != 0)
+                    throw new Exception($"Erro na conversão de .bin/.raw para mídia: {error}\nSaída: {output}");
+                Debug.WriteLine($"Arquivo .bin/.raw convertido para mídia: {inputFile} -> {outputFile}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em ConvertBinOrRawToMedia: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                throw;
+            }
+        }
+
+        private void ConvertToRawOrBin(string inputFile, string outputFile, string outputFormat)
+        {
+            try
+            {
+                string inputExtension = Path.GetExtension(inputFile).ToLower();
+                byte[] rawData;
+
+                if (IsImageFormat(inputExtension.Replace(".", "")))
+                {
+                    using (var image = System.Drawing.Image.FromFile(inputFile))
+                    {
+                        using (var bitmap = new System.Drawing.Bitmap(image))
+                        {
+                            int width = bitmap.Width;
+                            int height = bitmap.Height;
+                            int bytesPerPixel = 3;
+                            int dataSize = width * height * bytesPerPixel;
+                            rawData = new byte[dataSize];
+
+                            var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, width, height),
+                                                             ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+                            IntPtr ptr = bitmapData.Scan0;
+                            int stride = bitmapData.Stride;
+                            for (int y = 0; y < height; y++)
+                            {
+                                IntPtr rowPtr = IntPtr.Add(ptr, y * stride);
+                                int rowOffset = y * width * bytesPerPixel;
+                                System.Runtime.InteropServices.Marshal.Copy(rowPtr, rawData, rowOffset, width * bytesPerPixel);
+                            }
+                            bitmap.UnlockBits(bitmapData);
+
+                            using (var stream = new FileStream(outputFile, FileMode.Create))
+                            {
+                                using (var writer = new BinaryWriter(stream))
+                                {
+                                    writer.Write(width);
+                                    writer.Write(height);
+                                    writer.Write(rawData);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (IsAudioFormat(inputExtension.Replace(".", "")) || IsVideoFormat(inputExtension.Replace(".", "")))
+                {
+                    string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
+                    if (!File.Exists(ffmpegPath))
+                        throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}");
+
+                    string tempFile = Path.GetTempFileName();
+                    string arguments = inputExtension switch
+                    {
+                        ".mp3" or ".wav" or ".aac" => $"-i \"{inputFile}\" -f s16le -acodec pcm_s16le \"{tempFile}\"",
+                        ".mp4" or ".avi" or ".mkv" => $"-i \"{inputFile}\" -f rawvideo -pix_fmt yuv420p \"{tempFile}\"",
+                        _ => throw new ArgumentException($"Formato de entrada não suportado para conversão para {outputFormat}: {inputExtension}")
+                    };
+
+                    using (var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = ffmpegPath,
+                            Arguments = arguments,
+                            UseShellExecute = false,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            CreateNoWindow = true
+                        }
+                    })
+                    {
+                        process.Start();
+                        string output = process.StandardOutput.ReadToEnd();
+                        string error = process.StandardError.ReadToEnd();
+                        process.WaitForExit();
+                        if (process.ExitCode != 0)
+                            throw new Exception($"Erro ao extrair dados brutos: {error}\nSaída: {output}");
+                    }
+
+                    rawData = File.ReadAllBytes(tempFile);
+                    File.Delete(tempFile);
+                    File.WriteAllBytes(outputFile, rawData);
+                }
+                else if (inputExtension == ".pdf")
+                {
+                    using (var document = PdfiumViewer.PdfDocument.Load(inputFile))
+                    {
+                        using (var image = document.Render(0, 300, 300, true))
+                        {
+                            using (var bitmap = new System.Drawing.Bitmap(image))
+                            {
+                                int width = bitmap.Width;
+                                int height = bitmap.Height;
+                                int bytesPerPixel = 3;
+                                int dataSize = width * height * bytesPerPixel;
+                                rawData = new byte[dataSize];
+
+                                var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, width, height),
+                                                                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                                IntPtr ptr = bitmapData.Scan0;
+                                int stride = bitmapData.Stride;
+                                for (int y = 0; y < height; y++)
+                                {
+                                    IntPtr rowPtr = IntPtr.Add(ptr, y * stride);
+                                    int rowOffset = y * width * bytesPerPixel;
+                                    System.Runtime.InteropServices.Marshal.Copy(rowPtr, rawData, rowOffset, width * bytesPerPixel);
+                                }
+                                bitmap.UnlockBits(bitmapData);
+
+                                using (var stream = new FileStream(outputFile, FileMode.Create))
+                                {
+                                    using (var writer = new BinaryWriter(stream))
+                                    {
+                                        writer.Write(width);
+                                        writer.Write(height);
+                                        writer.Write(rawData);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException($"Conversão de {inputExtension} para {outputFormat} não suportada.");
+                }
+
+                Debug.WriteLine($"Arquivo convertido para {outputFormat}: {inputFile} -> {outputFile}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em ConvertToRawOrBin: {ex.Message}\nStackTrace: {ex.StackTrace}");
                 throw;
             }
         }

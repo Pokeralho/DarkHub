@@ -8,7 +8,7 @@
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=TextEditorTitle}"
-      Background="{x:Null}"
+      Background="#1E1E1E"
       DataContext="{Binding Source={x:Static local:ResourceManagerHelper.Instance}}">
 
     <Page.Resources>
@@ -103,8 +103,8 @@
         </Style>
 
         <Style TargetType="ComboBox">
-            <Setter Property="Background" Value="#35373c" />
             <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#35373c" />
             <Setter Property="BorderBrush" Value="#80848e" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Height" Value="30" />
@@ -112,8 +112,7 @@
         </Style>
 
         <Style TargetType="ComboBoxItem">
-            <Setter Property="Background" Value="#35373c" />
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Foreground" Value="black" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#5A6896" />
@@ -125,17 +124,16 @@
         </Style>
     </Page.Resources>
 
-    <Grid Margin="10">
-
+    <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,40,0,10">
             <Grid>
-
                 <DockPanel LastChildFill="False" Margin="0,0,100,0">
                     <Button x:Name="btnNewTab" Click="NewTab_Click" Style="{StaticResource MenuButtonStyle}" MinWidth="100" ToolTip="{Binding NewTabToolTip}" DockPanel.Dock="Left">
                         <StackPanel Orientation="Horizontal">
@@ -169,11 +167,11 @@
                     </Button>
                 </DockPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,40,0">
-                    <ComboBox x:Name="docTypeComboBox" MinWidth="80" Margin="0,0,5,0" Foreground="black" SelectionChanged="DocTypeComboBox_SelectionChanged" ToolTip="{Binding DocTypeToolTip}">
+                    <ComboBox x:Name="docTypeComboBox" Foreground="black" MinWidth="80" Margin="0,0,5,0" SelectionChanged="DocTypeComboBox_SelectionChanged" ToolTip="{Binding DocTypeToolTip}">
                         <ComboBoxItem Content="{Binding PlainTextOption}" IsSelected="True" />
                         <ComboBoxItem Content="{Binding PythonOption}" />
                     </ComboBox>
-                    <ComboBox x:Name="fontSizeComboBox" MinWidth="60" Margin="5,0,0,0" Foreground="black" SelectionChanged="FontSizeComboBox_SelectionChanged" ToolTip="{Binding FontSizeToolTip}">
+                    <ComboBox x:Name="fontSizeComboBox" Foreground="Black" MinWidth="60" Margin="5,0,0,0" SelectionChanged="FontSizeComboBox_SelectionChanged" ToolTip="{Binding FontSizeToolTip}">
                         <ComboBoxItem Content="10" />
                         <ComboBoxItem Content="12" />
                         <ComboBoxItem Content="14" IsSelected="True" />
@@ -184,19 +182,13 @@
             </Grid>
         </Border>
 
-        <TabControl x:Name="tabControl" Grid.Row="1" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Header="{Binding NewDocumentHeader}">
-                <RichTextBox x:Name="richTextEditor" />
-            </TabItem>
-        </TabControl>
+        <TabControl x:Name="tabControl" Grid.Row="1" Style="{StaticResource TabControlStyle}" SelectionChanged="TabControl_SelectionChanged" Margin="0,0,0,10" Grid.RowSpan="2" />
 
-        <Border Grid.Row="2" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,10,0,35">
-            <TextBox x:Name="outputBox"
-                     MinHeight="100"
-                     MaxHeight="300"
-                     Padding="10"
-                     Margin="0"
-                     IsReadOnly="True" />
+        <Border Grid.Row="3" Background="#2A2A2E" BorderBrush="#80848e" BorderThickness="1" CornerRadius="5" Padding="5">
+            <StackPanel Orientation="Vertical">
+                <RichTextBox x:Name="terminalOutput" FontFamily="Consolas" IsReadOnly="True" Height="100" Margin="0,0,0,5" />
+                <TextBox x:Name="terminalInput" FontFamily="Consolas" Height="30" />
+            </StackPanel>
         </Border>
     </Grid>
 </Page>

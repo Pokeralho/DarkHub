@@ -45,21 +45,24 @@
         <StackPanel VerticalAlignment="top" HorizontalAlignment="Center" Width="400">
             <TextBlock Text="{Binding FileConverterTitle}"
                        FontFamily="JetBrains Mono" FontSize="20" FontWeight="Bold"
-                       HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="White" />
+                       HorizontalAlignment="Center" Margin="0,0,0,0" Foreground="White" />
 
-            <Button Content="{Binding SelectFilesButton}"
-                    Width="200" Click="SelectFiles_Click" Margin="0,100,0,10" />
+            <Button Content="{Binding SelectFilesButton}" FontSize="14"
+                    FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono"
+                    Width="200" Height="40" Click="SelectFiles_Click" Margin="0,100,0,10" />
             <TextBlock x:Name="SelectedFilesText" Text="{Binding NoFilesSelected}"
-                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}"
-                       HorizontalAlignment="Center" Margin="0,0,0,10" TextWrapping="Wrap" />
+                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}" FontSize="14"
+                       HorizontalAlignment="Center" Margin="0,0,0,30" TextWrapping="Wrap" />
 
-            <Button Content="{Binding ChooseOutputDirButton}"
-                    Width="200" Click="SelectOutputDir_Click" Margin="0,0,0,10" />
+            <Button Content="{Binding ChooseOutputDirButton}" FontSize="14"
+                    FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono"
+                    Width="250" Height="40" Click="SelectOutputDir_Click" Margin="0,0,0,10" />
             <TextBlock x:Name="OutputDirText" Text="{Binding DefaultOutputDir}"
-                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}"
+                       Foreground="White" FontFamily="{StaticResource JetBrainsMono}" FontSize="14"
                        HorizontalAlignment="Center" Margin="0,0,0,20" TextWrapping="Wrap" />
 
             <TextBlock Text="{Binding OutputFormatLabel}"
+
                        Foreground="White" FontSize="14" FontFamily="{StaticResource JetBrainsMono}"
                        HorizontalAlignment="Center" Margin="0,0,0,5" />
             <ComboBox x:Name="OutputFormatCombo" Width="200" Margin="0,0,0,20"
@@ -67,6 +70,8 @@
                 <ComboBoxItem Content="PNG" />
                 <ComboBoxItem Content="JPG" />
                 <ComboBoxItem Content="WEBP" />
+                <ComboBoxItem Content="RAW" />
+                <ComboBoxItem Content="BIN" />
                 <ComboBoxItem Content="BMP" />
                 <ComboBoxItem Content="GIF" />
                 <ComboBoxItem Content="TIFF" />
@@ -80,7 +85,9 @@
             </ComboBox>
 
             <Button Content="{Binding ConvertButton}"
-                    Width="200" Click="ConvertFiles_Click" />
+                    Background="#00A89A"
+                    FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono"
+                    Width="200" Height="40" Click="ConvertFiles_Click" />
         </StackPanel>
     </Grid>
 </Page>
