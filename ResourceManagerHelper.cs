@@ -10,7 +10,6 @@ namespace DarkHub
 
         private ResourceManagerHelper()
         {
-            // Singleton
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -582,6 +581,73 @@ namespace DarkHub
         public string AdvancedNetworkSuccess => DarkHub.Properties.AppResources.AdvancedNetworkSuccess;
         public string AdvancedNetworkApplied => DarkHub.Properties.AppResources.AdvancedNetworkApplied;
         public string NetworkAdapterNotFound => DarkHub.Properties.AppResources.NetworkAdapterNotFound;
+        public string DependenciesNotFound => DarkHub.Properties.AppResources.DependenciesNotFound;
+        public string AppIniSucc => DarkHub.Properties.AppResources.AppIniSucc;
+        public string MainLoadedCheckUpd => DarkHub.Properties.AppResources.MainLoadedCheckUpd;
+        public string NewVersionAvailable1 => DarkHub.Properties.AppResources.NewVersionAvailable1;
+        public string NewVersionAvailable2 => DarkHub.Properties.AppResources.NewVersionAvailable2;
+        public string NewVersion => DarkHub.Properties.AppResources.NewVersion;
+        public string SelectAFeature => DarkHub.Properties.AppResources.SelectAFeature;
+        public string MawareDetector => DarkHub.Properties.AppResources.MawareDetector;
+        public string BehavioralAnalysis => DarkHub.Properties.AppResources.BehavioralAnalysis;
+        public string LatencyOptimizer => DarkHub.Properties.AppResources.LatencyOptimizer;
+        public string TrackingBlocker => DarkHub.Properties.AppResources.TrackingBlocker;
+        public string PhishingIdentifier => DarkHub.Properties.AppResources.PhishingIdentifier;
+        public string ExploitDetector => DarkHub.Properties.AppResources.ExploitDetector;
+        public string SecurityTools => DarkHub.Properties.AppResources.SecurityTools;
+        public string StartMonitoring => DarkHub.Properties.AppResources.StartMonitoring;
+        public string StopMonitoring => DarkHub.Properties.AppResources.StopMonitoring;
+        public string RemoveSelected => DarkHub.Properties.AppResources.RemoveSelected;
+        public string StartScan => DarkHub.Properties.AppResources.StartScan;
+        public string OptimizeNow => DarkHub.Properties.AppResources.OptimizeNow;
+        public string AdvancedConfig => DarkHub.Properties.AppResources.AdvancedConfig;
+        public string StartAuditing => DarkHub.Properties.AppResources.StartAuditing;
+        public string BlockAll => DarkHub.Properties.AppResources.BlockAll;
+        public string InsertUrl => DarkHub.Properties.AppResources.InsertUrl;
+        public string Verify => DarkHub.Properties.AppResources.Verify;
+        public string BlockPhishingUrl => DarkHub.Properties.AppResources.BlockPhishingUrl;
+        public string BlockExploit => DarkHub.Properties.AppResources.BlockExploit;
+        public string Scanning => DarkHub.Properties.AppResources.Scanning;
+        public string NoThreatsOrScanning => DarkHub.Properties.AppResources.NoThreatsOrScanning;
+        public string SelectThreatsToRemove => DarkHub.Properties.AppResources.SelectThreatsToRemove;
+        public string RemovingSelectedThreats => DarkHub.Properties.AppResources.RemovingSelectedThreats;
+        public string ComportamentalBehavioralStarted => DarkHub.Properties.AppResources.ComportamentalBehavioralStarted;
+        public string NoThreats => DarkHub.Properties.AppResources.NoThreats;
+        public string ScanEnded => DarkHub.Properties.AppResources.ScanEnded;
+        public string ScanEnded1 => DarkHub.Properties.AppResources.ScanEnded1;
+        public string RemoveThreatsConfirm => DarkHub.Properties.AppResources.RemoveThreatsConfirm;
+        public string RemoveThreatsConfirm1 => DarkHub.Properties.AppResources.RemoveThreatsConfirm1;
+        public string RemoveThreatsConfirm2 => DarkHub.Properties.AppResources.RemoveThreatsConfirm2;
+        public string NoPfx => DarkHub.Properties.AppResources.NoPfx;
+        public string ValidPfx => DarkHub.Properties.AppResources.ValidPfx;
+        public string ExcessiveMemNoPfx => DarkHub.Properties.AppResources.ExcessiveMemNoPfx;
+        public string SvchostOutWin => DarkHub.Properties.AppResources.SvchostOutWin;
+        public string SuspectConnec => DarkHub.Properties.AppResources.SuspectConnec;
+        public string SuspectLoc => DarkHub.Properties.AppResources.SuspectLoc;
+        public string SuspectCmd => DarkHub.Properties.AppResources.SuspectCmd;
+        public string Approved => DarkHub.Properties.AppResources.Approved;
+        public string ErrorRemoveThreat => DarkHub.Properties.AppResources.ErrorRemoveThreat;
+        public string NoConnection => DarkHub.Properties.AppResources.NoConnection;
+        public string Connections => DarkHub.Properties.AppResources.Connections;
+        public string StoppingBehavioral => DarkHub.Properties.AppResources.StoppingBehavioral;
+        public string BehaviorReport => DarkHub.Properties.AppResources.BehaviorReport;
+        public string ProcessesMonitored => DarkHub.Properties.AppResources.ProcessesMonitored;
+        public string ReportGenerated => DarkHub.Properties.AppResources.ReportGenerated;
+        public string ReportNotGenerated => DarkHub.Properties.AppResources.ReportNotGenerated;
+        public string AuditTracking => DarkHub.Properties.AppResources.AuditTracking;
+        public string AuditCompleted => DarkHub.Properties.AppResources.AuditCompleted;
+        public string AuditCompleted1 => DarkHub.Properties.AppResources.AuditCompleted1;
+        public string CookiesAudit => DarkHub.Properties.AppResources.CookiesAudit;
+        public string AuditReports => DarkHub.Properties.AppResources.AuditReports;
+        public string AuditGenIn => DarkHub.Properties.AppResources.AuditGenIn;
+        public string TrackersDetected => DarkHub.Properties.AppResources.TrackersDetected;
+        public string Category => DarkHub.Properties.AppResources.Category;
+        public string ReportSaved => DarkHub.Properties.AppResources.ReportSaved;
+        public string BlockingTracking => DarkHub.Properties.AppResources.BlockingTracking;
+        public string EnterURL => DarkHub.Properties.AppResources.EnterURL;
+        public string MonitoringExploits => DarkHub.Properties.AppResources.MonitoringExploits;
+        public string RestorePointCreated => DarkHub.Properties.AppResources.RestorePointCreated;
+        public string RestorePointNotCreated => DarkHub.Properties.AppResources.RestorePointNotCreated;
 
         public void NotifyCultureChanged()
         {

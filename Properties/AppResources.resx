@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
-	Microsoft ResX Schema 
-	
-	Version 2.0
-	
-	The primary goals of this format is to allow a simple XML format 
-	that is mostly human readable. The generation and parsing of the 
-	various data types are done through the TypeConverter classes 
-	associated with the data types.
-	
-	Example:
-	
-	... ado.net/XML headers & schema ...
-	<resheader name="resmimetype">text/microsoft-resx</resheader>
-	<resheader name="version">2.0</resheader>
-	<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-	<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-	<data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-	<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-	<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-		<value>[base64 mime encoded serialized .NET Framework object]</value>
-	</data>
-	<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-		<value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-		<comment>This is a comment</comment>
-	</data>
-				
-	There are any number of "resheader" rows that contain simple 
-	name/value pairs.
-	
-	Each data row contains a name, and value. The row also contains a 
-	type or mimetype. Type corresponds to a .NET class that support 
-	text/value conversion through the TypeConverter architecture. 
-	Classes that don't support this are serialized and stored with the 
-	mimetype set.
-	
-	The mimetype is used for serialized objects, and tells the 
-	ResXResourceReader how to depersist the object. This is currently not 
-	extensible. For a given mimetype the value must be set accordingly:
-	
-	Note - application/x-microsoft.net.object.binary.base64 is the format 
-	that the ResXResourceWriter will generate, however the reader can 
-	read any of the formats listed below.
-	
-	mimetype: application/x-microsoft.net.object.binary.base64
-	value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-			: and then encoded with base64 encoding.
-	
-	mimetype: application/x-microsoft.net.object.soap.base64
-	value   : The object must be serialized with 
-			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-			: and then encoded with base64 encoding.
-
-	mimetype: application/x-microsoft.net.object.bytearray.base64
-	value   : The object must be serialized into a byte array 
-			: using a System.ComponentModel.TypeConverter
-			: and then encoded with base64 encoding.
-	-->
 	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 		<xsd:element name="root" msdata:IsDataSet="true">
@@ -1825,5 +1766,207 @@ Reinicie o sistema para aplicar todas as alterações.</value>
 	</data>
 	<data name="NetworkAdapterNotFound" xml:space="preserve">
 		<value>Adaptador de rede não encontrado.</value>
+	</data>
+	<data name="DependenciesNotFound" xml:space="preserve">
+		<value>Algumas dependências necessárias não foram encontradas. Por favor, reinstale o aplicativo.
+Erro de Inicialização.</value>
+	</data>
+	<data name="AppIniSucc" xml:space="preserve">
+		<value>Aplicação iniciada com sucesso.</value>
+	</data>
+	<data name="MainLoadedCheckUpd" xml:space="preserve">
+		<value>MainWindow carregado. Iniciando verificação de atualizações.</value>
+	</data>
+	<data name="NewVersionAvailable1" xml:space="preserve">
+		<value>Uma nova versão do DarkHub está disponível</value>
+	</data>
+	<data name="NewVersionAvailable2" xml:space="preserve">
+		<value>Deseja baixar e instalar agora?</value>
+	</data>
+	<data name="NewVersion" xml:space="preserve">
+		<value>Atualização Disponível</value>
+	</data>
+	<data name="SelectAFeature" xml:space="preserve">
+		<value>Selecione uma funcionalidade</value>
+	</data>
+	<data name="MawareDetector" xml:space="preserve">
+		<value>Detector de Malware</value>
+	</data>
+	<data name="BehavioralAnalysis" xml:space="preserve">
+		<value>Análise Comportamental</value>
+	</data>
+	<data name="LatencyOptimizer" xml:space="preserve">
+		<value>Otimizador de Latência</value>
+	</data>
+	<data name="TrackingBlocker" xml:space="preserve">
+		<value>Bloqueador de Rastreamento</value>
+	</data>
+	<data name="PhishingIdentifier" xml:space="preserve">
+		<value>Identificador de Phishing</value>
+	</data>
+	<data name="ExploitDetector" xml:space="preserve">
+		<value>Detector de Exploits</value>
+	</data>
+	<data name="SecurityTools" xml:space="preserve">
+		<value>Ferramentas de Segurança</value>
+	</data>
+	<data name="StartMonitoring" xml:space="preserve">
+		<value>Iniciar Monitoramento</value>
+	</data>
+	<data name="StopMonitoring" xml:space="preserve">
+		<value>Parar Monitoramento</value>
+	</data>
+	<data name="RemoveSelected" xml:space="preserve">
+		<value>Remover Selecionados</value>
+	</data>
+	<data name="StartScan" xml:space="preserve">
+		<value>Iniciar Escaneamento</value>
+	</data>
+	<data name="OptimizeNow" xml:space="preserve">
+		<value>Otimizar Agora</value>
+	</data>
+	<data name="AdvancedConfig" xml:space="preserve">
+		<value>Configurações Avançadas</value>
+	</data>
+	<data name="StartAuditing" xml:space="preserve">
+		<value>Iniciar Auditoria</value>
+	</data>
+	<data name="BlockAll" xml:space="preserve">
+		<value>Bloquear Tudo</value>
+	</data>
+	<data name="InsertUrl" xml:space="preserve">
+		<value>Insira uma URL para verificar</value>
+	</data>
+	<data name="Verify" xml:space="preserve">
+		<value>Verificar</value>
+	</data>
+	<data name="BlockPhishingUrl" xml:space="preserve">
+		<value>Bloquear Sites de Phishing</value>
+	</data>
+	<data name="BlockExploit" xml:space="preserve">
+		<value>Block Selected Exploits</value>
+	</data>
+	<data name="Scanning" xml:space="preserve">
+		<value>Escaneamento em andamento...</value>
+	</data>
+	<data name="NoThreatsOrScanning" xml:space="preserve">
+		<value>Nenhuma ameaça para remover ou escaneamento em andamento</value>
+	</data>
+	<data name="SelectThreatsToRemove" xml:space="preserve">
+		<value>Selecione as ameaças a serem removidas</value>
+	</data>
+	<data name="RemovingSelectedThreats" xml:space="preserve">
+		<value>Removendo ameaças selecionadas...</value>
+	</data>
+	<data name="ComportamentalBehavioralStarted" xml:space="preserve">
+		<value>Monitoramento comportamental iniciado...</value>
+	</data>
+	<data name="NoThreats" xml:space="preserve">
+		<value>Escaneamento concluído: Nenhuma ameaça detectada</value>
+	</data>
+	<data name="ScanEnded" xml:space="preserve">
+		<value>Escaneamento concluído:</value>
+	</data>
+	<data name="ScanEnded1" xml:space="preserve">
+		<value>possíveis ameaças detectadas</value>
+	</data>
+	<data name="RemoveThreatsConfirm" xml:space="preserve">
+		<value>Deseja remover</value>
+	</data>
+	<data name="RemoveThreatsConfirm1" xml:space="preserve">
+		<value>ameaças selecionadas?</value>
+	</data>
+	<data name="RemoveThreatsConfirm2" xml:space="preserve">
+		<value>Confirmação</value>
+	</data>
+	<data name="NoPfx" xml:space="preserve">
+		<value>Sem assinatura digital válida; </value>
+	</data>
+	<data name="ValidPfx" xml:space="preserve">
+		<value>Assinatura confiável de editor conhecido</value>
+	</data>
+	<data name="ExcessiveMemNoPfx" xml:space="preserve">
+		<value>Uso excessivo de memória sem assinatura válida; </value>
+	</data>
+	<data name="SvchostOutWin" xml:space="preserve">
+		<value>svchost fora do diretório do Windows; </value>
+	</data>
+	<data name="SuspectConnec" xml:space="preserve">
+		<value>Conexão de rede suspeita:</value>
+	</data>
+	<data name="SuspectLoc" xml:space="preserve">
+		<value>Localização não padrão; </value>
+	</data>
+	<data name="SuspectCmd" xml:space="preserve">
+		<value>Comando suspeito:</value>
+	</data>
+	<data name="Approved" xml:space="preserve">
+		<value>Aprovado</value>
+	</data>
+	<data name="ErrorRemoveThreat" xml:space="preserve">
+		<value>Erro ao remover ameaça</value>
+	</data>
+	<data name="NoConnection" xml:space="preserve">
+		<value>Nenhuma conexão</value>
+	</data>
+	<data name="Connections" xml:space="preserve">
+		<value>Conexões:</value>
+	</data>
+	<data name="StoppingBehavioral" xml:space="preserve">
+		<value>Parando monitoramento comportamental...</value>
+	</data>
+	<data name="BehaviorReport" xml:space="preserve">
+		<value>Relatório de Comportamento - Gerado em:</value>
+	</data>
+	<data name="ProcessesMonitored" xml:space="preserve">
+		<value>Total de processos monitorados:</value>
+	</data>
+	<data name="ReportGenerated" xml:space="preserve">
+		<value>Monitoramento concluído. Relatório gerado em:</value>
+	</data>
+	<data name="ReportNotGenerated" xml:space="preserve">
+		<value>Erro ao gerar relatório:</value>
+	</data>
+	<data name="AuditTracking" xml:space="preserve">
+		<value>Iniciando auditoria avançada de rastreamento...</value>
+	</data>
+	<data name="AuditCompleted" xml:space="preserve">
+		<value>Auditoria concluída:</value>
+	</data>
+	<data name="AuditCompleted1" xml:space="preserve">
+		<value>rastreadores detectados</value>
+	</data>
+	<data name="CookiesAudit" xml:space="preserve">
+		<value>Possíveis cookies de rastreamento detectados:</value>
+	</data>
+	<data name="AuditReports" xml:space="preserve">
+		<value>Relatório de Auditoria de Rastreamento</value>
+	</data>
+	<data name="AuditGenIn" xml:space="preserve">
+		<value>Gerado em:</value>
+	</data>
+	<data name="TrackersDetected" xml:space="preserve">
+		<value>Total de rastreadores detectados:</value>
+	</data>
+	<data name="Category" xml:space="preserve">
+		<value>Categoria:</value>
+	</data>
+	<data name="ReportSaved" xml:space="preserve">
+		<value>Relatório salvo em:</value>
+	</data>
+	<data name="BlockingTracking" xml:space="preserve">
+		<value>Bloqueando técnicas de rastreamento...</value>
+	</data>
+	<data name="EnterURL" xml:space="preserve">
+		<value>Insira uma URL para verificar</value>
+	</data>
+	<data name="MonitoringExploits" xml:space="preserve">
+		<value>Monitorando exploits em tempo real...</value>
+	</data>
+	<data name="RestorePointCreated" xml:space="preserve">
+		<value>Ponto de restauração criado com sucesso!</value>
+	</data>
+	<data name="RestorePointNotCreated" xml:space="preserve">
+		<value>Failed to create restore point. Check that System Restore is enabled.</value>
 	</data>
 </root>

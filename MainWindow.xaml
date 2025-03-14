@@ -132,6 +132,7 @@
                             PanningRatio="1.5"
                             CanContentScroll="False"
                             ScrollChanged="MenuScrollViewer_ScrollChanged">
+
                     <StackPanel Orientation="Vertical" Margin="0,0,0,0">
                         <Button x:Name="btnOptimizer" Click="SetActiveButton" Tag="Active" Style="{StaticResource ActiveButtonStyle}">
                             <Image Source="/assets/optimizer.png" Stretch="Uniform" Width="32" Height="32" />
@@ -160,6 +161,9 @@
                         <Button x:Name="btnSummX" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
                             <Image Source="/assets/resumir.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
+                        <Button x:Name="btnAdvancedSec" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
+                            <Image Source="/assets/advancedsec.png" Stretch="Uniform" Width="32" Height="32" />
+                        </Button>
                         <Button x:Name="btnPassMng" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
                             <Image Source="/assets/pass.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
@@ -168,8 +172,8 @@
 
                 <Border x:Name="ScrollIndicator"
                         Width="15" Height="15"
-                        Background="#464c55"
-                        CornerRadius="0"
+                        Background="#2b2d31"
+                        CornerRadius="10"
                         VerticalAlignment="Bottom"
                         HorizontalAlignment="Right"
                         Margin="0,0,10,10"
@@ -178,7 +182,8 @@
                           Fill="White"
                           Stretch="Uniform"
                           VerticalAlignment="Center"
-                          HorizontalAlignment="Center" />
+                          HorizontalAlignment="Center"
+                          RenderTransformOrigin="0.5,0.5" />
                 </Border>
             </Grid>
         </Border>
@@ -187,14 +192,14 @@
             <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Background="{x:Null}" Navigated="MainFrame_Navigated" />
         </Border>
 
-        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,0,0">
-            <Button Click="MinimizeWindow" Style="{StaticResource MenuButtonStyle}">
+        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0">
+            <Button Click="MinimizeWindow" Style="{StaticResource MenuButtonStyle}" Height="24" Width="24" Margin="0,0,10,0">
                 <TextBlock Text="—" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18" />
             </Button>
-            <Button Click="MaximizeWindow" Style="{StaticResource MenuButtonStyle}">
+            <Button Click="MaximizeWindow" Style="{StaticResource MenuButtonStyle}" Height="24" Width="24" Margin="0,0,10,0">
                 <TextBlock Text="⬜" FontWeight="Bold" Foreground="#f7f7fa" FontSize="14" />
             </Button>
-            <Button Click="CloseWindow" Style="{StaticResource MenuButtonStyle}">
+            <Button Click="CloseWindow" Style="{StaticResource MenuButtonStyle}" Height="24" Width="24">
                 <TextBlock Text="X" FontWeight="Bold" Foreground="#f7f7fa" FontSize="18" />
             </Button>
         </StackPanel>
@@ -214,6 +219,12 @@
             </Button>
             <Button x:Name="btnDiscord" Click="DiscordServer" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
                 <Image Source="/assets/discord.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="btnPfx" Click="ActivateCertificateButton_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/assinar.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="btnBackup" Click="CreateRestorePointButton_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/backup.png" Stretch="Uniform" />
             </Button>
         </StackPanel>
     </Grid>

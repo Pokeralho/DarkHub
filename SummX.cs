@@ -93,7 +93,7 @@ namespace DarkHub
         {
             var sentences = text.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
                                .Select(s => s.Trim())
-                               .Where(s => s.Length > 15 && !s.StartsWith("•") && !s.Contains("US$"))      
+                               .Where(s => s.Length > 15 && !s.StartsWith("•") && !s.Contains("US$"))
                                .ToList();
 
             var words = sentences.Select(s => s.Split(new[] { ' ', ',', ';', ':', '-', '–' }, StringSplitOptions.RemoveEmptyEntries)
@@ -130,8 +130,8 @@ namespace DarkHub
                 double tfidf = tfidfScores[sentences[i]] * TfidfWeight;
                 double textRank = textRankScores[sentences[i]] * TextRankWeight;
                 double keywordScore = CalculateKeywordScore(sentences[i]) * KeywordWeight;
-                double positionScore = CalculatePositionScore(i, sentences.Count);    
-                double lengthScore = CalculateLengthScore(sentences[i]);      
+                double positionScore = CalculatePositionScore(i, sentences.Count);
+                double lengthScore = CalculateLengthScore(sentences[i]);
 
                 scores[sentences[i]] = tfidf + textRank + keywordScore + positionScore + lengthScore;
             }
@@ -141,13 +141,13 @@ namespace DarkHub
 
         private double CalculatePositionScore(int index, int totalSentences)
         {
-            return (totalSentences - index) / (double)totalSentences * 0.5;      
+            return (totalSentences - index) / (double)totalSentences * 0.5;
         }
 
         private double CalculateLengthScore(string sentence)
         {
             int wordCount = sentence.Split(' ').Length;
-            return Math.Min(wordCount / 20.0, 1.0);      
+            return Math.Min(wordCount / 20.0, 1.0);
         }
 
         private Dictionary<string, double> CalculateTfidf(List<string> sentences, List<List<string>> words,

@@ -6,12 +6,6 @@
 *.pdb
 *.cache
 *.log
-DllInjectionService.cs
-DllInjector.xaml
-DllInjector.xaml.cs
-InjectorViewModel.cs
-PasswordManager.xaml
-PasswordManager.xaml.cs
 
 /DarkHubRmk/bin/
 /DarkHubRmk/obj/
@@ -21,4 +15,5 @@ PasswordManager.xaml.cs
 
 assets/yt-dlp.exe
 assets/ffmpeg.exe
+assets/certificate_password.txt
 /SystemMonitor.xaml.cs

@@ -1,0 +1,221 @@
+﻿<Page x:Class="DarkHub.AdvancedSecurity"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="clr-namespace:DarkHub"
+      Title="AdvancedSecurityPage" Background="#1E1E1E"
+      DataContext="{Binding Source={x:Static local:ResourceManagerHelper.Instance}}">
+
+    <Page.Resources>
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#2D2D2D" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#00C4B4" />
+                                <Setter Property="Foreground" Value="#FFFFFF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#00C4B4" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#00A89A" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="10,40,10,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Column="0" Background="#2D2D2D" CornerRadius="8" Grid.ColumnSpan="1">
+            <StackPanel Margin="10">
+                <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SecurityTools}" FontSize="14" FontWeight="Bold" Foreground="#E0E0E0" Margin="0,0,0,20" />
+                <Button x:Name="btnMalwareDetector" Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=MawareDetector}" Tag="Malware" Click="NavigateToSection" Style="{StaticResource NavButtonStyle}" />
+                <Button x:Name="btnBehaviorAnalysis" Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=BehavioralAnalysis}" Tag="Behavior" Click="NavigateToSection" Style="{StaticResource NavButtonStyle}" />
+                <Button x:Name="btnLatencyOptimizer" Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=LatencyOptimizer}" Tag="Latency" Click="NavigateToSection" Style="{StaticResource NavButtonStyle}" />
+                <Button x:Name="btnTrackingBlocker" Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=TrackingBlocker}" Tag="Tracking" Click="NavigateToSection" Style="{StaticResource NavButtonStyle}" Cursor="Hand" />
+                <Button x:Name="btnPhishing" Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=PhishingIdentifier}" Tag="Phishing" Click="NavigateToSection" Style="{StaticResource NavButtonStyle}" />
+                <Button x:Name="btnExploit" Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=ExploitDetector}" Tag="Exploit" Click="NavigateToSection" Style="{StaticResource NavButtonStyle}" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" Margin="10" Background="#2D2D2D" CornerRadius="8">
+            <Grid x:Name="ContentGrid" Margin="10">
+                <StackPanel x:Name="InitialMessagePanel" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=SelectAFeature}" Foreground="#E0E0E0" FontSize="20" />
+                </StackPanel>
+
+                <Grid x:Name="MalwarePanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=StartScan}" Grid.Row="0" Margin="0,0,0,10"
+                            Style="{StaticResource ActionButtonStyle}" Click="StartMalwareScan" />
+                    <ListView x:Name="MalwareResults" Grid.Row="1" Background="#1E1E1E" Foreground="#E0E0E0"
+                              Margin="0,0,0,10" SelectionMode="Single">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding PID, StringFormat='PID: {0}'}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Details}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=RemoveSelected}" Grid.Row="2" Background="#FF5252"
+                            Style="{StaticResource ActionButtonStyle}" Click="RemoveThreats" />
+                </Grid>
+
+                <Grid x:Name="BehaviorPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=StartMonitoring}" Style="{StaticResource ActionButtonStyle}" Click="StartBehaviorMonitoring" Margin="0,0,10,0" Height="40" Width="263" />
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=StopMonitoring}" Style="{StaticResource ActionButtonStyle}" Background="#FF5252" Click="StopBehaviorMonitoring" Height="40" Width="263" />
+                    </StackPanel>
+                    <ListView x:Name="AppBehaviorList" Grid.Row="1" Background="#1E1E1E" Foreground="#E0E0E0" Margin="0,0,0,10" />
+                </Grid>
+
+                <Grid x:Name="LatencyPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=OptimizeNow}" Grid.Row="0" Margin="0,0,0,10" Style="{StaticResource ActionButtonStyle}" Click="OptimizeLatency" />
+                    <ListView x:Name="PeripheralsList" Grid.Row="1" Background="#1E1E1E" Foreground="#E0E0E0" Margin="0,0,0,10" />
+                    <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=AdvancedConfig}" Grid.Row="2" Style="{StaticResource ActionButtonStyle}" Click="ShowAdvancedSettings" />
+                </Grid>
+
+                <Grid x:Name="TrackingPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=StartAuditing}" Grid.Row="0" Margin="0,0,0,10" Style="{StaticResource ActionButtonStyle}" Click="StartTrackingAudit" />
+                    <ListView x:Name="TrackingResults" Grid.Row="1" Background="#1E1E1E" Foreground="#E0E0E0" Margin="0,0,0,10">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Source}" FontWeight="Bold" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Details}" />
+                                    <TextBlock Text=" (" Foreground="Gray" />
+                                    <TextBlock Text="{Binding Category}" Foreground="Gray" />
+                                    <TextBlock Text=")" Foreground="Gray" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=BlockAll}" Grid.Row="2" Background="#FF5252" Style="{StaticResource ActionButtonStyle}" Click="BlockAllTracking" />
+                </Grid>
+
+                <Grid x:Name="PhishingPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBox x:Name="PhishingUrlInput" Width="250" Height="40" Margin="0,0,10,0" FontSize="14" Foreground="white" Background="#1E1E1E"
+                 Text="Enter a URL to check"
+                 GotFocus="PhishingUrlInput_GotFocus" LostFocus="PhishingUrlInput_LostFocus" />
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=Verify}" Width="100" Height="40" Style="{StaticResource ActionButtonStyle}" Click="VerifySingleUrl" />
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=BlockPhishingUrl}"  Width="150" Height="40" Background="#FF5252" Style="{StaticResource ActionButtonStyle}" Click="BlockPhishingSites" />
+                    </StackPanel>
+                    <ListView x:Name="PhishingResults" Grid.Row="2" Background="#1E1E1E" Foreground="#E0E0E0" Margin="0,0,0,10">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding URL}" FontWeight="Bold" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Reason}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+                <Grid x:Name="ExploitPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=StartMonitoring}" Style="{StaticResource ActionButtonStyle}"  Width="150" Height="40" Click="StartExploitMonitoring" Margin="0,0,10,0" />
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=StopMonitoring}" Style="{StaticResource ActionButtonStyle}" Width="150" Height="40" Background="#FF5252" Click="StopExploitMonitoring" Margin="0,0,10,0" />
+                        <Button Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=BlockExploit}" Width="150" Height="40" Background="#FF5252" Style="{StaticResource ActionButtonStyle}" Click="BlockExploitThreats" />
+                    </StackPanel>
+                    <ListView x:Name="ExploitResults" Grid.Row="1" Background="#1E1E1E" Foreground="#E0E0E0" Margin="0,0,0,10">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding ProcessName}" FontWeight="Bold" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding PID, StringFormat='PID: {0}'}" Margin="0,0,10,0" />
+                                    <TextBlock Text="{Binding Reason}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="Transparent" Height="30" Padding="10,0">
+            <TextBlock x:Name="StatusText" Foreground="#E0E0E0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        </Border>
+    </Grid>
+</Page>
