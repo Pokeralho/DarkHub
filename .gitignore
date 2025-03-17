@@ -13,7 +13,13 @@
 *.tmp
 *.bak
 
+assets/settings/
 assets/yt-dlp.exe
 assets/ffmpeg.exe
 assets/certificate_password.txt
-/SystemMonitor.xaml.cs
+assets/CPU-Z.exe
+assets/GPU-Z.exe
+assets/DDU.exe
+assets/HwiInfo.exe
+/GameLauncher.xaml.cs
+/GameLauncher.xaml
