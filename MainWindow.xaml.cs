@@ -49,6 +49,102 @@ namespace DarkHub
             }
         }
 
+        private void OpenCpuZ_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string cpuZPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "CPU-Z.exe");
+                if (File.Exists(cpuZPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = cpuZPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("CPU-Z executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening CPU-Z: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenGpuZ_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string gpuZPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "GPU-Z.exe");
+                if (File.Exists(gpuZPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = gpuZPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("GPU-Z executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening GPU-Z: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenHwinfo_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string hwinfoPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "HWiNFO64.exe");
+                if (File.Exists(hwinfoPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = hwinfoPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("HWiNFO executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening HWiNFO: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OpenDDU_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string hwinfoPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "DDU.exe");
+                if (File.Exists(hwinfoPath))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = hwinfoPath,
+                        UseShellExecute = true
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("DDU executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening DDU: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void ActivateCertificateButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -323,6 +419,8 @@ namespace DarkHub
                 btnSystemMonitor.Tag = null;
                 btnSummX.Tag = null;
                 btnPassMng.Tag = null;
+                btnAdvancedSec.Tag = null;
+                //btnGameLauncher.Tag = null;
                 clickedButton.Tag = "Active";
 
                 if (clickedButton == btnOptimizer)
@@ -351,6 +449,11 @@ namespace DarkHub
                     await NavigateToPageAsync(new PasswordManager());
                 else if (clickedButton == btnAdvancedSec)
                     await NavigateToPageAsync(new AdvancedSecurity());
+                //else if (clickedButton == btnGameLauncher)
+                //{
+                //    GameLauncher gameLauncher = new GameLauncher(this);
+                //    gameLauncher.Show();
+                //}
             }
             catch (Exception ex)
             {
@@ -477,6 +580,10 @@ namespace DarkHub
                 btnDiscord.Visibility = Visibility.Collapsed;
                 btnPfx.Visibility = Visibility.Collapsed;
                 btnBackup.Visibility = Visibility.Collapsed;
+                btnCpuZ.Visibility = Visibility.Collapsed;
+                btnHwinfo.Visibility = Visibility.Collapsed;
+                btnGpuZ.Visibility = Visibility.Collapsed;
+                btnDDU.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -487,6 +594,10 @@ namespace DarkHub
                 btnDiscord.Visibility = Visibility.Visible;
                 btnPfx.Visibility = Visibility.Visible;
                 btnBackup.Visibility = Visibility.Visible;
+                btnCpuZ.Visibility = Visibility.Visible;
+                btnHwinfo.Visibility = Visibility.Visible;
+                btnGpuZ.Visibility = Visibility.Visible;
+                btnDDU.Visibility = Visibility.Visible;
             }
         }
 

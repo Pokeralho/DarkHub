@@ -137,6 +137,9 @@
                         <Button x:Name="btnOptimizer" Click="SetActiveButton" Tag="Active" Style="{StaticResource ActiveButtonStyle}">
                             <Image Source="/assets/optimizer.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
+                        <!--<Button x:Name="btnGameLauncher" Click="SetActiveButton" Tag="Active" Style="{StaticResource ActiveButtonStyle}">
+                            <Image Source="/assets/??.png" Stretch="Uniform" Width="32" Height="32" />
+                        </Button>-->
                         <Button x:Name="btnClicker" Click="SetActiveButton" Style="{StaticResource ActiveButtonStyle}">
                             <Image Source="/assets/clicker.png" Stretch="Uniform" Width="32" Height="32" />
                         </Button>
@@ -208,6 +211,12 @@
             <Button x:Name="btnDllInjector" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
                 <Image Source="Assets/DllInjection.png" Stretch="Uniform" />
             </Button>
+            <Button x:Name="btnPfx" Click="ActivateCertificateButton_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/assinar.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="btnBackup" Click="CreateRestorePointButton_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/backup.png" Stretch="Uniform" />
+            </Button>
             <Button x:Name="btnCrunchyrollAcc" Click="SetActiveButton" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
                 <Image Source="Assets/Crunchyroll.png" Stretch="Uniform" />
             </Button>
@@ -220,11 +229,18 @@
             <Button x:Name="btnDiscord" Click="DiscordServer" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
                 <Image Source="/assets/discord.png" Stretch="Uniform" />
             </Button>
-            <Button x:Name="btnPfx" Click="ActivateCertificateButton_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="/assets/assinar.png" Stretch="Uniform" />
+
+            <Button x:Name="btnCpuZ" Click="OpenCpuZ_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/CPU-Z.png" Stretch="Uniform" />
             </Button>
-            <Button x:Name="btnBackup" Click="CreateRestorePointButton_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
-                <Image Source="/assets/backup.png" Stretch="Uniform" />
+            <Button x:Name="btnHwinfo" Click="OpenHwinfo_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/HWiNFO.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="btnGpuZ" Click="OpenGpuZ_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/GPU-Z.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="btnDDU" Click="OpenDDU_Click" Style="{StaticResource MenuButtonStyle}" Width="32" Height="32" Margin="0,0,0,10">
+                <Image Source="/assets/DDU.png" Stretch="Uniform" />
             </Button>
         </StackPanel>
     </Grid>

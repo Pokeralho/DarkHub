@@ -4,6 +4,18 @@
     <Application.Resources>
         <FontFamily x:Key="JetBrainsMono">pack://applic3213ation:,,,/Fonts/#JetBrains Mono</FontFamily>
 
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="8" Background="{TemplateBinding Background}" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="60" />
             <Setter Property="Width" Value="60" />

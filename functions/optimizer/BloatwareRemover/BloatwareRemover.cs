@@ -35,28 +35,7 @@ namespace DarkHub.UI
                 await _progressWindow.Dispatcher.InvokeAsync(() => _progressWindow.Show());
                 WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.CheckingInstalledApps);
 
-                var potentialBloatware = new Dictionary<string, string>
-                {
-                    {"Microsoft.OneDrive", "OneDrive"},
-                    {"Microsoft.Edge", "Microsoft Edge"},
-                    {"Microsoft.BingNews", "Bing News"},
-                    {"Microsoft.BingWeather", "Bing Weather"},
-                    {"Microsoft.GetHelp", "Get Help"},
-                    {"Microsoft.Getstarted", "Get Started"},
-                    {"Microsoft.MicrosoftOfficeHub", "Office Hub"},
-                    {"Microsoft.MicrosoftSolitaireCollection", "Solitaire Collection"},
-                    {"Microsoft.People", "People"},
-                    {"Microsoft.WindowsFeedbackHub", "Feedback Hub"},
-                    {"Microsoft.WindowsMaps", "Windows Maps"},
-                    {"Microsoft.Xbox.TCUI", "Xbox TCUI"},
-                    {"Microsoft.XboxApp", "Xbox App"},
-                    {"Microsoft.XboxGameOverlay", "Xbox Game Overlay"},
-                    {"Microsoft.XboxGamingOverlay", "Xbox Gaming Overlay"},
-                    {"Microsoft.XboxIdentityProvider", "Xbox Identity Provider"},
-                    {"Microsoft.XboxSpeechToTextOverlay", "Xbox Speech To Text Overlay"},
-                    {"Microsoft.ZuneMusic", "Groove Music"},
-                    {"Microsoft.ZuneVideo", "Movies & TV"}
-                };
+                var potentialBloatware = GetPotentialBloatwareList();
 
                 var installedApps = await DetectBloatwareAsync(potentialBloatware);
 
@@ -125,6 +104,85 @@ namespace DarkHub.UI
             }
         }
 
+        private Dictionary<string, string> GetPotentialBloatwareList()
+        {
+            return new Dictionary<string, string>
+            {
+                {"Microsoft.OneDrive", "OneDrive"},
+                {"Microsoft.Edge", "Microsoft Edge"},
+                {"Microsoft.BingNews", "Bing News"},
+                {"Microsoft.BingWeather", "Bing Weather"},
+                {"Microsoft.GetHelp", "Get Help"},
+                {"Microsoft.Getstarted", "Get Started"},
+                {"Microsoft.MicrosoftOfficeHub", "Office Hub"},
+                {"Microsoft.MicrosoftSolitaireCollection", "Solitaire Collection"},
+                {"Microsoft.People", "People"},
+                {"Microsoft.WindowsFeedbackHub", "Feedback Hub"},
+                {"Microsoft.WindowsMaps", "Windows Maps"},
+                {"Microsoft.Xbox.TCUI", "Xbox TCUI"},
+                {"Microsoft.XboxApp", "Xbox App"},
+                {"Microsoft.XboxGameOverlay", "Xbox Game Overlay"},
+                {"Microsoft.XboxGamingOverlay", "Xbox Gaming Overlay"},
+                {"Microsoft.XboxIdentityProvider", "Xbox Identity Provider"},
+                {"Microsoft.XboxSpeechToTextOverlay", "Xbox Speech To Text Overlay"},
+                {"Microsoft.ZuneMusic", "Groove Music"},
+                {"Microsoft.ZuneVideo", "Movies & TV"},
+
+                {"MicrosoftCorporationII.MicrosoftFamily", "Microsoft Family"},
+                {"Microsoft.OutlookForWindows", "Outlook for Windows"},
+                {"Clipchamp.Clipchamp", "Clipchamp"},
+                {"Microsoft.3DBuilder", "3D Builder"},
+                {"Microsoft.Microsoft3DViewer", "3D Viewer"},
+                {"Microsoft.BingSports", "Bing Sports"},
+                {"Microsoft.BingFinance", "Bing Finance"},
+                {"Microsoft.Office.OneNote", "OneNote"},
+                {"Microsoft.Office.Sway", "Sway"},
+                {"Microsoft.WindowsPhone", "Windows Phone"},
+                {"Microsoft.CommsPhone", "Comms Phone"},
+                {"Microsoft.YourPhone", "Your Phone"},
+                {"Microsoft.549981C3F5F10", "Cortana"},
+                {"Microsoft.Messaging", "Messaging"},
+                {"Microsoft.WindowsSoundRecorder", "Sound Recorder"},
+                {"Microsoft.MixedReality.Portal", "Mixed Reality Portal"},
+                {"Microsoft.WindowsAlarms", "Alarms & Clock"},
+                {"Microsoft.WindowsCamera", "Camera"},
+                {"Microsoft.MSPaint", "Paint"},
+                {"Microsoft.MinecraftUWP", "Minecraft UWP"},
+                {"Microsoft.Wallet", "Wallet"},
+                {"Microsoft.Print3D", "Print 3D"},
+                {"Microsoft.OneConnect", "OneConnect"},
+                {"Microsoft.MicrosoftStickyNotes", "Sticky Notes"},
+                {"microsoft.windowscommunicationsapps", "Mail and Calendar"},
+                {"Microsoft.SkypeApp", "Skype"},
+                {"Microsoft.GroupMe10", "GroupMe"},
+                {"MSTeams", "Microsoft Teams"},
+                {"Microsoft.Todos", "Microsoft To Do"},
+                {"Microsoft.GamingApp", "Xbox Gaming App"},
+
+                {"king.com.CandyCrushSaga", "Candy Crush Saga"},
+                {"king.com.CandyCrushSodaSaga", "Candy Crush Soda Saga"},
+                {"ShazamEntertainmentLtd.Shazam", "Shazam"},
+                {"Flipboard.Flipboard", "Flipboard"},
+                {"9E2F88E3.Twitter", "Twitter"},
+                {"ClearChannelRadioDigital.iHeartRadio", "iHeartRadio"},
+                {"D5EA27B7.Duolingo-LearnLanguagesforFree", "Duolingo"},
+                {"AdobeSystemsIncorporated.AdobePhotoshopExpress", "Adobe Photoshop Express"},
+                {"PandoraMediaInc.29680B314EFC2", "Pandora"},
+                {"46928bounde.EclipseManager", "Eclipse Manager"},
+                {"ActiproSoftwareLLC.562882FEEB491", "Actipro Code Writer"},
+                {"SpotifyAB.SpotifyMusic", "Spotify"},
+
+                {"Microsoft.HEIFImageExtension", "HEIF Image Extension"},
+                {"Microsoft.VP9VideoExtensions", "VP9 Video Extensions"},
+                {"Microsoft.WebpImageExtension", "WebP Image Extension"},
+                {"Microsoft.HEVCVideoExtension", "HEVC Video Extension"},
+                {"Microsoft.RawImageExtension", "Raw Image Extension"},
+                {"Microsoft.WebMediaExtensions", "Web Media Extensions"},
+
+                {"Microsoft.CoPilot", "Windows Copilot"}
+            };
+        }
+
         private async Task<Dictionary<string, string>> DetectBloatwareAsync(Dictionary<string, string> potentialBloatware)
         {
             var installedApps = new Dictionary<string, string>();
@@ -178,7 +236,13 @@ namespace DarkHub.UI
                 await RemoveEdgeAsync();
             }
 
-            foreach (var app in selectedApps.Where(a => a.Key != "Microsoft.OneDrive" && a.Key != "Microsoft.Edge"))
+            if (selectedApps.ContainsKey("Microsoft.CoPilot"))
+            {
+                WindowFactory.AppendProgress(_progressTextBox, "Removendo Windows Copilot...");
+                await RemoveCopilotAsync();
+            }
+
+            foreach (var app in selectedApps.Where(a => a.Key != "Microsoft.OneDrive" && a.Key != "Microsoft.Edge" && a.Key != "Microsoft.CoPilot"))
             {
                 WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.RemovingApp, app.Value));
 
@@ -202,6 +266,9 @@ namespace DarkHub.UI
             }
 
             await CleanResidualFilesAsync(selectedApps);
+
+            WindowFactory.AppendProgress(_progressTextBox, "Reiniciando Explorer...");
+            await RunCommandAsync("taskkill /f /im explorer.exe & start explorer", true);
         }
 
         private async Task RemoveOneDriveAsync()
@@ -296,6 +363,24 @@ namespace DarkHub.UI
             WindowFactory.AppendProgress(_progressTextBox, "Remoção do Microsoft Edge concluída. Reinicie o sistema para confirmar.");
         }
 
+        private async Task RemoveCopilotAsync()
+        {
+            await RunCommandAsync("powershell -Command \"Get-AppxPackage *Microsoft.CoPilot* | Remove-AppxPackage -ErrorAction SilentlyContinue\"");
+            await RunCommandAsync("powershell -Command \"Get-AppxPackage -AllUsers *Microsoft.CoPilot* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue\"");
+
+            string disableCopilotCommand = @"
+                reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot"" /v ""TurnOffWindowsCopilot"" /t REG_DWORD /d 1 /f;
+                reg add ""HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot"" /v ""TurnOffWindowsCopilot"" /t REG_DWORD /d 1 /f;
+                reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings"" /v ""AutoOpenCopilotLargeScreens"" /t REG_DWORD /d 0 /f;
+                reg add ""HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v ""ShowCopilotButton"" /t REG_DWORD /d 0 /f;
+                reg add ""HKCU\Software\Microsoft\Windows\Shell\Copilot\BingChat"" /v ""IsUserEligible"" /t REG_DWORD /d 0 /f;
+                reg add ""HKLM\SOFTWARE\Policies\Microsoft\Edge"" /v ""HubsSidebarEnabled"" /t REG_DWORD /d 0 /f;
+            ";
+            await RunCommandAsync(disableCopilotCommand, true);
+
+            WindowFactory.AppendProgress(_progressTextBox, "Windows Copilot removido e desativado.");
+        }
+
         private async Task CleanResidualFilesAsync(Dictionary<string, string> selectedApps)
         {
             WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.CleaningResidualFiles);
@@ -315,6 +400,21 @@ namespace DarkHub.UI
                 foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\OneDrive");
                 foldersToDelete.Add(@"%PROGRAMDATA%\Microsoft\OneDrive");
                 foldersToDelete.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive"));
+            }
+
+            if (selectedApps.ContainsKey("Microsoft.YourPhone"))
+            {
+                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\YourPhone");
+            }
+
+            if (selectedApps.ContainsKey("Microsoft.SkypeApp"))
+            {
+                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\Skype");
+            }
+
+            if (selectedApps.ContainsKey("SpotifyAB.SpotifyMusic"))
+            {
+                foldersToDelete.Add(@"%LOCALAPPDATA%\Spotify");
             }
 
             foreach (var folder in foldersToDelete)

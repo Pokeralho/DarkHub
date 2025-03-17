@@ -22,6 +22,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="GameLauncher.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Remove="assets\advancedsec.png" />
 		<None Remove="assets\assinar.png" />
 		<None Remove="assets\backup.png" />
@@ -32,9 +36,14 @@
 		<None Remove="assets\clicker.png" />
 		<None Remove="assets\converter.png" />
 		<None Remove="assets\copiar.png" />
+		<None Remove="assets\CPU-Z.exe" />
+		<None Remove="assets\CPU-Z.png" />
+		<None Remove="assets\cpuz.exe" />
 		<None Remove="assets\crunchyroll.png" />
 		<None Remove="assets\DarkHub.ico" />
 		<None Remove="assets\DarkHub.pfx" />
+		<None Remove="assets\DDU.exe" />
+		<None Remove="assets\DDU.png" />
 		<None Remove="assets\delete.png" />
 		<None Remove="assets\discord.png" />
 		<None Remove="assets\DllInjection.png" />
@@ -45,10 +54,14 @@
 		<None Remove="assets\extrairtxtinv.png" />
 		<None Remove="assets\extraittxt.png" />
 		<None Remove="assets\ffmpeg.exe" />
+		<None Remove="assets\GPU-Z.exe" />
+		<None Remove="assets\Gpu-z.png" />
 		<None Remove="assets\gsdll64.dll" />
 		<None Remove="assets\gsdll64.lib" />
 		<None Remove="assets\gswin64.exe" />
 		<None Remove="assets\gswin64c.exe" />
+		<None Remove="assets\hwinfo.png" />
+		<None Remove="assets\HWiNFO64.exe" />
 		<None Remove="assets\magick.exe" />
 		<None Remove="assets\newtab.png" />
 		<None Remove="assets\optimizer.png" />
@@ -60,6 +73,83 @@
 		<None Remove="assets\run.png" />
 		<None Remove="assets\save.png" />
 		<None Remove="assets\selectimg.png" />
+		<None Remove="assets\settings\AMD\classroot.cfg" />
+		<None Remove="assets\settings\AMD\clsidleftover.cfg" />
+		<None Remove="assets\settings\AMD\driverfiles.cfg" />
+		<None Remove="assets\settings\AMD\driverfilesKMAFD.cfg" />
+		<None Remove="assets\settings\AMD\driverfilesKMPFD.cfg" />
+		<None Remove="assets\settings\AMD\driverfilesKMPFD.cfg.bak" />
+		<None Remove="assets\settings\AMD\interface.cfg" />
+		<None Remove="assets\settings\AMD\packages.cfg" />
+		<None Remove="assets\settings\AMD\services.cfg" />
+		<None Remove="assets\settings\AMD\servicesaudio.cfg" />
+		<None Remove="assets\settings\INTEL\classroot.cfg" />
+		<None Remove="assets\settings\INTEL\clsidleftover.cfg" />
+		<None Remove="assets\settings\INTEL\clsidleftoverigs.cfg" />
+		<None Remove="assets\settings\INTEL\driverfiles.cfg" />
+		<None Remove="assets\settings\INTEL\interface.cfg" />
+		<None Remove="assets\settings\INTEL\packages.cfg" />
+		<None Remove="assets\settings\INTEL\packagesigs.cfg" />
+		<None Remove="assets\settings\INTEL\services.cfg" />
+		<None Remove="assets\settings\INTEL\servicesaudio.cfg" />
+		<None Remove="assets\settings\INTEL\servicesigs.cfg" />
+		<None Remove="assets\settings\Languages\Arabic.xml" />
+		<None Remove="assets\settings\Languages\Bulgarian.xml" />
+		<None Remove="assets\settings\Languages\Chinese %28Simplified%29.xml" />
+		<None Remove="assets\settings\Languages\Chinese %28Traditional%29.xml" />
+		<None Remove="assets\settings\Languages\Czech.xml" />
+		<None Remove="assets\settings\Languages\Danish.xml" />
+		<None Remove="assets\settings\Languages\Dutch.xml" />
+		<None Remove="assets\settings\Languages\English.xml" />
+		<None Remove="assets\settings\Languages\Finnish.xml" />
+		<None Remove="assets\settings\Languages\French.xml" />
+		<None Remove="assets\settings\Languages\German.xml" />
+		<None Remove="assets\settings\Languages\Greek.xml" />
+		<None Remove="assets\settings\Languages\Hebrew.xml" />
+		<None Remove="assets\settings\Languages\Hungarian.xml" />
+		<None Remove="assets\settings\Languages\Italian.xml" />
+		<None Remove="assets\settings\Languages\Japanese.xml" />
+		<None Remove="assets\settings\Languages\Korean.xml" />
+		<None Remove="assets\settings\Languages\Latvian.xml" />
+		<None Remove="assets\settings\Languages\Macedonian %28Latin%29.xml" />
+		<None Remove="assets\settings\Languages\Persian.xml" />
+		<None Remove="assets\settings\Languages\Polish.xml" />
+		<None Remove="assets\settings\Languages\Portuguese.xml" />
+		<None Remove="assets\settings\Languages\PortugueseBrazil.xml" />
+		<None Remove="assets\settings\Languages\Russian.xml" />
+		<None Remove="assets\settings\Languages\Serbian %28Cyrilic%29.xml" />
+		<None Remove="assets\settings\Languages\Serbian %28Latin%29.xml" />
+		<None Remove="assets\settings\Languages\Slovak.xml" />
+		<None Remove="assets\settings\Languages\Slovenian.xml" />
+		<None Remove="assets\settings\Languages\Spanish %28Spain%29.xml" />
+		<None Remove="assets\settings\Languages\Spanish.xml" />
+		<None Remove="assets\settings\Languages\Swedish.xml" />
+		<None Remove="assets\settings\Languages\Thai.xml" />
+		<None Remove="assets\settings\Languages\Turkish.xml" />
+		<None Remove="assets\settings\Languages\Ukrainian.xml" />
+		<None Remove="assets\settings\Languages\_For translators - ReadMe.txt" />
+		<None Remove="assets\settings\NVIDIA\classroot.cfg" />
+		<None Remove="assets\settings\NVIDIA\classrootgfe.cfg" />
+		<None Remove="assets\settings\NVIDIA\clsidleftover.cfg" />
+		<None Remove="assets\settings\NVIDIA\clsidleftoverGFE.cfg" />
+		<None Remove="assets\settings\NVIDIA\clsidleftoverNVB.cfg" />
+		<None Remove="assets\settings\NVIDIA\driverfiles.cfg" />
+		<None Remove="assets\settings\NVIDIA\gfedriverfiles.cfg" />
+		<None Remove="assets\settings\NVIDIA\gfedriverfiles.cfg.bak" />
+		<None Remove="assets\settings\NVIDIA\gfeservice.cfg" />
+		<None Remove="assets\settings\NVIDIA\interface.cfg" />
+		<None Remove="assets\settings\NVIDIA\interfaceGFE.cfg" />
+		<None Remove="assets\settings\NVIDIA\nvbdriverfiles.cfg" />
+		<None Remove="assets\settings\NVIDIA\nvbservice.cfg" />
+		<None Remove="assets\settings\NVIDIA\packages.cfg" />
+		<None Remove="assets\settings\NVIDIA\services.cfg" />
+		<None Remove="assets\settings\NVIDIA\servicesaudio.cfg" />
+		<None Remove="assets\settings\REALTEK\classroot.cfg" />
+		<None Remove="assets\settings\REALTEK\clsidleftover.cfg" />
+		<None Remove="assets\settings\REALTEK\driverfiles.cfg" />
+		<None Remove="assets\settings\REALTEK\packages.cfg" />
+		<None Remove="assets\settings\REALTEK\services.cfg" />
+		<None Remove="assets\settings\Settings.xml" />
 		<None Remove="assets\SpaceSniffer.exe" />
 		<None Remove="assets\youtubedw.png" />
 		<None Remove="assets\yt-dlp.exe" />
@@ -67,6 +157,10 @@
 		<None Remove="tessdata\eng.traineddata" />
 		<None Remove="tessdata\osd.traineddata" />
 		<None Remove="tessdata\por.traineddata" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="GameLauncher.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -82,7 +176,7 @@
 		<PackageReference Include="PdfSharp" Version="6.1.1" />
 		<PackageReference Include="pythonnet" Version="3.0.5" />
 		<PackageReference Include="System.Data.SQLite" Version="1.0.119" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.2" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.3" />
 		<PackageReference Include="System.Management" Version="9.0.2" />
 		<PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.2" />
 		<PackageReference Include="Tesseract" Version="5.2.0" />
@@ -121,6 +215,12 @@
 		<Content Include="assets\copiar.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="assets\CPU-Z.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\CPU-Z.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\crunchyroll.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -128,6 +228,12 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\DarkHub.pfx">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\DDU.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\DDU.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\discord.png">
@@ -142,10 +248,253 @@
 		<Content Include="assets\estados-unidos.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="assets\GPU-Z.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\Gpu-z.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\hwinfo.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\HWiNFO64.exe">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="assets\pass.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\resumir.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\classroot.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\clsidleftover.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\driverfiles.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\driverfilesKMAFD.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\driverfilesKMPFD.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\driverfilesKMPFD.cfg.bak">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\interface.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\packages.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\services.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\AMD\servicesaudio.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\classroot.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\clsidleftover.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\clsidleftoverigs.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\driverfiles.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\interface.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\packages.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\packagesigs.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\services.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\servicesaudio.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\INTEL\servicesigs.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Arabic.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Bulgarian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Chinese (Simplified).xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Chinese (Traditional).xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Czech.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Danish.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Dutch.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\English.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Finnish.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\French.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\German.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Greek.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Hebrew.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Hungarian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Italian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Japanese.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Korean.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Latvian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Macedonian (Latin).xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Persian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Polish.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Portuguese.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\PortugueseBrazil.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Russian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Serbian (Cyrilic).xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Serbian (Latin).xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Slovak.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Slovenian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Spanish (Spain).xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Spanish.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Swedish.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Thai.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Turkish.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\Ukrainian.xml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Languages\_For translators - ReadMe.txt">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\classroot.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\classrootgfe.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\clsidleftover.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\clsidleftoverGFE.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\clsidleftoverNVB.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\driverfiles.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\gfedriverfiles.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\gfedriverfiles.cfg.bak">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\gfeservice.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\interface.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\interfaceGFE.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\nvbdriverfiles.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\nvbservice.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\packages.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\services.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\NVIDIA\servicesaudio.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\REALTEK\classroot.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\REALTEK\clsidleftover.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\REALTEK\driverfiles.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\REALTEK\packages.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\REALTEK\services.cfg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="assets\settings\Settings.xml">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="assets\SpaceSniffer.exe">

@@ -11,7 +11,7 @@ namespace DarkHubRmk
 {
     public partial class App : Application
     {
-        private const string CurrentVersion = "1.1.4";
+        private const string CurrentVersion = "1.1.6";
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly string AppUniqueId = "{DarkHub-Single-Instance-GUID-2023}";
         private static Mutex _mutex;
