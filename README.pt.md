@@ -42,4 +42,9 @@ Este projeto está licenciado sob a [MIT License](LICENSE).
 
 
 ## Créditos
-- Agradecimentos ao repositório [SpaceSniffer](https://github.com/redtrillix/SpaceSniffer) por fornecer o executável usado como parte das funcionalidades de otimização do DarkHub.
+- Agradecemos:
+- [SpaceSniffer](https://github.com/redtrillix/SpaceSniffer) Repositório do executável usado como parte dos recursos de otimização do DarkHub.
+- [CPU-Z](https://www.cpuid.com/softwares/cpu-z.html) Ferramenta para monitorar e fornecer informações detalhadas sobre a CPU e outros componentes do sistema.
+- [GPU-Z](https://www.techpowerup.com/gpuz/) Utility para obter informações detalhadas sobre placas de vídeo.
+- [HWiNFO](https://www.hwinfo.com/) Software avançado de monitoramento e diagnóstico de hardware.
+- [DDU (Display Driver Uninstaller)](https://www.wagnardsoft.com/display-driver-uninstaller-ddu-) Ferramenta para remoção completa de drivers de vídeo.
