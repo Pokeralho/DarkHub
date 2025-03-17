@@ -14,8 +14,9 @@ automation and media handling tools, DarkHub offers a complete solution for user
 - **YouTube Video Downloader**: Download YouTube videos or playlists in MP4 format with H.264 and AAC support.
 - **Text Editor with Python Interpreter**: Write, edit and execute Python scripts in real time, with integrated debugging support.
 - **Resource Monitor**: Real-time information and metrics on hardware and software. Plus a Benchmark for performance evaluation.
-- **Text Summarizer**:  allows you to summarize your giant texts and PDFs into a size and parameters defined by you.
+- **Text Summarizer**:  Allows you to summarize your giant texts and PDFs into a size and parameters defined by you.
 - **Password Manager**: This password manager provides a secure and user-friendly way to store, manage, and retrieve passwords.
+- **Advanced Security**: Helps the user identify malicious applications and websites.
 
 ## Prerequisites
 - Windows 10 or higher.
@@ -25,18 +26,6 @@ automation and media handling tools, DarkHub offers a complete solution for user
 ## Prerequisites for using the youtube downloader with the source code `Archives already included in the release` (place both in the `assets` folder):
 - [ffmpeg.exe](https://www.gyan.dev/ffmpeg/builds/#release-builds)
 - [yt-dlp.exe](https://github.com/yt-dlp/yt-dlp/releases/)
-
-## Use
-- **PC Optimizer**: Browse the options in the interface to clean files, repair the system or manage startup programs.
-- **Auto Clicker**: Set up click intervals in the tool to automate repetitive tasks.
-- **File Converter**: Select files and choose the desired output format.
-- **Metadata Editor**: Open files and edit information such as title, artist, creation date, etc.
-- **Image Text Extractor**: Upload an image and extract the text with the OCR function.
-- **YouTube Downloader**: Enter a YouTube URL and click “Download” to save the video in `%UserProfile%\Videos\DarkHubDownloads`.
-- **Text Editor with Python Interpreter**: Write Python scripts in the interface and run them directly. Files saved in `%UserProfile%\Documents\DarkHubDocs`.
-
-## Notes
-- The injection methods and CrunchyrollAccs have been hidden with .gitignore to keep the code closed and make it harder to reverse engineer and potentially lead to detection.
 
 ## Contribution
 Contributions are welcome! Follow these steps:
