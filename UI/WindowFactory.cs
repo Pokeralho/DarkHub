@@ -19,11 +19,13 @@ namespace DarkHub.UI
         public static readonly SolidColorBrush BorderColor = new SolidColorBrush(Color.FromRgb(64, 64, 64));
         public static readonly SolidColorBrush TextColor = new SolidColorBrush(Color.FromRgb(224, 224, 224));
         public static readonly SolidColorBrush PlaceholderColor = new SolidColorBrush(Color.FromRgb(160, 160, 160));
+        public static readonly SolidColorBrush CheckBoxColor = new SolidColorBrush(Color.FromRgb(0, 0, 0));
 
         public static SolidColorBrush DefaultBackground = PrimaryBackground;
         public static SolidColorBrush DefaultBorderBrush = BorderColor;
         public static SolidColorBrush DefaultTextForeground = TextColor;
         public static SolidColorBrush DefaultControlBackground = SecondaryBackground;
+        public static SolidColorBrush DefaultCheckBoxColor = CheckBoxColor;
 
         public static readonly Thickness DefaultBorderThickness = new Thickness(1);
         public static readonly FontFamily DefaultFontFamily = new FontFamily("JetBrains Mono");

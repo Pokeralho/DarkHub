@@ -49,7 +49,7 @@
                             <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,10,10">
                                 <TextBlock Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=LanguageLabel}"
                                          Style="{StaticResource LabelTextBlockStyle}" />
-                                <ComboBox x:Name="LanguageComboBox" Style="{StaticResource ComboBoxStyle}">
+                                <ComboBox x:Name="LanguageComboBox" Style="{StaticResource ComboBoxStyle}" Background="white">
                                     <ComboBoxItem Content="Português" IsSelected="True" />
                                     <ComboBoxItem Content="English" />
                                     <ComboBoxItem Content="Español" />

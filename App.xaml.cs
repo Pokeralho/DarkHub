@@ -11,10 +11,11 @@ namespace DarkHubRmk
 {
     public partial class App : Application
     {
-        private const string CurrentVersion = "1.1.6";
+        private const string CurrentVersion = "1.1.7";
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly string AppUniqueId = "{DarkHub-Single-Instance-GUID-2023}";
         private static Mutex _mutex;
+        private static readonly string LogPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "app_log.txt");
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -42,6 +43,8 @@ namespace DarkHubRmk
 
             try
             {
+                ResetLogFile();
+
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
                 if (!VerifyDependencies())
@@ -186,20 +189,38 @@ namespace DarkHubRmk
             base.OnExit(e);
             CleanupAndExit();
         }
+        private static void ResetLogFile()
+        {
+            try
+            {
+                string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+                if (!Directory.Exists(logDir))
+                {
+                    Directory.CreateDirectory(logDir);
+                    Debug.WriteLine("Diretório de logs criado.");
+                }
+
+                File.WriteAllText(LogPath, $"{DateTime.Now}: Log resetado na inicialização.\n");
+                Debug.WriteLine("Arquivo de log resetado.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao resetar o arquivo de log: {ex.Message}");
+            }
+        }
 
         private static void LogToFile(string message)
         {
             try
             {
-                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-                if (!Directory.Exists(logPath))
+                string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
+                if (!Directory.Exists(logDir))
                 {
-                    Directory.CreateDirectory(logPath);
-                    LogToFile("Diretório de logs criado.");
+                    Directory.CreateDirectory(logDir);
+                    Debug.WriteLine("Diretório de logs criado.");
                 }
 
-                string logFile = Path.Combine(logPath, "app_log.txt");
-                File.AppendAllText(logFile, $"{DateTime.Now}: {message}\n");
+                File.AppendAllText(LogPath, $"{DateTime.Now}: {message}\n");
                 Debug.WriteLine($"Log gravado: {message}");
             }
             catch (Exception ex)

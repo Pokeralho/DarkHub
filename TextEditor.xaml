@@ -13,7 +13,7 @@
 
     <Page.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#35373c" />
+            <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Height" Value="30" />
             <Setter Property="Margin" Value="5,0,0,0" />
@@ -34,11 +34,11 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#5A6896" />
+                    <Setter Property="Background" Value="#43464d" />
                     <Setter Property="BorderBrush" Value="White" />
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#3E4A6D" />
+                    <Setter Property="Background" Value="#35373c" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -167,11 +167,11 @@
                     </Button>
                 </DockPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,40,0">
-                    <ComboBox x:Name="docTypeComboBox" Foreground="black" MinWidth="80" Margin="0,0,5,0" SelectionChanged="DocTypeComboBox_SelectionChanged" ToolTip="{Binding DocTypeToolTip}">
+                    <ComboBox x:Name="docTypeComboBox" FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono" Background="White" Foreground="black" MinWidth="80" Margin="0,0,5,0" SelectionChanged="DocTypeComboBox_SelectionChanged" ToolTip="{Binding DocTypeToolTip}">
                         <ComboBoxItem Content="{Binding PlainTextOption}" IsSelected="True" />
                         <ComboBoxItem Content="{Binding PythonOption}" />
                     </ComboBox>
-                    <ComboBox x:Name="fontSizeComboBox" Foreground="Black" MinWidth="60" Margin="5,0,0,0" SelectionChanged="FontSizeComboBox_SelectionChanged" ToolTip="{Binding FontSizeToolTip}">
+                    <ComboBox x:Name="fontSizeComboBox" FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono" Background="White" Foreground="Black" MinWidth="60" Margin="5,0,0,0" SelectionChanged="FontSizeComboBox_SelectionChanged" ToolTip="{Binding FontSizeToolTip}">
                         <ComboBoxItem Content="10" />
                         <ComboBoxItem Content="12" />
                         <ComboBoxItem Content="14" IsSelected="True" />

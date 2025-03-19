@@ -308,16 +308,16 @@
 	<value>MetaData Editor</value>
   </data>
 	<data name="SaveMetadataButton" xml:space="preserve">
-	<value>Save Metadata</value>
+	<value>Salvar Metadados</value>
   </data>
 	<data name="SelectFileButton" xml:space="preserve">
-	<value>Select File</value>
+	<value>Selecionar Arquivo</value>
   </data>
 	<data name="PropertyColumnHeader" xml:space="preserve">
-	<value>Property</value>
+	<value>Propriedades</value>
   </data>
 	<data name="ValueColumnHeader" xml:space="preserve">
-	<value>Value</value>
+	<value>Valor</value>
   </data>
 	<data name="DllInjectorTitle" xml:space="preserve">
 	<value>DLL Injector</value>
@@ -1844,7 +1844,7 @@ Erro de Inicialização.</value>
 		<value>Bloquear Sites de Phishing</value>
 	</data>
 	<data name="BlockExploit" xml:space="preserve">
-		<value>Block Selected Exploits</value>
+		<value>Bloquear Exploits Selecionados</value>
 	</data>
 	<data name="Scanning" xml:space="preserve">
 		<value>Escaneamento em andamento...</value>

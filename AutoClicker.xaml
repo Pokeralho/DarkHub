@@ -64,7 +64,7 @@
             <ComboBox x:Name="cmbActivationKey"
                       Width="100"
                       Margin="5"
-                      Background="#3C3C3C"
+                      Background="White"
                       Foreground="Black"
                       BorderThickness="1"
                       FontFamily="{StaticResource JetBrainsMono}">

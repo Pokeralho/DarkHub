@@ -396,7 +396,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Block Selected Exploits.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Bloquear Exploits Selecionados.
         /// </summary>
         public static string BlockExploit {
             get {
@@ -3970,7 +3970,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Property.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Propriedades.
         /// </summary>
         public static string PropertyColumnHeader {
             get {
@@ -4627,7 +4627,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Save Metadata.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Salvar Metadados.
         /// </summary>
         public static string SaveMetadataButton {
             get {
@@ -4789,7 +4789,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Select File.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Selecionar Arquivo.
         /// </summary>
         public static string SelectFileButton {
             get {
@@ -5707,7 +5707,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Value.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Valor.
         /// </summary>
         public static string ValueColumnHeader {
             get {

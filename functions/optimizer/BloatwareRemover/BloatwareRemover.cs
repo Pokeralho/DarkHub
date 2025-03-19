@@ -36,7 +36,6 @@ namespace DarkHub.UI
                 WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.CheckingInstalledApps);
 
                 var potentialBloatware = GetPotentialBloatwareList();
-
                 var installedApps = await DetectBloatwareAsync(potentialBloatware);
 
                 await _progressWindow.Dispatcher.InvokeAsync(() =>
@@ -201,17 +200,22 @@ namespace DarkHub.UI
                 WindowFactory.AppendProgress(_progressTextBox, "Encontrado: Microsoft Edge\n");
             }
 
-            string result = await RunCommandAsync("powershell -Command \"Get-AppxPackage -AllUsers | Select-Object -Property Name\"");
+            string result = await RunCommandAsync("powershell -Command \"Get-AppxPackage -AllUsers | Where-Object {$_.NonRemovable -eq $false -and $_.IsFramework -eq $false} | Select-Object -Property Name\"");
             string provisionedResult = await RunCommandAsync("powershell -Command \"Get-AppxProvisionedPackage -Online | Select-Object -Property DisplayName\"");
-            var installedPackages = result.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-            var provisionedPackages = provisionedResult.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            var installedPackages = result.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var provisionedPackages = provisionedResult.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim())
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             foreach (var app in potentialBloatware)
             {
                 if (app.Key != "Microsoft.OneDrive" && app.Key != "Microsoft.Edge")
                 {
-                    if (installedPackages.Any(p => p.Contains(app.Key, StringComparison.OrdinalIgnoreCase)) ||
-                        provisionedPackages.Any(p => p.Contains(app.Key, StringComparison.OrdinalIgnoreCase)))
+                    if (installedPackages.Contains(app.Key) || provisionedPackages.Contains(app.Key))
                     {
                         installedApps.Add(app.Key, app.Value);
                         WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.AppFound, app.Value));
@@ -246,26 +250,39 @@ namespace DarkHub.UI
             {
                 WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.RemovingApp, app.Value));
 
-                await RunCommandAsync($"powershell -Command \"Get-AppxPackage *{app.Key}* | Remove-AppxPackage -ErrorAction SilentlyContinue\"");
+                string userRemoveOutput = await RunCommandAsync($"powershell -Command \"Get-AppxPackage -Name '{app.Key}' | Remove-AppxPackage -ErrorAction Stop\"");
+                WindowFactory.AppendProgress(_progressTextBox, userRemoveOutput);
 
-                await RunCommandAsync($"powershell -Command \"Get-AppxPackage -AllUsers *{app.Key}* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue\"");
+                string allUsersRemoveOutput = await RunCommandAsync($"powershell -Command \"Get-AppxPackage -AllUsers -Name '{app.Key}' | Remove-AppxPackage -AllUsers -ErrorAction Stop\"");
+                WindowFactory.AppendProgress(_progressTextBox, allUsersRemoveOutput);
 
-                string removeProvisionedCommand = @"
-                    $packages = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like '*" + app.Key + @"*' };
-                    foreach ($pkg in $packages) { Remove-AppxProvisionedPackage -Online -PackageName $pkg.PackageName -ErrorAction SilentlyContinue; }
+                string provisionedRemoveCommand = $@"
+                    $packages = Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{app.Key}' }};
+                    foreach ($pkg in $packages) {{ Remove-AppxProvisionedPackage -Online -PackageName $pkg.PackageName -ErrorAction Stop; }}
                 ";
-                await RunCommandAsync($"powershell -Command \"{removeProvisionedCommand}\"", true);
+                string provisionedOutput = await RunCommandAsync($"powershell -Command \"{provisionedRemoveCommand}\"", true);
+                WindowFactory.AppendProgress(_progressTextBox, provisionedOutput);
 
-                string forceRemoveCommand = @"
-                    $packages = Get-AppxPackage -AllUsers | Where-Object { $_.Name -like '*" + app.Key + @"*' };
-                    foreach ($pkg in $packages) { Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction SilentlyContinue; }
-                ";
-                await RunCommandAsync($"powershell -Command \"{forceRemoveCommand}\"", true);
+                string checkRemaining = await RunCommandAsync($"powershell -Command \"if (Get-AppxPackage -AllUsers -Name '{app.Key}') {{ 'Pacote ainda presente' }} else {{ 'Pacote removido' }}\"");
+                if (checkRemaining.Contains("Pacote ainda presente"))
+                {
+                    WindowFactory.AppendProgress(_progressTextBox, $"Tentativa final de remoção de {app.Value}...");
+                    string forceRemoveCommand = $@"
+                        $packages = Get-AppxPackage -AllUsers -Name '{app.Key}';
+                        foreach ($pkg in $packages) {{ Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop; }}
+                    ";
+                    string forceOutput = await RunCommandAsync($"powershell -Command \"{forceRemoveCommand}\"", true);
+                    WindowFactory.AppendProgress(_progressTextBox, forceOutput);
+                }
+
+                string finalCheck = await RunCommandAsync($"powershell -Command \"if (Get-AppxPackage -AllUsers -Name '{app.Key}' -or (Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{app.Key}' }})) {{ 'Falha na remoção' }} else {{ 'Remoção bem-sucedida' }}\"");
+                WindowFactory.AppendProgress(_progressTextBox, finalCheck);
 
                 await Task.Delay(200);
             }
 
             await CleanResidualFilesAsync(selectedApps);
+            await ClearStartMenuCacheAsync();
 
             WindowFactory.AppendProgress(_progressTextBox, "Reiniciando Explorer...");
             await RunCommandAsync("taskkill /f /im explorer.exe & start explorer", true);
@@ -386,54 +403,48 @@ namespace DarkHub.UI
             WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.CleaningResidualFiles);
             var foldersToDelete = new List<string>();
 
-            if (selectedApps.ContainsKey("Microsoft.Edge"))
-            {
-                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\Edge");
-                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\EdgeUpdate");
-                foldersToDelete.Add(@"C:\Program Files (x86)\Microsoft\Edge");
-                foldersToDelete.Add(@"C:\Program Files\Microsoft\Edge");
-                foldersToDelete.Add(@"%ProgramData%\Microsoft\Edge");
-            }
-
-            if (selectedApps.ContainsKey("Microsoft.OneDrive"))
-            {
-                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\OneDrive");
-                foldersToDelete.Add(@"%PROGRAMDATA%\Microsoft\OneDrive");
-                foldersToDelete.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive"));
-            }
-
-            if (selectedApps.ContainsKey("Microsoft.YourPhone"))
-            {
-                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\YourPhone");
-            }
-
-            if (selectedApps.ContainsKey("Microsoft.SkypeApp"))
-            {
-                foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\Skype");
-            }
-
-            if (selectedApps.ContainsKey("SpotifyAB.SpotifyMusic"))
-            {
-                foldersToDelete.Add(@"%LOCALAPPDATA%\Spotify");
-            }
+            if (selectedApps.ContainsKey("Microsoft.Edge")) foldersToDelete.AddRange(new[] { @"%LOCALAPPDATA%\Microsoft\Edge", @"%LOCALAPPDATA%\Microsoft\EdgeUpdate", @"C:\Program Files (x86)\Microsoft\Edge", @"C:\Program Files\Microsoft\Edge", @"%ProgramData%\Microsoft\Edge" });
+            if (selectedApps.ContainsKey("Microsoft.OneDrive")) foldersToDelete.AddRange(new[] { @"%LOCALAPPDATA%\Microsoft\OneDrive", @"%PROGRAMDATA%\Microsoft\OneDrive", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "OneDrive") });
+            if (selectedApps.ContainsKey("Microsoft.YourPhone")) foldersToDelete.Add(@"%LOCALAPPDATA%\Microsoft\YourPhone");
+            if (selectedApps.ContainsKey("Microsoft.SkypeApp")) foldersToDelete.AddRange(new[] { @"%LOCALAPPDATA%\Microsoft\Skype", @"%LOCALAPPDATA%\Packages\Microsoft.SkypeApp_*" });
+            if (selectedApps.ContainsKey("SpotifyAB.SpotifyMusic")) foldersToDelete.Add(@"%LOCALAPPDATA%\Spotify");
 
             foreach (var folder in foldersToDelete)
             {
                 string expandedPath = Environment.ExpandEnvironmentVariables(folder);
-                if (Directory.Exists(expandedPath))
+                foreach (var dir in Directory.GetDirectories(Path.GetDirectoryName(expandedPath), Path.GetFileName(expandedPath), SearchOption.TopDirectoryOnly))
                 {
                     try
                     {
-                        Directory.Delete(expandedPath, true);
-                        WindowFactory.AppendProgress(_progressTextBox, $"Pasta {expandedPath} removida.");
+                        Directory.Delete(dir, true);
+                        WindowFactory.AppendProgress(_progressTextBox, $"Pasta {dir} removida.");
                     }
                     catch (Exception ex)
                     {
-                        await RunCommandAsync($"rd \"{expandedPath}\" /Q /S", true);
-                        WindowFactory.AppendProgress(_progressTextBox, $"Erro ao remover {expandedPath} localmente, removido via comando: {ex.Message}");
+                        await RunCommandAsync($"rd \"{dir}\" /Q /S", true);
+                        WindowFactory.AppendProgress(_progressTextBox, $"Erro ao remover {dir} localmente, removido via comando: {ex.Message}");
                     }
                 }
             }
+        }
+
+        private async Task ClearStartMenuCacheAsync()
+        {
+            WindowFactory.AppendProgress(_progressTextBox, "Limpando cache do Menu Iniciar...");
+            string tileCacheFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TileDataLayer");
+            string tileCacheFolderNew = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft\\Windows\\TileCache");
+
+            if (Directory.Exists(tileCacheFolder))
+            {
+                await RunCommandAsync($"rd \"{tileCacheFolder}\" /Q /S", true);
+            }
+            if (Directory.Exists(tileCacheFolderNew))
+            {
+                await RunCommandAsync($"rd \"{tileCacheFolderNew}\" /Q /S", true);
+            }
+
+            WindowFactory.AppendProgress(_progressTextBox, "Atualizando estado dos pacotes UWP...");
+            await RunCommandAsync("powershell -Command \"Get-AppxPackage | % { Add-AppxPackage -DisableDevelopmentMode -Register \\\"$($_.InstallLocation)\\AppXManifest.xml\\\" -ErrorAction SilentlyContinue }\"", true);
         }
 
         private async Task<Dictionary<string, string>> ShowBloatwareSelectionWindowAsync(Dictionary<string, string> installedApps)
@@ -480,11 +491,22 @@ namespace DarkHub.UI
                 {
                     var checkBox = new CheckBox
                     {
-                        Content = app.Value,
-                        Foreground = WindowFactory.DefaultTextForeground,
                         Margin = new Thickness(5),
                         Tag = app.Key
                     };
+
+                    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                    var textBlock = new TextBlock
+                    {
+                        Text = app.Value,
+                        Foreground = WindowFactory.DefaultTextForeground,
+                        Margin = new Thickness(5, 0, 0, 0)
+                    };
+                    stackPanel.Children.Add(textBlock);
+
+                    checkBox.Content = stackPanel;
+                    checkBox.Foreground = WindowFactory.DefaultCheckBoxColor;
+
                     checkBoxes[app.Key] = checkBox;
                     checkBoxPanel.Children.Add(checkBox);
                 }
