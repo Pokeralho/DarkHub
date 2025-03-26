@@ -10,6 +10,7 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - **Editor de Metadados**: Organize suas coleções de mídia editando títulos, artistas, álbuns e mais diretamente nos arquivos.
 - **Extrator de Texto de Imagens**: Utilize OCR para extrair texto de imagens, perfeito para digitalizar documentos ou capturas de tela.
 - **Downloader de Vídeos do YouTube**: Baixe vídeos ou playlists do YouTube em formato MP4 com suporte a H.264 e AAC.
+- **Transcrição de vídeos do YouTube**: Extraia e copie transcrições de vídeos do YouTube.
 - **Editor de Texto com Interpretador Python**: Escreva, edite e execute scripts Python em tempo real, com suporte a depuração integrado.
 - **Monitor de Recursos**: Informações e métricas em tempo real sobre hardware e software. Além de um Benchmark para avaliação de desempenho.
 - **Gestor de palavras-passe**: Este gerenciador de senhas fornece uma forma segura e fácil de utilizar para armazenar, gerir e recuperar palavras-passe.
