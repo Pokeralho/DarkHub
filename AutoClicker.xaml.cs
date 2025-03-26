@@ -10,7 +10,7 @@ namespace DarkHub
     public partial class AutoClicker : Page, IDisposable
     {
         private bool _isClicking = false;
-        private int _clickIntervalMs = 1;
+        private double _clickIntervalMs = 1.0;
         private readonly object _syncLock = new();
         private CancellationTokenSource? _clickCancellationTokenSource;
         private IntPtr _hWnd;
@@ -19,6 +19,8 @@ namespace DarkHub
         private const int WM_HOTKEY = 0x0312;
         private const int DEBOUNCE_DELAY_MS = 500;
         private Key _currentActivationKey = Key.F6;
+        private DateTime _lastTextChange = DateTime.MinValue;
+        private bool _isProcessingTextChange = false;
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
@@ -64,7 +66,7 @@ namespace DarkHub
             try
             {
                 cmbActivationKey.SelectedIndex = 0;
-                txtInterval.Text = _clickIntervalMs.ToString();
+                txtInterval.Text = _clickIntervalMs.ToString("F1");
                 txtInterval.TextChanged += TxtInterval_TextChanged;
                 btnStart.Click += StartClicking;
                 btnStop.Click += StopClicking;
@@ -152,7 +154,7 @@ namespace DarkHub
 
             while (!token.IsCancellationRequested)
             {
-                long elapsedMs = stopwatch.ElapsedMilliseconds;
+                double elapsedMs = stopwatch.Elapsed.TotalMilliseconds;
                 if (elapsedMs >= _clickIntervalMs)
                 {
                     lock (_syncLock)
@@ -242,24 +244,34 @@ namespace DarkHub
             }
         }
 
-        private void TxtInterval_TextChanged(object sender, TextChangedEventArgs e)
+        private async void TxtInterval_TextChanged(object sender, TextChangedEventArgs e)
         {
             try
             {
-                lock (_syncLock)
-                {
-                    int newInterval = ValidateAndUpdateInterval();
-                    if (newInterval <= 0)
-                    {
-                        ShowWarning("IntervalMustBeGreaterThanZero");
-                        return;
-                    }
+                if (_isProcessingTextChange) return;
 
-                    if (_isClicking && newInterval != _clickIntervalMs)
+                _isProcessingTextChange = true;
+                _lastTextChange = DateTime.Now;
+
+                // Debounce fora do lock
+                await Task.Delay(DEBOUNCE_DELAY_MS);
+
+                if ((DateTime.Now - _lastTextChange).TotalMilliseconds >= DEBOUNCE_DELAY_MS)
+                {
+                    lock (_syncLock)
                     {
-                        _clickIntervalMs = newInterval;
-                        UpdateUIStatus();
-                        Log(string.Format(ResourceManagerHelper.Instance.IntervalUpdated, _clickIntervalMs));
+                        double newInterval = ValidateAndUpdateInterval();
+                        if (newInterval <= 0)
+                        {
+                            ShowWarning("IntervalMustBeGreaterThanZero");
+                            txtInterval.Text = _clickIntervalMs.ToString("F1");
+                        }
+                        else if (_isClicking && newInterval != _clickIntervalMs)
+                        {
+                            _clickIntervalMs = newInterval;
+                            UpdateUIStatus();
+                            Log(string.Format(ResourceManagerHelper.Instance.IntervalUpdated, _clickIntervalMs));
+                        }
                     }
                 }
             }
@@ -267,19 +279,21 @@ namespace DarkHub
             {
                 HandleError(ResourceManagerHelper.Instance.ErrorProcessingIntervalChange, ex);
             }
+            finally
+            {
+                _isProcessingTextChange = false;
+            }
         }
 
-        private int ValidateAndUpdateInterval()
+        private double ValidateAndUpdateInterval()
         {
             try
             {
-                if (int.TryParse(txtInterval.Text, out int value) && value > 0)
+                if (double.TryParse(txtInterval.Text, out double value) && value > 0)
                 {
                     _clickIntervalMs = value;
                     return value;
                 }
-
-                ShowWarning("IntervalMustBeGreaterThanZero");
                 return _clickIntervalMs;
             }
             catch (Exception ex)
@@ -316,7 +330,7 @@ namespace DarkHub
                     btnStart.IsEnabled = !_isClicking;
                     btnStop.IsEnabled = _isClicking;
                     double cps = _clickIntervalMs > 0 ? 1000.0 / _clickIntervalMs : 0;
-                    lblClicksPerSecond.Text = string.Format(ResourceManagerHelper.Instance.ClicksPerSecondLabel, cps);
+                    lblClicksPerSecond.Text = string.Format(ResourceManagerHelper.Instance.ClicksPerSecondLabel, cps.ToString("F2"));
                 });
             }
             catch (Exception ex)

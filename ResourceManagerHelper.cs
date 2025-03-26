@@ -648,6 +648,16 @@ namespace DarkHub
         public string MonitoringExploits => DarkHub.Properties.AppResources.MonitoringExploits;
         public string RestorePointCreated => DarkHub.Properties.AppResources.RestorePointCreated;
         public string RestorePointNotCreated => DarkHub.Properties.AppResources.RestorePointNotCreated;
+        public string Trancript => DarkHub.Properties.AppResources.Trancript;
+        public string CopyTranscript => DarkHub.Properties.AppResources.CopyTranscript;
+        public string CopyTranscriptToolTip => DarkHub.Properties.AppResources.CopyTranscriptToolTip;
+        public string CopyTranscriptError => DarkHub.Properties.AppResources.CopyTranscriptError;
+        public string YtVideoIDNotFound => DarkHub.Properties.AppResources.YtVideoIDNotFound;
+        public string YtVideoStartedTranscripting => DarkHub.Properties.AppResources.YtVideoStartedTranscripting;
+        public string YtVideoGettingTranscript => DarkHub.Properties.AppResources.YtVideoGettingTranscript;
+        public string YtVideoNoTranscript => DarkHub.Properties.AppResources.YtVideoNoTranscript;
+        public string YtVideoTranscriptObtained => DarkHub.Properties.AppResources.YtVideoTranscriptObtained;
+        public string TranscribeCopied => DarkHub.Properties.AppResources.TranscribeCopied;
 
         public void NotifyCultureChanged()
         {

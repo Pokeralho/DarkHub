@@ -1098,6 +1098,33 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Copiar.
+        /// </summary>
+        public static string CopyTranscript {
+            get {
+                return ResourceManager.GetString("CopyTranscript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhum texto disponível para copiar..
+        /// </summary>
+        public static string CopyTranscriptError {
+            get {
+                return ResourceManager.GetString("CopyTranscriptError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Copiar transcrição para a área de transferência.
+        /// </summary>
+        public static string CopyTranscriptToolTip {
+            get {
+                return ResourceManager.GetString("CopyTranscriptToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Frequência: {0:F2} GHz.
         /// </summary>
         public static string CPUClockFormat {
@@ -4483,7 +4510,7 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Failed to create restore point. Check that System Restore is enabled..
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Falha ao criar o ponto de restauração. Verifique se a Restauração do Sistema está habilitada..
         /// </summary>
         public static string RestorePointNotCreated {
             get {
@@ -5635,6 +5662,33 @@ namespace DarkHub.Properties {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Transcrever.
+        /// </summary>
+        public static string Trancript {
+            get {
+                return ResourceManager.GetString("Trancript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Transcrever o vídeo do YouTube.
+        /// </summary>
+        public static string TrancriptButtonToolTip {
+            get {
+                return ResourceManager.GetString("TrancriptButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Texto da transcrição copiado para a área de transferência..
+        /// </summary>
+        public static string TranscribeCopied {
+            get {
+                return ResourceManager.GetString("TranscribeCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Desinstalação concluída!.
         /// </summary>
         public static string UninstallationCompleted {
@@ -5775,6 +5829,51 @@ namespace DarkHub.Properties {
         public static string YoutubeDownloaderTitle {
             get {
                 return ResourceManager.GetString("YoutubeDownloaderTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Obtendo transcrição....
+        /// </summary>
+        public static string YtVideoGettingTranscript {
+            get {
+                return ResourceManager.GetString("YtVideoGettingTranscript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível extrair o ID do vídeo da URL..
+        /// </summary>
+        public static string YtVideoIDNotFound {
+            get {
+                return ResourceManager.GetString("YtVideoIDNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma transcrição disponível para este vídeo..
+        /// </summary>
+        public static string YtVideoNoTranscript {
+            get {
+                return ResourceManager.GetString("YtVideoNoTranscript", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Iniciando transcrição do vídeo....
+        /// </summary>
+        public static string YtVideoStartedTranscripting {
+            get {
+                return ResourceManager.GetString("YtVideoStartedTranscripting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Transcrição concluída!.
+        /// </summary>
+        public static string YtVideoTranscriptObtained {
+            get {
+                return ResourceManager.GetString("YtVideoTranscriptObtained", resourceCulture);
             }
         }
     }

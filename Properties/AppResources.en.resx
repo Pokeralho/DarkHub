@@ -1958,6 +1958,39 @@ Initialization error.</value>
 		<value>Restore point created successfully!</value>
 	</data>
 	<data name="RestorePointNotCreated" xml:space="preserve">
-		<value>Falha ao criar o ponto de restauração. Verifique se a Restauração do Sistema está habilitada.</value>
+		<value>Failed to create restore point. Check that System Restore is enabled.</value>
+	</data>
+	<data name="Trancript" xml:space="preserve">
+		<value>Transcribe</value>
+	</data>
+	<data name="TrancriptButtonToolTip" xml:space="preserve">
+		<value>Transcribe the video from YouTube</value>
+	</data>
+	<data name="CopyTranscript" xml:space="preserve">
+		<value>Copy</value>
+	</data>
+	<data name="CopyTranscriptError" xml:space="preserve">
+		<value>No text available to copy.</value>
+	</data>
+	<data name="CopyTranscriptToolTip" xml:space="preserve">
+		<value>Copy transcribe to clipboard</value>
+	</data>
+	<data name="YtVideoIDNotFound" xml:space="preserve">
+		<value>It was not possible to extract the video ID from the URL.</value>
+	</data>
+	<data name="YtVideoStartedTranscripting" xml:space="preserve">
+		<value>Starting to transcribe the video...</value>
+	</data>
+	<data name="YtVideoGettingTranscript" xml:space="preserve">
+		<value>Getting a transcript...</value>
+	</data>
+	<data name="YtVideoNoTranscript" xml:space="preserve">
+		<value>No transcript available for this video.</value>
+	</data>
+	<data name="YtVideoTranscriptObtained" xml:space="preserve">
+		<value>Transcrição concluída!</value>
+	</data>
+	<data name="TranscribeCopied" xml:space="preserve">
+		<value>Text from the transcript copied to the clipboard.</value>
 	</data>
 </root>

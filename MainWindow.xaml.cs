@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Windows;
@@ -19,7 +20,6 @@ namespace DarkHub
         private Type _currentPageType;
         private WindowState _previousWindowState;
         private static readonly string CertificatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "darkhub.pfx");
-        private static readonly string PasswordFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "certificate_password.txt");
 
         public MainWindow()
         {
@@ -156,22 +156,13 @@ namespace DarkHub
                     return;
                 }
 
-                if (!File.Exists(PasswordFilePath))
-                {
-                    WindowFactory.ShowMessage(this, "O arquivo 'certificate_password.txt' não foi encontrado na pasta assets.",
-                        "Erro", MessageBoxImage.Error);
-                    return;
-                }
+                string password = "No ;D";
 
-                string password = ReadEncryptedPassword();
-                if (string.IsNullOrEmpty(password))
-                {
-                    WindowFactory.ShowMessage(this, "O arquivo 'certificate_password.txt' está vazio. Forneça a senha do certificado.",
-                        "Erro", MessageBoxImage.Error);
-                    return;
-                }
-
-                X509Certificate2 certificate = new X509Certificate2(CertificatePath, password, X509KeyStorageFlags.UserKeySet);
+                X509Certificate2 certificate = new X509Certificate2(
+                    CertificatePath,
+                    password,
+                    X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable
+                );
 
                 InstallCertificateToRootStore(certificate);
 
@@ -180,7 +171,7 @@ namespace DarkHub
                     $"Validade: {certificate.NotAfter}",
                     "Sucesso", MessageBoxImage.Information);
             }
-            catch (System.Security.Cryptography.CryptographicException ex)
+            catch (CryptographicException ex)
             {
                 WindowFactory.ShowMessage(this, $"Erro ao carregar o certificado. Verifique a senha ou o arquivo.\nErro: {ex.Message}",
                     "Erro", MessageBoxImage.Error);
@@ -219,24 +210,6 @@ namespace DarkHub
                 }
 
                 store.Close();
-            }
-        }
-
-        private string ReadEncryptedPassword()
-        {
-            try
-            {
-                byte[] encryptedData = File.ReadAllBytes(PasswordFilePath);
-                byte[] decryptedData = System.Security.Cryptography.ProtectedData.Unprotect(
-                    encryptedData,
-                    null,
-                    System.Security.Cryptography.DataProtectionScope.CurrentUser);
-                string password = System.Text.Encoding.UTF8.GetString(decryptedData);
-                return password;
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
         }
 
@@ -420,7 +393,6 @@ namespace DarkHub
                 btnSummX.Tag = null;
                 btnPassMng.Tag = null;
                 btnAdvancedSec.Tag = null;
-                //btnGameLauncher.Tag = null;
                 clickedButton.Tag = "Active";
 
                 if (clickedButton == btnOptimizer)
@@ -449,11 +421,6 @@ namespace DarkHub
                     await NavigateToPageAsync(new PasswordManager());
                 else if (clickedButton == btnAdvancedSec)
                     await NavigateToPageAsync(new AdvancedSecurity());
-                //else if (clickedButton == btnGameLauncher)
-                //{
-                //    GameLauncher gameLauncher = new GameLauncher(this);
-                //    gameLauncher.Show();
-                //}
             }
             catch (Exception ex)
             {

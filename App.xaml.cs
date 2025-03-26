@@ -11,7 +11,7 @@ namespace DarkHubRmk
 {
     public partial class App : Application
     {
-        private const string CurrentVersion = "1.1.7";
+        private const string CurrentVersion = "1.1.8";
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly string AppUniqueId = "{DarkHub-Single-Instance-GUID-2023}";
         private static Mutex _mutex;
@@ -189,6 +189,7 @@ namespace DarkHubRmk
             base.OnExit(e);
             CleanupAndExit();
         }
+
         private static void ResetLogFile()
         {
             try

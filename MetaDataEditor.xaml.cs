@@ -173,7 +173,11 @@ namespace DarkHub
             {
                 OpenFileDialog openFileDialog = new()
                 {
-                    Filter = "All Files|*.jpg;*.jpeg;*.png;*.bmp;*.pdf;*.docx;*.exe|Images|*.jpg;*.jpeg;*.png;*.bmp|Documents|*.pdf;*.docx|Executables|*.exe",
+                    Filter = "All Files|*.jpg;*.jpeg;*.png;*.bmp;*.pdf;*.docx;*.exe;*.mp3;*.wav;*.flac|" +
+                             "Images|*.jpg;*.jpeg;*.png;*.bmp|" +
+                             "Documents|*.pdf;*.docx|" +
+                             "Executables|*.exe|" +
+                             "Audio|*.mp3;*.wav;*.flac",
                     Title = "Selecione um arquivo"
                 };
 
@@ -221,6 +225,12 @@ namespace DarkHub
 
                     case ".exe":
                         await Task.Run(LoadExeMetadata);
+                        break;
+
+                    case ".mp3":
+                    case ".wav":
+                    case ".flac":
+                        await Task.Run(LoadAudioMetadata);
                         break;
 
                     default:
@@ -339,6 +349,39 @@ namespace DarkHub
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro em LoadExeMetadata {ex.Message}");
+                throw;
+            }
+        }
+
+        private void LoadAudioMetadata()
+        {
+            try
+            {
+                using var file = TagLib.File.Create(selectedFilePath!);
+                var tag = file.Tag;
+
+                metadataItems.AddRange(new[]
+                {
+                    new MetadataItem { PropertyName = "Title", Value = tag.Title ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Album", Value = tag.Album ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Artists", Value = string.Join(", ", tag.Performers) ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Album Artists", Value = string.Join(", ", tag.AlbumArtists) ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Genres", Value = string.Join(", ", tag.Genres) ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Year", Value = tag.Year.ToString() ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Track", Value = tag.Track.ToString() ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Track Count", Value = tag.TrackCount.ToString() ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Disc", Value = tag.Disc.ToString() ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Disc Count", Value = tag.DiscCount.ToString() ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Comment", Value = tag.Comment ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Copyright", Value = tag.Copyright ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Duration", Value = file.Properties.Duration.ToString(@"mm\:ss") ?? "N/A", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Bitrate", Value = file.Properties.AudioBitrate.ToString() + " kbps", FileType = "Audio" },
+                    new MetadataItem { PropertyName = "Sample Rate", Value = file.Properties.AudioSampleRate.ToString() + " Hz", FileType = "Audio" }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em LoadAudioMetadata: {ex.Message}");
                 throw;
             }
         }
@@ -534,6 +577,12 @@ namespace DarkHub
                         await Task.Run(SaveExeMetadata);
                         break;
 
+                    case ".mp3":
+                    case ".wav":
+                    case ".flac":
+                        await Task.Run(SaveAudioMetadata);
+                        break;
+
                     default:
                         Dispatcher.Invoke(() => MessageBox.Show("Formato de arquivo não suportado para salvamento.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error));
                         return;
@@ -561,7 +610,7 @@ namespace DarkHub
         {
             try
             {
-                byte[] imageBytes = File.ReadAllBytes(selectedFilePath!);
+                byte[] imageBytes = System.IO.File.ReadAllBytes(selectedFilePath!);
                 using var stream = new MemoryStream(imageBytes);
                 using var image = System.Drawing.Image.FromStream(stream);
                 foreach (MetadataItem item in metadataItems)
@@ -609,8 +658,8 @@ namespace DarkHub
 
                 string tempFilePath = Path.Combine(Path.GetDirectoryName(selectedFilePath)!, "temp_" + Path.GetFileName(selectedFilePath));
                 image.Save(tempFilePath);
-                File.Copy(tempFilePath, selectedFilePath!, true);
-                File.Delete(tempFilePath);
+                System.IO.File.Copy(tempFilePath, selectedFilePath!, true);
+                System.IO.File.Delete(tempFilePath);
             }
             catch (Exception ex)
             {
@@ -634,8 +683,8 @@ namespace DarkHub
                 }
                 stamper.MoreInfo = info;
                 stamper.Close();
-                File.Copy(selectedFilePath + ".temp", selectedFilePath!, true);
-                File.Delete(selectedFilePath + ".temp");
+                System.IO.File.Copy(selectedFilePath + ".temp", selectedFilePath!, true);
+                System.IO.File.Delete(selectedFilePath + ".temp");
             }
             catch (Exception ex)
             {
@@ -710,6 +759,85 @@ namespace DarkHub
             }
             catch
             {
+            }
+        }
+
+        private void SaveAudioMetadata()
+        {
+            try
+            {
+                using var file = TagLib.File.Create(selectedFilePath!);
+                var tag = file.Tag;
+
+                foreach (MetadataItem item in metadataItems)
+                {
+                    if (item.FileType != "Audio") continue;
+                    switch (item.PropertyName)
+                    {
+                        case "Title":
+                            tag.Title = item.Value;
+                            break;
+
+                        case "Album":
+                            tag.Album = item.Value;
+                            break;
+
+                        case "Artists":
+                            tag.Performers = item.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(s => s.Trim()).ToArray();
+                            break;
+
+                        case "Album Artists":
+                            tag.AlbumArtists = item.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(s => s.Trim()).ToArray();
+                            break;
+
+                        case "Genres":
+                            tag.Genres = item.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(s => s.Trim()).ToArray();
+                            break;
+
+                        case "Year":
+                            if (uint.TryParse(item.Value, out uint year))
+                                tag.Year = year;
+                            break;
+
+                        case "Track":
+                            if (uint.TryParse(item.Value, out uint track))
+                                tag.Track = track;
+                            break;
+
+                        case "Track Count":
+                            if (uint.TryParse(item.Value, out uint trackCount))
+                                tag.TrackCount = trackCount;
+                            break;
+
+                        case "Disc":
+                            if (uint.TryParse(item.Value, out uint disc))
+                                tag.Disc = disc;
+                            break;
+
+                        case "Disc Count":
+                            if (uint.TryParse(item.Value, out uint discCount))
+                                tag.DiscCount = discCount;
+                            break;
+
+                        case "Comment":
+                            tag.Comment = item.Value;
+                            break;
+
+                        case "Copyright":
+                            tag.Copyright = item.Value;
+                            break;
+                    }
+                }
+
+                file.Save();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro em SaveAudioMetadata: {ex.Message}");
+                throw;
             }
         }
     }

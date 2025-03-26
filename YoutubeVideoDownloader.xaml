@@ -107,20 +107,44 @@
         <Border Grid.Row="1" Background="#35373c" CornerRadius="5" Padding="5" Margin="0,0,10,10">
             <DockPanel LastChildFill="True">
                 <ComboBox x:Name="formatComboBox"
-                         DockPanel.Dock="Right"
-                         Foreground="Black"
-                         Style="{StaticResource ComboBoxStyle}"
-                         Margin="10,0,10,0"
-                         Height="35"
-                         SelectedIndex="0">
+                          DockPanel.Dock="Right"
+                          Foreground="Black"
+                          Margin="10,0,10,0"
+                          Height="35"
+                          SelectedIndex="0">
                     <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMP4}" />
                     <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMP3}" />
                     <ComboBoxItem Content="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=FormatMKV}" />
                 </ComboBox>
+                <Button x:Name="btnCopyTranscript"
+                        DockPanel.Dock="Right"
+                        Background="CornflowerBlue"
+                        Click="CopyTranscript_Click"
+                        MinWidth="120" Height="40"
+                        Margin="0,0,10,0"
+                        ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=CopyTranscriptToolTip}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/assets/copiar.png" Width="20" Height="20" Margin="0,-1,10,0" />
+                        <TextBlock FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono" Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=CopyTranscript}" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="btnTranscribe"
+                        DockPanel.Dock="Right"
+                        Background="IndianRed"
+                        Click="Transcribe_Click"
+                        MinWidth="120" Height="40"
+                        Margin="0,0,10,0"
+                        ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=TrancriptButtonToolTip}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/assets/transcricao.png" Width="20" Height="20" Margin="0,-1,10,0" />
+                        <TextBlock FontFamily="/fonts/JetBrainsMono.ttf#JetBrains Mono" Text="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=Trancript}" />
+                    </StackPanel>
+                </Button>
                 <Button x:Name="btnDownload"
                         DockPanel.Dock="Right"
                         Click="Download_Click"
-                        MinWidth="120" Height="35"
+                        MinWidth="120" Height="40"
+                        Margin="0,0,10,0"
                         ToolTip="{Binding Source={x:Static local:ResourceManagerHelper.Instance}, Path=DownloadButtonToolTip}">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/assets/baixar.png" Width="20" Height="20" Margin="0,-1,10,0" />
@@ -135,14 +159,19 @@
         </Border>
 
         <ListBox x:Name="downloadListBox"
+                 Foreground="White"
+                 Background="#2A2A2E"
+                 BorderThickness="1"
+                 BorderBrush="WhiteSmoke"
                  Grid.Row="2"
-                 Style="{StaticResource ListBoxStyle}"
                  Margin="0,0,10,5" />
 
         <TextBox x:Name="statusTextBox"
                  Grid.Row="3"
                  MinHeight="100"
                  MaxHeight="300"
+                 BorderThickness="1"
+                 BorderBrush="WhiteSmoke"
                  Margin="0,0,10,40"
                  Padding="10"
                  IsReadOnly="True" />

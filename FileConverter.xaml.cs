@@ -147,21 +147,22 @@ namespace DarkHub
                                                                               Path.GetFileName(inputFile), outputFormat));
 
                                 string inputExtension = Path.GetExtension(inputFile).ToLower();
-                                if (IsImageFormat(outputFormat))
+
+                                if ((outputFormat == "gif" || IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat)) &&
+                                    (IsVideoFormat(inputExtension.Replace(".", "")) || IsAudioFormat(inputExtension.Replace(".", ""))))
+                                {
+                                    ConvertMedia(inputFile, outputFile, outputFormat);
+                                }
+                                else if (IsImageFormat(outputFormat))
                                 {
                                     if (inputExtension == ".pdf")
                                         ConvertPdfToImages(inputFile, outputDir, outputFormat);
                                     else if (inputExtension == ".bin" || inputExtension == ".raw")
                                         ConvertBinOrRawToImage(inputFile, outputFile, outputFormat);
-                                    else
+                                    else if (IsImageFormat(inputExtension.Replace(".", "")))
                                         ConvertImage(inputFile, outputFile);
-                                }
-                                else if (IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat))
-                                {
-                                    if (inputExtension == ".bin" || inputExtension == ".raw")
-                                        ConvertBinOrRawToMedia(inputFile, outputFile, outputFormat);
                                     else
-                                        ConvertMedia(inputFile, outputFile, outputFormat);
+                                        throw new ArgumentException($"Formato de entrada {inputExtension} não suportado para conversão para {outputFormat}");
                                 }
                                 else if (outputFormat == "raw" || outputFormat == "bin")
                                 {
@@ -299,6 +300,7 @@ namespace DarkHub
                     "mp4" => $"-i \"{inputFile}\" -c:v libx264 -preset fast -c:a aac \"{outputFile}\"",
                     "avi" => $"-i \"{inputFile}\" -c:v mpeg4 -c:a mp3 \"{outputFile}\"",
                     "mkv" => $"-i \"{inputFile}\" -c:v copy -c:a copy \"{outputFile}\"",
+                    "gif" => $"-i \"{inputFile}\" -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 \"{outputFile}\"",
                     _ => throw new ArgumentException($"Formato de mídia não suportado: {outputFormat}")
                 };
 
@@ -392,6 +394,7 @@ namespace DarkHub
                     "mp4" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v libx264 -preset fast -c:a aac \"{outputFile}\"",
                     "avi" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v mpeg4 -c:a mp3 \"{outputFile}\"",
                     "mkv" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v copy -c:a copy \"{outputFile}\"",
+                    "gif" => $"-f rawvideo -pix_fmt rgb24 -s 1920x1080 -r 30 -i \"{inputFile}\" -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 \"{outputFile}\"",
                     _ => throw new ArgumentException($"Formato de mídia não suportado para .bin/.raw: {outputFormat}")
                 };
 

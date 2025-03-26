@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Options;
+using YoutubeTranscriptApi;
 
 namespace DarkHub
 {
@@ -70,7 +72,6 @@ namespace DarkHub
                     return;
                 }
 
-                // Verifica se o ComboBox tem um item selecionado
                 if (formatComboBox.SelectedItem is not ComboBoxItem selectedItem)
                 {
                     await Dispatcher.InvokeAsync(() =>
@@ -177,6 +178,130 @@ namespace DarkHub
                         downloadListBox.Items[0] = ResourceManagerHelper.Instance.ProgressError;
                 });
                 Debug.WriteLine($"Erro em Download_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+        private async void Transcribe_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Debug.WriteLine("Transcribe_Click iniciado.");
+                string url = urlTextBox.Text.Trim();
+                if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult))
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                        statusTextBox.Text = ResourceManagerHelper.Instance.InvalidUrlError);
+                    Debug.WriteLine("URL inválida fornecida para transcrição.");
+                    return;
+                }
+
+                string videoId = ExtractVideoId(url);
+                if (string.IsNullOrEmpty(videoId))
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                        statusTextBox.Text = ResourceManagerHelper.Instance.YtVideoIDNotFound);
+                    Debug.WriteLine("ID do vídeo não extraído.");
+                    return;
+                }
+
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    statusTextBox.Text = ResourceManagerHelper.Instance.YtVideoStartedTranscripting;
+                    downloadListBox.Items.Clear();
+                    downloadListBox.Items.Add(ResourceManagerHelper.Instance.YtVideoGettingTranscript);
+                });
+
+                await Task.Run(async () =>
+                {
+                    try
+                    {
+                        using (var youtubeTranscriptApi = new YouTubeTranscriptApi())
+                        {
+                            var transcriptItems = youtubeTranscriptApi.GetTranscript(videoId, new[] { "pt", "en" });
+                            if (transcriptItems == null || !transcriptItems.Any())
+                            {
+                                await Dispatcher.InvokeAsync(() =>
+                                    statusTextBox.Text = ResourceManagerHelper.Instance.YtVideoNoTranscript);
+                                Debug.WriteLine("Nenhuma transcrição encontrada para o vídeo.");
+                                return;
+                            }
+
+                            StringBuilder transcriptText = new StringBuilder();
+                            foreach (var item in transcriptItems)
+                            {
+                                transcriptText.AppendLine(item.Text);
+                            }
+
+                            await Dispatcher.InvokeAsync(() =>
+                            {
+                                statusTextBox.Text = transcriptText.ToString();
+                                downloadListBox.Items[0] = ResourceManagerHelper.Instance.YtVideoTranscriptObtained;
+                            });
+                            Debug.WriteLine("Transcrição obtida com sucesso.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            statusTextBox.Text = $"Erro ao transcrever o vídeo: {ex.Message}";
+                            if (downloadListBox.Items.Count > 0)
+                                downloadListBox.Items[0] = "Erro na transcrição.";
+                        });
+                        Debug.WriteLine($"Erro ao obter transcrição: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                    statusTextBox.Text = $"Erro geral na transcrição: {ex.Message}");
+                Debug.WriteLine($"Erro em Transcribe_Click: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+        private void CopyTranscript_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(statusTextBox.Text))
+                {
+                    Clipboard.SetText(statusTextBox.Text);
+                    Debug.WriteLine(ResourceManagerHelper.Instance.TranscribeCopied);
+                    MessageBox.Show(ResourceManagerHelper.Instance.TranscribeCopied, "Sucess", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show(ResourceManagerHelper.Instance.CopyTranscriptError, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error when copying the transcript: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine($"Erro ao copiar transcrição: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+        private string ExtractVideoId(string url)
+        {
+            try
+            {
+                Uri uri = new Uri(url);
+                string query = uri.Query;
+                var queryParams = System.Web.HttpUtility.ParseQueryString(query);
+                string videoId = queryParams["v"];
+                if (!string.IsNullOrEmpty(videoId))
+                    return videoId;
+
+                if (uri.Host.Contains("youtu.be"))
+                {
+                    return uri.Segments.Last();
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
             }
         }
 
