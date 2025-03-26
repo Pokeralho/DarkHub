@@ -12,6 +12,7 @@ automation and media handling tools, DarkHub offers a complete solution for user
 - **Metadata Editor**: Organize your media collections by editing titles, artists, albums and more directly in the files.
 - **Image Text Extractor**: Use OCR to extract text from images, perfect for scanning documents or screenshots.
 - **YouTube Video Downloader**: Download YouTube videos or playlists in MP4 format with H.264 and AAC support.
+- **YouTube Video Transcription**: Extract and copy transcripts from YouTube Videos.
 - **Text Editor with Python Interpreter**: Write, edit and execute Python scripts in real time, with integrated debugging support.
 - **Resource Monitor**: Real-time information and metrics on hardware and software. Plus a Benchmark for performance evaluation.
 - **Text Summarizer**:  Allows you to summarize your giant texts and PDFs into a size and parameters defined by you.
