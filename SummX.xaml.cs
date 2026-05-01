@@ -118,7 +118,7 @@ namespace DarkHub
                                      .Where(k => !string.IsNullOrEmpty(k))
                                      .ToList();
 
-            string language = (LanguageComboBox.SelectedItem as ComboBoxItem)?.Content.ToString().ToLower() ?? "pt";
+            string language = (LanguageComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString()?.ToLowerInvariant() ?? "pt";
             if (language == "português") language = "pt";
             else if (language == "english") language = "en";
             else if (language == "español") language = "es";
@@ -151,7 +151,7 @@ namespace DarkHub
 
         private void MainScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = sender as ScrollViewer;
+            ScrollViewer? scrollViewer = sender as ScrollViewer;
             Border scrollIndicator = ScrollIndicator;
 
             if (scrollViewer != null && scrollIndicator != null)

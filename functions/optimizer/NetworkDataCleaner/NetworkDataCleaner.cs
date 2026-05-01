@@ -11,7 +11,7 @@ namespace DarkHub.UI
         private readonly TextBox _progressTextBox;
         private readonly Button _button;
 
-        public NetworkDataCleaner(Window owner, Button button)
+        public NetworkDataCleaner(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.CleaningNetworkDataTitle);
@@ -158,53 +158,7 @@ namespace DarkHub.UI
 
         private async Task<string> RunCommandAsync(string command)
         {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = $"/c {command}",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true,
-                        StandardOutputEncoding = Encoding.GetEncoding(850),
-                        StandardErrorEncoding = Encoding.GetEncoding(850)
-                    }
-                };
-
-                process.Start();
-
-                string output = await process.StandardOutput.ReadToEndAsync();
-                string error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-
-                if (!string.IsNullOrEmpty(output))
-                    WindowFactory.AppendProgress(_progressTextBox, output);
-                if (!string.IsNullOrEmpty(error))
-                    WindowFactory.AppendProgress(_progressTextBox, $"Erro: {error}");
-
-                return output + error;
-            }
-            catch (Exception ex)
-            {
-                WindowFactory.AppendProgress(_progressTextBox, $"Erro ao executar comando: {ex.Message}");
-                return string.Empty;
-            }
-        }
-    }
-
-    public static class ProcessExtensions
-    {
-        public static Task WaitForExitAsync(this Process process)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            process.EnableRaisingEvents = true;
-            process.Exited += (s, e) => tcs.TrySetResult(true);
-            if (process.HasExited) tcs.TrySetResult(true);
-            return tcs.Task;
+            return await WindowFactory.ExecuteCommandWithOutputAsync(command, _progressTextBox, requiresAdmin: true);
         }
     }
 }

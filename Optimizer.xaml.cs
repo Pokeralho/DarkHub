@@ -118,26 +118,20 @@ namespace DarkHub
             await uninstaller.UninstallProgramAsync();
         }
 
-        private async void AtivarWindows(object sender, RoutedEventArgs e)
+        private void AtivarWindows(object sender, RoutedEventArgs e)
         {
             try
             {
-                string comando = "irm https://massgrave.dev/get | iex";
-                var psi = new ProcessStartInfo
+                Process.Start(new ProcessStartInfo
                 {
-                    FileName = "powershell.exe",
-                    Arguments = $"-NoExit -Command \"{comando}\"",
-                    Verb = "runas",
-                    UseShellExecute = true,
-                    CreateNoWindow = false
-                };
-
-                await Task.Run(() => Process.Start(psi));
+                    FileName = "ms-settings:activation",
+                    UseShellExecute = true
+                });
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorActivatingWindows, ex.Message),
-                ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Não foi possível abrir as configurações de ativação do Windows: {ex.Message}",
+                    "Ativação do Windows", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

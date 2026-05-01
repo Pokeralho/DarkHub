@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Windows;
@@ -17,10 +16,8 @@ namespace DarkHub
 {
     public partial class MainWindow : Window
     {
-        private Type _currentPageType;
-        private WindowState _previousWindowState;
-        private static readonly string CertificatePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "darkhub.pfx");
-
+        private Type? _currentPageType;
+        private WindowState _previousWindowState = WindowState.Normal;
         public MainWindow()
         {
             try
@@ -51,97 +48,47 @@ namespace DarkHub
 
         private void OpenCpuZ_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                string cpuZPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "CPU-Z.exe");
-                if (File.Exists(cpuZPath))
-                {
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = cpuZPath,
-                        UseShellExecute = true
-                    });
-                }
-                else
-                {
-                    MessageBox.Show("CPU-Z executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error opening CPU-Z: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            OpenAssetExecutable("CPU-Z.exe", "CPU-Z");
         }
 
         private void OpenGpuZ_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                string gpuZPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "GPU-Z.exe");
-                if (File.Exists(gpuZPath))
-                {
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = gpuZPath,
-                        UseShellExecute = true
-                    });
-                }
-                else
-                {
-                    MessageBox.Show("GPU-Z executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error opening GPU-Z: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            OpenAssetExecutable("GPU-Z.exe", "GPU-Z");
         }
 
         private void OpenHwinfo_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                string hwinfoPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "HWiNFO64.exe");
-                if (File.Exists(hwinfoPath))
-                {
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = hwinfoPath,
-                        UseShellExecute = true
-                    });
-                }
-                else
-                {
-                    MessageBox.Show("HWiNFO executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error opening HWiNFO: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            OpenAssetExecutable("HWiNFO64.exe", "HWiNFO");
         }
 
         private void OpenDDU_Click(object sender, RoutedEventArgs e)
         {
+            OpenAssetExecutable("DDU.exe", "DDU");
+        }
+
+        private void OpenAssetExecutable(string fileName, string displayName)
+        {
             try
             {
-                string hwinfoPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "DDU.exe");
-                if (File.Exists(hwinfoPath))
+                string executablePath = Path.Combine(AppContext.BaseDirectory, "assets", fileName);
+                if (File.Exists(executablePath))
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = hwinfoPath,
+                        FileName = executablePath,
+                        WorkingDirectory = Path.GetDirectoryName(executablePath) ?? AppContext.BaseDirectory,
                         UseShellExecute = true
                     });
                 }
                 else
                 {
-                    MessageBox.Show("DDU executable not found in assets folder!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    WindowFactory.ShowMessage(this, $"{displayName} não encontrado em assets. Execute scripts\\Restore-LocalAssets.ps1 ou copie {fileName} para a pasta assets.",
+                        "Ferramenta não encontrada", MessageBoxImage.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error opening DDU: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                WindowFactory.ShowMessage(this, $"Erro ao abrir {displayName}: {ex.Message}", "Erro", MessageBoxImage.Error);
             }
         }
 
@@ -149,76 +96,27 @@ namespace DarkHub
         {
             try
             {
-                if (!File.Exists(CertificatePath))
+                string? executablePath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
+                if (string.IsNullOrWhiteSpace(executablePath) || !File.Exists(executablePath))
                 {
-                    WindowFactory.ShowMessage(this, "O arquivo de certificado 'darkhub.pfx' não foi encontrado na pasta assets.",
-                        "Erro", MessageBoxImage.Error);
+                    WindowFactory.ShowMessage(this, "Não foi possível localizar o executável atual para validar a assinatura.",
+                        "Assinatura digital", MessageBoxImage.Warning);
                     return;
                 }
 
-                string password = "No ;D";
+                using var certificate = new X509Certificate2(X509Certificate.CreateFromSignedFile(executablePath));
+                bool isValid = certificate.Verify();
 
-                X509Certificate2 certificate = new X509Certificate2(
-                    CertificatePath,
-                    password,
-                    X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable
-                );
-
-                InstallCertificateToRootStore(certificate);
-
-                WindowFactory.ShowMessage(this, "Certificado ativado e instalado no repositório Root com sucesso!\n" +
+                WindowFactory.ShowMessage(this, (isValid ? "Assinatura digital válida.\n" : "Assinatura encontrada, mas a cadeia não foi validada.\n") +
                     $"Subject: {certificate.Subject}\n" +
-                    $"Validade: {certificate.NotAfter}",
-                    "Sucesso", MessageBoxImage.Information);
-            }
-            catch (CryptographicException ex)
-            {
-                WindowFactory.ShowMessage(this, $"Erro ao carregar o certificado. Verifique a senha ou o arquivo.\nErro: {ex.Message}",
-                    "Erro", MessageBoxImage.Error);
+                    $"Validade: {certificate.NotAfter:d}\n" +
+                    $"Thumbprint: {certificate.Thumbprint}",
+                    "Assinatura digital", isValid ? MessageBoxImage.Information : MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-                WindowFactory.ShowMessage(this, $"Erro ao ativar o certificado: {ex.Message}", "Erro", MessageBoxImage.Error);
-            }
-        }
-
-        private void InstallCertificateToRootStore(X509Certificate2 certificate)
-        {
-            if (!IsRunningAsAdministrator())
-            {
-                WindowFactory.ShowMessage(this, "Permissões de administrador são necessárias para instalar um certificado no repositório Root.\n" +
-                    "Por favor, execute o programa como administrador.",
-                    "Erro", MessageBoxImage.Error);
-                throw new UnauthorizedAccessException("Permissões de administrador necessárias.");
-            }
-
-            using (var store = new X509Store(StoreName.Root, StoreLocation.LocalMachine))
-            {
-                store.Open(OpenFlags.ReadWrite);
-
-                var existingCert = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
-                if (existingCert.Count == 0)
-                {
-                    store.Add(certificate);
-                    WindowFactory.ShowMessage(this, "Certificado instalado no repositório de Autoridades Raiz Confiáveis.",
-                        "Sucesso", MessageBoxImage.Information);
-                }
-                else
-                {
-                    WindowFactory.ShowMessage(this, "O certificado já está instalado no repositório Root.",
-                        "Aviso", MessageBoxImage.Information);
-                }
-
-                store.Close();
-            }
-        }
-
-        private bool IsRunningAsAdministrator()
-        {
-            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
-            {
-                WindowsPrincipal principal = new WindowsPrincipal(identity);
-                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+                WindowFactory.ShowMessage(this, $"O executável atual não possui uma assinatura Authenticode válida.\nErro: {ex.Message}",
+                    "Assinatura digital", MessageBoxImage.Warning);
             }
         }
 
@@ -283,8 +181,8 @@ namespace DarkHub
 
                 if (_currentPageType != null)
                 {
-                    Page newPage = (Page)Activator.CreateInstance(_currentPageType);
-                    NavigateToPageAsync(newPage).ConfigureAwait(false);
+                    if (Activator.CreateInstance(_currentPageType) is Page newPage)
+                        NavigateToPageAsync(newPage).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -303,8 +201,8 @@ namespace DarkHub
 
                 if (_currentPageType != null)
                 {
-                    Page newPage = (Page)Activator.CreateInstance(_currentPageType);
-                    NavigateToPageAsync(newPage).ConfigureAwait(false);
+                    if (Activator.CreateInstance(_currentPageType) is Page newPage)
+                        NavigateToPageAsync(newPage).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -330,15 +228,23 @@ namespace DarkHub
                 var processStartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = $"-Command \"{psCommand}\"",
-                    UseShellExecute = true,
-                    Verb = "runas",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     CreateNoWindow = true
                 };
+                processStartInfo.ArgumentList.Add("-NoProfile");
+                processStartInfo.ArgumentList.Add("-ExecutionPolicy");
+                processStartInfo.ArgumentList.Add("Bypass");
+                processStartInfo.ArgumentList.Add("-Command");
+                processStartInfo.ArgumentList.Add(psCommand);
 
                 using var process = new Process { StartInfo = processStartInfo };
                 process.Start();
+                Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                Task<string> errorTask = process.StandardError.ReadToEndAsync();
                 await process.WaitForExitAsync();
+                await outputTask;
 
                 if (process.ExitCode == 0)
                 {
@@ -347,7 +253,8 @@ namespace DarkHub
                 }
                 else
                 {
-                    MessageBox.Show(ResourceManagerHelper.Instance.RestorePointNotCreated, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    string error = await errorTask;
+                    MessageBox.Show($"{ResourceManagerHelper.Instance.RestorePointNotCreated}\n{error}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return false;
                 }
             }
@@ -372,8 +279,7 @@ namespace DarkHub
 
         private async void SetActiveButton(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.Button clickedButton = sender as System.Windows.Controls.Button;
-            if (clickedButton == null)
+            if (sender is not System.Windows.Controls.Button clickedButton)
             {
                 return;
             }
@@ -570,7 +476,7 @@ namespace DarkHub
 
         private void MenuScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = sender as ScrollViewer;
+            ScrollViewer? scrollViewer = sender as ScrollViewer;
             Border scrollIndicator = ScrollIndicator;
 
             if (scrollViewer != null && scrollIndicator != null)
@@ -586,6 +492,7 @@ namespace DarkHub
             {
                 if (WindowState == WindowState.Normal)
                 {
+                    _previousWindowState = WindowState;
                     WindowState = WindowState.Maximized;
                     var screen = Forms.Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
                     this.MaxHeight = screen.WorkingArea.Height;

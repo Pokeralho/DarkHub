@@ -3,6 +3,7 @@ using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
 
@@ -352,8 +353,8 @@ namespace DarkHub
                 {
                     foreach (var item in searcher.Get())
                     {
-                        string manufacturer = item["Manufacturer"].ToString().ToLower();
-                        string model = item["Model"].ToString().ToLower();
+                        string manufacturer = Convert.ToString(item["Manufacturer"])?.ToLowerInvariant() ?? string.Empty;
+                        string model = Convert.ToString(item["Model"])?.ToLowerInvariant() ?? string.Empty;
 
                         if (manufacturer.Contains("vmware") ||
                             manufacturer.Contains("virtualbox") ||
@@ -417,7 +418,7 @@ namespace DarkHub
 
         #region Encryption
 
-        private byte[] EncryptDll(byte[] dllBytes, byte[] key = null)
+        private byte[] EncryptDll(byte[] dllBytes, byte[]? key = null)
         {
             using (Aes aes = Aes.Create())
             {
@@ -650,8 +651,8 @@ namespace DarkHub
                 {
                     foreach (var item in searcher.Get())
                     {
-                        string manufacturer = item["Manufacturer"].ToString().ToLower();
-                        string model = item["Model"].ToString().ToLower();
+                        string manufacturer = Convert.ToString(item["Manufacturer"])?.ToLowerInvariant() ?? string.Empty;
+                        string model = Convert.ToString(item["Model"])?.ToLowerInvariant() ?? string.Empty;
 
                         if ((manufacturer.Contains("vmware") && model.Contains("vmware")) ||
                             (manufacturer.Contains("virtualbox") && model.Contains("virtualbox")) ||
@@ -714,7 +715,7 @@ namespace DarkHub
         private static extern void OutputDebugString(string lpOutputString);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+        private static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
 
         #endregion Estruturas e Constantes Adicionais
 
@@ -734,7 +735,13 @@ namespace DarkHub
                     }
                 }
 
-                string exePath = Process.GetCurrentProcess().MainModule.FileName;
+                string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
+                if (string.IsNullOrWhiteSpace(exePath))
+                {
+                    LastError = "Nao foi possivel localizar o executavel atual";
+                    return false;
+                }
+
                 if (!VerifyFileSignature(exePath))
                 {
                     LastError = "Executável não está assinado digitalmente";
@@ -753,7 +760,11 @@ namespace DarkHub
         {
             try
             {
-                return true;
+                if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                    return false;
+
+                using var certificate = new X509Certificate2(X509Certificate.CreateFromSignedFile(filePath));
+                return certificate.Verify();
             }
             catch
             {
@@ -769,7 +780,7 @@ namespace DarkHub
                 {
                     foreach (var av in searcher.Get())
                     {
-                        string avName = av["displayName"].ToString().ToLower();
+                        string avName = Convert.ToString(av["displayName"])?.ToLowerInvariant() ?? string.Empty;
                         if (avName.Contains("windows defender") || avName.Contains("microsoft defender"))
                         {
                             return true;
@@ -1513,7 +1524,11 @@ namespace DarkHub
                 for (int i = 0; i < exportDir.NumberOfNames; i++)
                 {
                     int nameRva = Marshal.ReadInt32(IntPtr.Add(namesPtr, i * 4));
-                    string functionName = Marshal.PtrToStringAnsi(IntPtr.Add(moduleBase, nameRva));
+                    string? functionName = Marshal.PtrToStringAnsi(IntPtr.Add(moduleBase, nameRva));
+                    if (string.IsNullOrEmpty(functionName))
+                    {
+                        continue;
+                    }
 
                     if (HashString(functionName) == functionHash)
                     {

@@ -9,7 +9,7 @@ namespace DarkHub.UI
     {
         private readonly Window _confirmationWindow;
 
-        public VisualEffectsManager(Window owner)
+        public VisualEffectsManager(Window? owner)
         {
             _confirmationWindow = WindowFactory.CreateWindow(
                 title: "Confirmação",
@@ -226,7 +226,7 @@ namespace DarkHub.UI
         {
             try
             {
-                using (var key = Registry.CurrentUser.OpenSubKey(keyPath, true) ?? Registry.CurrentUser.CreateSubKey(keyPath))
+                using (var key = OpenWritableKey(keyPath))
                 {
                     if (key != null)
                     {
@@ -242,6 +242,26 @@ namespace DarkHub.UI
             {
                 throw;
             }
+        }
+
+        private static RegistryKey? OpenWritableKey(string keyPath)
+        {
+            const string currentUserPrefix = @"HKEY_CURRENT_USER\";
+            const string localMachinePrefix = @"HKEY_LOCAL_MACHINE\";
+
+            if (keyPath.StartsWith(currentUserPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                string subKey = keyPath[currentUserPrefix.Length..];
+                return Registry.CurrentUser.OpenSubKey(subKey, true) ?? Registry.CurrentUser.CreateSubKey(subKey);
+            }
+
+            if (keyPath.StartsWith(localMachinePrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                string subKey = keyPath[localMachinePrefix.Length..];
+                return Registry.LocalMachine.OpenSubKey(subKey, true) ?? Registry.LocalMachine.CreateSubKey(subKey);
+            }
+
+            return Registry.CurrentUser.OpenSubKey(keyPath, true) ?? Registry.CurrentUser.CreateSubKey(keyPath);
         }
 
         [DllImport("user32.dll", SetLastError = true)]

@@ -14,7 +14,7 @@ namespace DarkHub
     {
         private readonly string docsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "DarkHubDocs");
         private bool isLoaded = false;
-        private Process pythonProcess;
+        private Process? pythonProcess;
 
         public TextEditor()
         {
@@ -416,7 +416,7 @@ namespace DarkHub
 
         private async void RunPython_Click(object? sender, RoutedEventArgs? e)
         {
-            string tempFilePath = null;
+            string? tempFilePath = null;
             try
             {
                 Debug.WriteLine("RunPython_Click iniciado.");

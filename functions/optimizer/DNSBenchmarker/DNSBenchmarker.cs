@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Diagnostics;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -12,9 +13,9 @@ namespace DarkHub.UI
 {
     public class DnsResult
     {
-        public string Name { get; set; }
-        public string Primary { get; set; }
-        public string Secondary { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Primary { get; set; } = string.Empty;
+        public string Secondary { get; set; } = string.Empty;
         public double Latency { get; set; }
     }
 
@@ -24,7 +25,7 @@ namespace DarkHub.UI
         private TextBox _progressTextBox;
         private readonly Button _button;
 
-        public DNSBenchmarker(Window owner, Button button)
+        public DNSBenchmarker(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.DNSBenchmarkTitle);
@@ -271,39 +272,11 @@ namespace DarkHub.UI
         {
             try
             {
-                string command = "netsh interface show interface";
-                string output = await WindowFactory.ExecuteCommandWithOutputAsync(command, _progressTextBox);
+                var activeAdapter = GetActiveNetworkAdapter();
+                if (activeAdapter == null)
+                    throw new Exception("Não foi possível encontrar um adaptador de rede ativo.");
 
-                string adapterName = "";
-                string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string line in lines)
-                {
-                    if (line.Contains("Enabled") || line.Contains("Conectado"))
-                    {
-                        string[] parts = line.Split(new[] { "  ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
-                        if (parts.Length >= 2)
-                        {
-                            string name = parts[1].Trim();
-
-                            if (name.Contains("Wi-Fi") ||
-                                name.Contains("Ethernet") ||
-                                name.Contains("Wireless") ||
-                                name.Contains("Rede") ||
-                                name.Contains("Network") ||
-                                name.Contains("Conectado"))
-                            {
-                                adapterName = name;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (string.IsNullOrEmpty(adapterName))
-                {
-                    throw new Exception($"Não foi possível encontrar um adaptador de rede ativo.\nSaída do comando:\n{output}");
-                }
+                string adapterName = activeAdapter.Name;
 
                 await WindowFactory.ExecuteCommandWithOutputAsync($"netsh interface ip set address name=\"{adapterName}\" dhcp", _progressTextBox);
                 await WindowFactory.ExecuteCommandWithOutputAsync($"netsh interface ip set dns name=\"{adapterName}\" dhcp", _progressTextBox);
@@ -317,8 +290,8 @@ namespace DarkHub.UI
 
                 await WindowFactory.ExecuteCommandWithOutputAsync("ipconfig /flushdns", _progressTextBox);
 
-                command = $"netsh interface ip show dns name=\"{adapterName}\"";
-                output = await WindowFactory.ExecuteCommandWithOutputAsync(command, _progressTextBox);
+                string command = $"netsh interface ip show dns name=\"{adapterName}\"";
+                string output = await WindowFactory.ExecuteCommandWithOutputAsync(command, _progressTextBox);
 
                 command = "ipconfig /all";
                 output = await WindowFactory.ExecuteCommandWithOutputAsync(command, _progressTextBox);
@@ -326,15 +299,15 @@ namespace DarkHub.UI
                 if (!output.Contains(primaryDNS) || !output.Contains(secondaryDNS))
                 {
                     string registryPath = @"SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces";
-                    using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryPath, true))
+                    using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(registryPath, true))
                     {
                         if (key != null)
                         {
                             foreach (string subKeyName in key.GetSubKeyNames())
                             {
-                                using (RegistryKey subKey = key.OpenSubKey(subKeyName, true))
+                                using (RegistryKey? subKey = key.OpenSubKey(subKeyName, true))
                                 {
-                                    if (subKey != null)
+                                    if (subKey != null && string.Equals(subKey.GetValue("NetCfgInstanceId")?.ToString(), activeAdapter.Id, StringComparison.OrdinalIgnoreCase))
                                     {
                                         string nameServer = $"{primaryDNS},{secondaryDNS}";
                                         subKey.SetValue("NameServer", nameServer, RegistryValueKind.String);
@@ -355,6 +328,15 @@ namespace DarkHub.UI
                 string errorMessage = string.Format(ResourceManagerHelper.Instance.ErrorConfiguringDNS, ex.Message);
                 await Task.Run(() => MessageBox.Show(errorMessage, ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error));
             }
+        }
+
+        private static NetworkInterface? GetActiveNetworkAdapter()
+        {
+            return NetworkInterface.GetAllNetworkInterfaces()
+                .Where(n => n.OperationalStatus == OperationalStatus.Up)
+                .Where(n => n.NetworkInterfaceType != NetworkInterfaceType.Loopback && n.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                .OrderByDescending(n => n.Speed)
+                .FirstOrDefault();
         }
 
         [DllImport("iphlpapi.dll", SetLastError = true)]

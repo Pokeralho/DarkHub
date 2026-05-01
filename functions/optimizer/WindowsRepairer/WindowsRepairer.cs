@@ -9,7 +9,7 @@ namespace DarkHub.UI
         private readonly TextBox _progressTextBox;
         private readonly Button _button;
 
-        public WindowsRepairer(Window owner, Button button)
+        public WindowsRepairer(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.RepairingWindowsTitle);

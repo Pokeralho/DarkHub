@@ -9,7 +9,7 @@ namespace DarkHub.UI
     {
         private readonly Window _servicesWindow;
 
-        public ServiceManagerWindow(Window owner)
+        public ServiceManagerWindow(Window? owner)
         {
             _servicesWindow = WindowFactory.CreateWindow(
                 title: ResourceManagerHelper.Instance.DisableServicesTitle,
@@ -54,10 +54,7 @@ namespace DarkHub.UI
                 width: 200,
                 clickHandler: (s, ev) =>
                 {
-                    var selectedServices = listBox.Items.Cast<CheckBox>()
-                        .Where(cb => cb.IsChecked == true)
-                        .Select(cb => cb.Tag.ToString())
-                        .ToList();
+                    var selectedServices = GetSelectedServiceNames(listBox);
                     DisableSelectedServices(selectedServices);
                     _servicesWindow.Close();
                 }
@@ -68,10 +65,7 @@ namespace DarkHub.UI
                 width: 200,
                 clickHandler: (s, ev) =>
                 {
-                    var selectedServices = listBox.Items.Cast<CheckBox>()
-                        .Where(cb => cb.IsChecked == true)
-                        .Select(cb => cb.Tag.ToString())
-                        .ToList();
+                    var selectedServices = GetSelectedServiceNames(listBox);
                     EnableSelectedServices(selectedServices);
                     _servicesWindow.Close();
                 }
@@ -114,26 +108,47 @@ namespace DarkHub.UI
                 .ToList();
         }
 
+        private static List<string> GetSelectedServiceNames(ListBox listBox)
+        {
+            return listBox.Items.Cast<CheckBox>()
+                .Where(cb => cb.IsChecked == true)
+                .Select(cb => cb.Tag?.ToString())
+                .Where(serviceName => !string.IsNullOrWhiteSpace(serviceName))
+                .Select(serviceName => serviceName!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
         private static void DisableSelectedServices(List<string> serviceNames)
         {
             try
             {
+                var failures = new List<string>();
+
                 foreach (var serviceName in serviceNames)
                 {
-                    using var service = new ServiceController(serviceName);
-                    if (service.Status != ServiceControllerStatus.Stopped)
+                    try
                     {
-                        service.Stop();
-                        service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                        using var service = new ServiceController(serviceName);
+                        if (service.Status != ServiceControllerStatus.Stopped && service.CanStop)
+                        {
+                            service.Stop();
+                            service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                        }
+
+                        using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}", writable: true);
+                        key?.SetValue("Start", 4, RegistryValueKind.DWord);
                     }
-                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}", writable: true);
-                    if (key != null)
+                    catch (Exception ex)
                     {
-                        key.SetValue("Start", 4, RegistryValueKind.DWord);
+                        failures.Add($"{serviceName}: {ex.Message}");
                     }
                 }
 
-                MessageBox.Show(ResourceManagerHelper.Instance.SelectedServicesDisabled,
+                string message = failures.Count == 0
+                    ? ResourceManagerHelper.Instance.SelectedServicesDisabled
+                    : ResourceManagerHelper.Instance.SelectedServicesDisabled + Environment.NewLine + string.Join(Environment.NewLine, failures);
+                MessageBox.Show(message,
                     ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (UnauthorizedAccessException ex)
@@ -152,23 +167,32 @@ namespace DarkHub.UI
         {
             try
             {
+                var failures = new List<string>();
+
                 foreach (var serviceName in serviceNames)
                 {
-                    using var service = new ServiceController(serviceName);
-                    if (service.Status == ServiceControllerStatus.Stopped)
+                    try
                     {
                         using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{serviceName}", writable: true);
-                        if (key != null)
-                        {
-                            key.SetValue("Start", 2, RegistryValueKind.DWord);
-                        }
+                        key?.SetValue("Start", 2, RegistryValueKind.DWord);
 
-                        service.Start();
-                        service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+                        using var service = new ServiceController(serviceName);
+                        if (service.Status == ServiceControllerStatus.Stopped)
+                        {
+                            service.Start();
+                            service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        failures.Add($"{serviceName}: {ex.Message}");
                     }
                 }
 
-                MessageBox.Show(ResourceManagerHelper.Instance.SelectedServicesEnabled,
+                string message = failures.Count == 0
+                    ? ResourceManagerHelper.Instance.SelectedServicesEnabled
+                    : ResourceManagerHelper.Instance.SelectedServicesEnabled + Environment.NewLine + string.Join(Environment.NewLine, failures);
+                MessageBox.Show(message,
                     ResourceManagerHelper.Instance.SuccessTitle, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (UnauthorizedAccessException ex)

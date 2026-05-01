@@ -13,7 +13,7 @@ namespace DarkHub.UI
         private TextBox _progressTextBox;
         private readonly Button _button;
 
-        public BloatwareRemover(Window owner, Button button)
+        public BloatwareRemover(Window? owner, Button button)
         {
             _button = button ?? throw new ArgumentNullException(nameof(button));
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.CheckingInstalledAppsTitle);
@@ -200,8 +200,8 @@ namespace DarkHub.UI
                 WindowFactory.AppendProgress(_progressTextBox, "Encontrado: Microsoft Edge\n");
             }
 
-            string result = await RunCommandAsync("powershell -Command \"Get-AppxPackage -AllUsers | Where-Object {$_.NonRemovable -eq $false -and $_.IsFramework -eq $false} | Select-Object -Property Name\"");
-            string provisionedResult = await RunCommandAsync("powershell -Command \"Get-AppxProvisionedPackage -Online | Select-Object -Property DisplayName\"");
+            string result = await RunCommandAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxPackage -AllUsers | Where-Object {$_.NonRemovable -eq $false -and $_.IsFramework -eq $false} | Select-Object -ExpandProperty Name\"");
+            string provisionedResult = await RunCommandAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxProvisionedPackage -Online | Select-Object -ExpandProperty DisplayName\"");
             var installedPackages = result.Split('\n', StringSplitOptions.RemoveEmptyEntries)
                 .Select(line => line.Trim())
                 .Where(line => !string.IsNullOrWhiteSpace(line))
@@ -250,20 +250,20 @@ namespace DarkHub.UI
             {
                 WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.RemovingApp, app.Value));
 
-                string userRemoveOutput = await RunCommandAsync($"powershell -Command \"Get-AppxPackage -Name '{app.Key}' | Remove-AppxPackage -ErrorAction Stop\"");
+                string userRemoveOutput = await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxPackage -Name '{app.Key}' | Remove-AppxPackage -ErrorAction Stop\"");
                 WindowFactory.AppendProgress(_progressTextBox, userRemoveOutput);
 
-                string allUsersRemoveOutput = await RunCommandAsync($"powershell -Command \"Get-AppxPackage -AllUsers -Name '{app.Key}' | Remove-AppxPackage -AllUsers -ErrorAction Stop\"");
+                string allUsersRemoveOutput = await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxPackage -AllUsers -Name '{app.Key}' | Remove-AppxPackage -AllUsers -ErrorAction Stop\"");
                 WindowFactory.AppendProgress(_progressTextBox, allUsersRemoveOutput);
 
                 string provisionedRemoveCommand = $@"
                     $packages = Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{app.Key}' }};
                     foreach ($pkg in $packages) {{ Remove-AppxProvisionedPackage -Online -PackageName $pkg.PackageName -ErrorAction Stop; }}
                 ";
-                string provisionedOutput = await RunCommandAsync($"powershell -Command \"{provisionedRemoveCommand}\"", true);
+                string provisionedOutput = await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"{provisionedRemoveCommand}\"", true);
                 WindowFactory.AppendProgress(_progressTextBox, provisionedOutput);
 
-                string checkRemaining = await RunCommandAsync($"powershell -Command \"if (Get-AppxPackage -AllUsers -Name '{app.Key}') {{ 'Pacote ainda presente' }} else {{ 'Pacote removido' }}\"");
+                string checkRemaining = await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Get-AppxPackage -AllUsers -Name '{app.Key}') {{ 'Pacote ainda presente' }} else {{ 'Pacote removido' }}\"");
                 if (checkRemaining.Contains("Pacote ainda presente"))
                 {
                     WindowFactory.AppendProgress(_progressTextBox, $"Tentativa final de remoção de {app.Value}...");
@@ -271,11 +271,11 @@ namespace DarkHub.UI
                         $packages = Get-AppxPackage -AllUsers -Name '{app.Key}';
                         foreach ($pkg in $packages) {{ Remove-AppxPackage -Package $pkg.PackageFullName -AllUsers -ErrorAction Stop; }}
                     ";
-                    string forceOutput = await RunCommandAsync($"powershell -Command \"{forceRemoveCommand}\"", true);
+                    string forceOutput = await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"{forceRemoveCommand}\"", true);
                     WindowFactory.AppendProgress(_progressTextBox, forceOutput);
                 }
 
-                string finalCheck = await RunCommandAsync($"powershell -Command \"if (Get-AppxPackage -AllUsers -Name '{app.Key}' -or (Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{app.Key}' }})) {{ 'Falha na remoção' }} else {{ 'Remoção bem-sucedida' }}\"");
+                string finalCheck = await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Get-AppxPackage -AllUsers -Name '{app.Key}' -or (Get-AppxProvisionedPackage -Online | Where-Object {{ $_.DisplayName -eq '{app.Key}' }})) {{ 'Falha na remoção' }} else {{ 'Remoção bem-sucedida' }}\"");
                 WindowFactory.AppendProgress(_progressTextBox, finalCheck);
 
                 await Task.Delay(200);
@@ -326,7 +326,7 @@ namespace DarkHub.UI
                     Stop-Service -Name 'OneSyncSvc' -Force -ErrorAction SilentlyContinue;
                     Set-Service -Name 'OneSyncSvc' -StartupType Disabled -ErrorAction SilentlyContinue;
                 ";
-                await RunCommandAsync($"powershell -Command \"{psCommand}\"", true);
+                await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"{psCommand}\"", true);
                 await RunCommandAsync("rd \"%UserProfile%\\OneDrive\" /Q /S", true);
                 await RunCommandAsync("rd \"%LocalAppData%\\Microsoft\\OneDrive\" /Q /S", true);
                 await RunCommandAsync("rd \"%ProgramData%\\Microsoft OneDrive\" /Q /S", true);
@@ -345,7 +345,7 @@ namespace DarkHub.UI
                 Get-AppxPackage -AllUsers *MicrosoftEdge* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;
                 Get-AppxPackage -AllUsers *Edge* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;
             ";
-            await RunCommandAsync($"powershell -Command \"{removeEdgeCommand}\"", true);
+            await RunCommandAsync($"powershell -NoProfile -ExecutionPolicy Bypass -Command \"{removeEdgeCommand}\"", true);
 
             string[] edgePaths = {
                 @"C:\Program Files (x86)\Microsoft\Edge\Application",
@@ -382,8 +382,8 @@ namespace DarkHub.UI
 
         private async Task RemoveCopilotAsync()
         {
-            await RunCommandAsync("powershell -Command \"Get-AppxPackage *Microsoft.CoPilot* | Remove-AppxPackage -ErrorAction SilentlyContinue\"");
-            await RunCommandAsync("powershell -Command \"Get-AppxPackage -AllUsers *Microsoft.CoPilot* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue\"");
+            await RunCommandAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxPackage *Microsoft.CoPilot* | Remove-AppxPackage -ErrorAction SilentlyContinue\"");
+            await RunCommandAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxPackage -AllUsers *Microsoft.CoPilot* | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue\"");
 
             string disableCopilotCommand = @"
                 reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot"" /v ""TurnOffWindowsCopilot"" /t REG_DWORD /d 1 /f;
@@ -412,7 +412,14 @@ namespace DarkHub.UI
             foreach (var folder in foldersToDelete)
             {
                 string expandedPath = Environment.ExpandEnvironmentVariables(folder);
-                foreach (var dir in Directory.GetDirectories(Path.GetDirectoryName(expandedPath), Path.GetFileName(expandedPath), SearchOption.TopDirectoryOnly))
+                string? parentDirectory = Path.GetDirectoryName(expandedPath);
+                string searchPattern = Path.GetFileName(expandedPath);
+                if (string.IsNullOrWhiteSpace(parentDirectory) || !Directory.Exists(parentDirectory) || string.IsNullOrWhiteSpace(searchPattern))
+                {
+                    continue;
+                }
+
+                foreach (var dir in Directory.GetDirectories(parentDirectory, searchPattern, SearchOption.TopDirectoryOnly))
                 {
                     try
                     {
@@ -444,7 +451,7 @@ namespace DarkHub.UI
             }
 
             WindowFactory.AppendProgress(_progressTextBox, "Atualizando estado dos pacotes UWP...");
-            await RunCommandAsync("powershell -Command \"Get-AppxPackage | % { Add-AppxPackage -DisableDevelopmentMode -Register \\\"$($_.InstallLocation)\\AppXManifest.xml\\\" -ErrorAction SilentlyContinue }\"", true);
+            await RunCommandAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-AppxPackage | % { Add-AppxPackage -DisableDevelopmentMode -Register \\\"$($_.InstallLocation)\\AppXManifest.xml\\\" -ErrorAction SilentlyContinue }\"", true);
         }
 
         private async Task<Dictionary<string, string>> ShowBloatwareSelectionWindowAsync(Dictionary<string, string> installedApps)
@@ -575,38 +582,47 @@ namespace DarkHub.UI
                 var processStartInfo = new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = $"/c {command}",
-                    UseShellExecute = requiresAdmin,
-                    RedirectStandardOutput = !requiresAdmin,
-                    RedirectStandardError = !requiresAdmin,
-                    CreateNoWindow = !requiresAdmin,
-                    Verb = requiresAdmin ? "runas" : string.Empty
+                    Arguments = $"/d /c {command}",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
                 };
 
-                if (!requiresAdmin)
-                {
-                    processStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850);
-                    processStartInfo.StandardErrorEncoding = Encoding.GetEncoding(850);
-                }
+                processStartInfo.StandardOutputEncoding = Encoding.GetEncoding(850);
+                processStartInfo.StandardErrorEncoding = Encoding.GetEncoding(850);
 
                 using var process = new Process { StartInfo = processStartInfo };
-                WindowFactory.AppendProgress(_progressTextBox, $"Executando: {command}" + (requiresAdmin ? " (como administrador)" : ""));
+                WindowFactory.AppendProgress(_progressTextBox, $"Executando: {command}" + (requiresAdmin ? " (admin requerido)" : ""));
                 process.Start();
 
-                string output = requiresAdmin ? "" : await process.StandardOutput.ReadToEndAsync();
-                string error = requiresAdmin ? "" : await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
+                Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                Task<string> errorTask = process.StandardError.ReadToEndAsync();
+                try
+                {
+                    await process.WaitForExitAsync().WaitAsync(TimeSpan.FromMinutes(10));
+                }
+                catch (TimeoutException)
+                {
+                    try
+                    {
+                        process.Kill(entireProcessTree: true);
+                    }
+                    catch
+                    {
+                    }
 
-                if (process.ExitCode != 0 && !requiresAdmin)
+                    WindowFactory.AppendProgress(_progressTextBox, "Erro: comando excedeu o tempo limite.");
+                    return "Erro: comando excedeu o tempo limite.";
+                }
+
+                string output = await outputTask;
+                string error = await errorTask;
+
+                if (process.ExitCode != 0)
                 {
                     WindowFactory.AppendProgress(_progressTextBox, $"Erro ao executar comando: {error}");
                     return $"Erro: {error}";
-                }
-
-                if (requiresAdmin)
-                {
-                    WindowFactory.AppendProgress(_progressTextBox, "Comando executado com privilégios de administrador.");
-                    return "Comando executado.";
                 }
 
                 if (!string.IsNullOrEmpty(output))

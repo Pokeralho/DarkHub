@@ -15,7 +15,7 @@ namespace DarkHub
         private readonly double TfidfWeight;
         private readonly double TextRankWeight;
 
-        public SummaX(int maxLength = 150, string language = "pt", List<string> keywords = null,
+        public SummaX(int maxLength = 150, string language = "pt", List<string>? keywords = null,
                       double keywordWeight = 1.5, double tfidfWeight = 1.0, double textRankWeight = 1.0)
         {
             SummaryMaxLength = maxLength;
@@ -159,6 +159,7 @@ namespace DarkHub
                 double score = 0;
                 foreach (var word in words[i].Distinct())
                 {
+                    if (words[i].Count == 0) continue;
                     double tf = (double)words[i].Count(w => w == word) / words[i].Count;
                     double idf = Math.Log((double)totalDocs / (1 + wordFreq[word]));
                     score += tf * idf;
@@ -179,7 +180,8 @@ namespace DarkHub
                 {
                     if (i == j) continue;
                     var commonWords = words[i].Intersect(words[j]).Count();
-                    similarityMatrix[i, j] = commonWords / (double)(words[i].Count + words[j].Count);
+                    int denominator = words[i].Count + words[j].Count;
+                    similarityMatrix[i, j] = denominator == 0 ? 0 : commonWords / (double)denominator;
                 }
             }
 

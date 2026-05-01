@@ -24,6 +24,43 @@ automação e manipulação de mídia, o DarkHub oferece uma solução completa 
 - [ffmpeg.exe](https://www.gyan.dev/ffmpeg/builds/#release-builds)
 - [yt-dlp.exe](https://github.com/yt-dlp/yt-dlp/releases/)
 
+## Restaurar arquivos locais
+Arquivos grandes, binários de terceiros e segredos continuam fora do Git. Para reconstruir o ambiente local depois de clonar:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Restore-LocalAssets.ps1
+```
+
+O script baixa `yt-dlp.exe` e tenta restaurar `ffmpeg.exe`. Para `CPU-Z.exe`, `GPU-Z.exe`, `HWiNFO64.exe`, `DDU.exe` e `assets\settings`, use uma pasta de backup ou uma release extraída:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Restore-LocalAssets.ps1 -ThirdPartyToolsDirectory "C:\caminho\para\backup"
+```
+
+Certificados, senhas e `.pfx` não devem ser versionados nem copiados para `assets`.
+
+## Build e assinatura
+Para gerar uma release local sem assinatura:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-SignedRelease.ps1 -SkipSigning
+```
+
+Para assinar o `DarkHub.exe`, instale o Windows SDK para ter `signtool.exe` e informe um certificado seu por variável de ambiente:
+
+```powershell
+$env:DARKHUB_SIGN_CERT_PATH = "C:\certs\DarkHub-release.pfx"
+$env:DARKHUB_SIGN_CERT_PASSWORD = "senha-do-certificado"
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-SignedRelease.ps1
+```
+
+Também é possível usar um certificado instalado no repositório do Windows:
+
+```powershell
+$env:DARKHUB_SIGN_CERT_THUMBPRINT = "THUMBPRINT_DO_CERTIFICADO"
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-SignedRelease.ps1
+```
+
 ## Contribuição
 Contribuições são bem-vindas! Siga estes passos:
 1. Faça um fork do repositório.

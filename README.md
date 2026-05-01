@@ -28,6 +28,43 @@ automation and media handling tools, DarkHub offers a complete solution for user
 - [ffmpeg.exe](https://www.gyan.dev/ffmpeg/builds/#release-builds)
 - [yt-dlp.exe](https://github.com/yt-dlp/yt-dlp/releases/)
 
+## Restoring local files
+Large binaries, third-party tools, and secrets stay outside Git. After cloning, rebuild the local asset folder with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Restore-LocalAssets.ps1
+```
+
+The script downloads `yt-dlp.exe` and attempts to restore `ffmpeg.exe`. For `CPU-Z.exe`, `GPU-Z.exe`, `HWiNFO64.exe`, `DDU.exe`, and `assets\settings`, pass a backup or extracted release folder:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Restore-LocalAssets.ps1 -ThirdPartyToolsDirectory "C:\path\to\backup"
+```
+
+Certificates, passwords, and `.pfx` files should not be committed or copied into `assets`.
+
+## Build and signing
+To create an unsigned local release:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-SignedRelease.ps1 -SkipSigning
+```
+
+To sign `DarkHub.exe`, install the Windows SDK for `signtool.exe` and provide your own certificate through environment variables:
+
+```powershell
+$env:DARKHUB_SIGN_CERT_PATH = "C:\certs\DarkHub-release.pfx"
+$env:DARKHUB_SIGN_CERT_PASSWORD = "certificate-password"
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-SignedRelease.ps1
+```
+
+You can also sign with a certificate already installed in the Windows certificate store:
+
+```powershell
+$env:DARKHUB_SIGN_CERT_THUMBPRINT = "CERTIFICATE_THUMBPRINT"
+powershell -ExecutionPolicy Bypass -File .\scripts\Build-SignedRelease.ps1
+```
+
 ## Contribution
 Contributions are welcome! Follow these steps:
 1. Fork the repository.

@@ -12,7 +12,7 @@ namespace DarkHub.UI
         private readonly TextBox _progressTextBox;
         private readonly Button _button;
 
-        public ProgramUninstaller(Window owner, Button button)
+        public ProgramUninstaller(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.UninstallingProgramTitle);
@@ -61,7 +61,7 @@ namespace DarkHub.UI
                 }
 
                 // Usando TaskCompletionSource para controlar a janela de seleção
-                var selectionTcs = new TaskCompletionSource<InstalledProgram>();
+                var selectionTcs = new TaskCompletionSource<InstalledProgram?>();
 
                 // Captura o owner na thread de UI
                 var selectionOwner = _progressWindow.Owner;
@@ -258,7 +258,7 @@ namespace DarkHub.UI
 
         public class InstalledProgram
         {
-            public string Name { get; set; }
+            public string Name { get; set; } = string.Empty;
             public string? UninstallString { get; set; }
             public string? InstallLocation { get; set; }
         }
@@ -383,28 +383,18 @@ namespace DarkHub.UI
                 WindowFactory.AppendProgress(progressTextBox, $"Raw uninstall string from registry: '{uninstallString}'");
                 uninstallString = uninstallString.Trim();
 
-                string fileName = uninstallString;
-                string arguments = "";
-                if (uninstallString.Contains(" "))
-                {
-                    if (uninstallString.StartsWith("\""))
-                    {
-                        int endQuote = uninstallString.IndexOf("\"", 1);
-                        if (endQuote != -1)
-                        {
-                            fileName = uninstallString.Substring(1, endQuote - 1);
-                            arguments = uninstallString.Substring(endQuote + 1).Trim();
-                        }
-                    }
-                    else
-                    {
-                        fileName = uninstallString.Substring(0, uninstallString.IndexOf(" ")).Trim();
-                        arguments = uninstallString.Substring(uninstallString.IndexOf(" ")).Trim();
-                    }
-                }
+                var parsedCommand = ParseUninstallCommand(uninstallString);
+                string fileName = parsedCommand.FileName;
+                string arguments = parsedCommand.Arguments;
 
                 WindowFactory.AppendProgress(progressTextBox, $"Parsed fileName: '{fileName}'");
                 WindowFactory.AppendProgress(progressTextBox, $"Parsed arguments: '{arguments}'");
+
+                string? resolvedFileName = ResolveExecutablePath(fileName);
+                if (resolvedFileName != null)
+                {
+                    fileName = resolvedFileName;
+                }
 
                 if (!File.Exists(fileName))
                 {
@@ -474,6 +464,83 @@ namespace DarkHub.UI
                 }
                 return false;
             }
+        }
+
+        private static (string FileName, string Arguments) ParseUninstallCommand(string uninstallString)
+        {
+            uninstallString = Environment.ExpandEnvironmentVariables(uninstallString.Trim());
+
+            if (uninstallString.StartsWith("\""))
+            {
+                int endQuote = uninstallString.IndexOf("\"", 1);
+                if (endQuote > 0)
+                {
+                    return (uninstallString.Substring(1, endQuote - 1), uninstallString.Substring(endQuote + 1).Trim());
+                }
+            }
+
+            if (!uninstallString.Contains(' '))
+            {
+                return (uninstallString, string.Empty);
+            }
+
+            string[] parts = uninstallString.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            for (int i = parts.Length; i > 0; i--)
+            {
+                string candidate = string.Join(" ", parts.Take(i));
+                if (File.Exists(candidate) || ResolveExecutablePath(candidate) != null)
+                {
+                    string arguments = string.Join(" ", parts.Skip(i));
+                    return (candidate, arguments);
+                }
+            }
+
+            int firstSpace = uninstallString.IndexOf(' ');
+            return (uninstallString.Substring(0, firstSpace).Trim(), uninstallString.Substring(firstSpace + 1).Trim());
+        }
+
+        private static string? ResolveExecutablePath(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return null;
+            }
+
+            fileName = Environment.ExpandEnvironmentVariables(fileName.Trim());
+            if (File.Exists(fileName))
+            {
+                return fileName;
+            }
+
+            if (Path.IsPathFullyQualified(fileName))
+            {
+                return null;
+            }
+
+            string[] searchDirs = (Environment.GetEnvironmentVariable("PATH") ?? string.Empty)
+                .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
+                .Append(Environment.SystemDirectory)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            string[] extensions = Path.HasExtension(fileName)
+                ? new[] { string.Empty }
+                : (Environment.GetEnvironmentVariable("PATHEXT") ?? ".EXE;.CMD;.BAT;.COM")
+                    .Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string dir in searchDirs)
+            {
+                foreach (string extension in extensions)
+                {
+                    string candidate = Path.Combine(dir, fileName + extension);
+                    if (File.Exists(candidate))
+                    {
+                        return candidate;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private async Task<Leftovers> ScanForLeftoversAsync(string programName, string? installLocation, TextBox progressTextBox)

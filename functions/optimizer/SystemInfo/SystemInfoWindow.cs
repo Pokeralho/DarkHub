@@ -1,4 +1,5 @@
-﻿using System.Management;
+﻿using Microsoft.Win32;
+using System.Management;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +10,7 @@ namespace DarkHub.UI
     {
         private readonly Window _infoWindow;
 
-        public SystemInfoWindow(Window owner)
+        public SystemInfoWindow(Window? owner)
         {
             _infoWindow = WindowFactory.CreateWindow(
                 title: ResourceManagerHelper.Instance.SystemInfoTitle,
@@ -74,10 +75,9 @@ namespace DarkHub.UI
             {
                 var systemInfo = new StringBuilder();
 
-                var os = Environment.OSVersion;
-                systemInfo.AppendLine($"OS: {os.VersionString}");
+                systemInfo.AppendLine($"OS: {GetWindowsVersionLine()}");
 
-                var processorQuery = new ManagementObjectSearcher("SELECT Name, L2CacheSize, L3CacheSize FROM Win32_Processor");
+                using var processorQuery = new ManagementObjectSearcher("SELECT Name, L2CacheSize, L3CacheSize FROM Win32_Processor");
                 var processor = processorQuery.Get().Cast<ManagementObject>().FirstOrDefault();
                 systemInfo.AppendLine($"CPU: {processor?["Name"]?.ToString() ?? "Não encontrado"}");
                 systemInfo.AppendLine($"Cache L2: {processor?["L2CacheSize"]?.ToString() ?? "Não encontrado"}");
@@ -85,11 +85,11 @@ namespace DarkHub.UI
 
                 long totalMemory = 0;
                 var memorySpeeds = new List<string>();
-                var memoryQuery = new ManagementObjectSearcher("SELECT Capacity, Speed FROM Win32_PhysicalMemory");
+                using var memoryQuery = new ManagementObjectSearcher("SELECT Capacity, Speed, ConfiguredClockSpeed FROM Win32_PhysicalMemory");
                 foreach (var mem in memoryQuery.Get().Cast<ManagementObject>())
                 {
                     totalMemory += Convert.ToInt64(mem["Capacity"] ?? 0);
-                    string? speed = mem["Speed"]?.ToString();
+                    string? speed = mem["ConfiguredClockSpeed"]?.ToString() ?? mem["Speed"]?.ToString();
                     if (!string.IsNullOrEmpty(speed))
                     {
                         memorySpeeds.Add(speed);
@@ -97,15 +97,14 @@ namespace DarkHub.UI
                 }
                 var memorySpeedDisplay = memorySpeeds.Any() ? string.Join(", ", memorySpeeds.Distinct()) + " MHz" : "Não encontrado";
                 systemInfo.AppendLine($"RAM Total: {totalMemory / (1024 * 1024 * 1024)} GB");
-                systemInfo.AppendLine($"Ram Frenquency: {memorySpeedDisplay}");
+                systemInfo.AppendLine($"RAM Frequency: {memorySpeedDisplay}");
 
-                var gpuQuery = new ManagementObjectSearcher("SELECT Name, AdapterRAM FROM Win32_VideoController");
+                using var gpuQuery = new ManagementObjectSearcher("SELECT Name, AdapterRAM FROM Win32_VideoController");
                 var gpu = gpuQuery.Get().Cast<ManagementObject>().FirstOrDefault();
                 if (gpu != null)
                 {
                     var gpuName = gpu["Name"]?.ToString() ?? "Não encontrado";
-                    var gpuVram = gpu["AdapterRAM"];
-                    string vramDisplay = gpuVram != null ? $"{Convert.ToInt64(gpuVram) / (1024 * 512):F2} MB" : "Não encontrado";
+                    string vramDisplay = FormatVram(gpu["AdapterRAM"]);
                     systemInfo.AppendLine($"GPU: {gpuName}");
                     systemInfo.AppendLine($"VRAM: {vramDisplay}");
                 }
@@ -114,13 +113,15 @@ namespace DarkHub.UI
                     systemInfo.AppendLine("GPU: Não encontrada");
                 }
 
-                var motherboardQuery = new ManagementObjectSearcher("SELECT Product FROM Win32_BaseBoard");
+                using var motherboardQuery = new ManagementObjectSearcher("SELECT Product, Manufacturer FROM Win32_BaseBoard");
                 var motherboard = motherboardQuery.Get().Cast<ManagementObject>().FirstOrDefault();
-                systemInfo.AppendLine($"Mother Board: {motherboard?["Product"]?.ToString() ?? "Não encontrado"}");
+                string motherboardManufacturer = motherboard?["Manufacturer"]?.ToString() ?? string.Empty;
+                string motherboardProduct = motherboard?["Product"]?.ToString() ?? "Não encontrado";
+                systemInfo.AppendLine($"Motherboard: {motherboardManufacturer} {motherboardProduct}".Trim());
 
-                var biosQuery = new ManagementObjectSearcher("SELECT Version FROM Win32_BIOS");
+                using var biosQuery = new ManagementObjectSearcher("SELECT Manufacturer, Version, ReleaseDate FROM Win32_BIOS");
                 var bios = biosQuery.Get().Cast<ManagementObject>().FirstOrDefault();
-                systemInfo.AppendLine($"BIOS: {bios?["Version"]?.ToString() ?? "Não encontrado"}");
+                systemInfo.AppendLine($"BIOS: {bios?["Manufacturer"]?.ToString() ?? string.Empty} {bios?["Version"]?.ToString() ?? "Não encontrado"}".Trim());
 
                 return systemInfo.ToString();
             }
@@ -128,7 +129,52 @@ namespace DarkHub.UI
             {
                 MessageBox.Show(string.Format(ResourceManagerHelper.Instance.ErrorGettingSystemInfo, ex.Message),
                     ResourceManagerHelper.Instance.ErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
+                return string.Empty;
+            }
+        }
+
+        private static string GetWindowsVersionLine()
+        {
+            string caption = "Windows";
+            string version = Environment.OSVersion.Version.ToString();
+            string build = Environment.OSVersion.Version.Build.ToString();
+
+            try
+            {
+                using var osQuery = new ManagementObjectSearcher("SELECT Caption, Version, BuildNumber FROM Win32_OperatingSystem");
+                var os = osQuery.Get().Cast<ManagementObject>().FirstOrDefault();
+                caption = os?["Caption"]?.ToString() ?? caption;
+                version = os?["Version"]?.ToString() ?? version;
+                build = os?["BuildNumber"]?.ToString() ?? build;
+            }
+            catch
+            {
+                // Environment.OSVersion remains as a fallback.
+            }
+
+            string currentVersionKey = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion";
+            string displayVersion = Registry.GetValue(currentVersionKey, "DisplayVersion", null)?.ToString() ?? string.Empty;
+            string ubr = Registry.GetValue(currentVersionKey, "UBR", null)?.ToString() ?? string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(ubr))
+                build = $"{build}.{ubr}";
+
+            if (!string.IsNullOrWhiteSpace(displayVersion) && !caption.Contains(displayVersion, StringComparison.OrdinalIgnoreCase))
+                caption = $"{caption} {displayVersion}";
+
+            return $"{caption} ({version}, build {build})";
+        }
+
+        private static string FormatVram(object? adapterRam)
+        {
+            try
+            {
+                ulong bytes = adapterRam == null ? 0 : Convert.ToUInt64(adapterRam);
+                return bytes == 0 ? "Não encontrado" : $"{bytes / 1024.0 / 1024.0:F0} MB";
+            }
+            catch
+            {
+                return "Não encontrado";
             }
         }
     }

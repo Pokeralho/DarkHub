@@ -13,7 +13,7 @@ namespace DarkHub.UI
         private readonly TextBox _progressTextBox;
         private readonly Button _button;
 
-        public StartupProgramManager(Window owner, Button button)
+        public StartupProgramManager(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.ManagingStartupProgramsTitle);
@@ -131,7 +131,12 @@ namespace DarkHub.UI
                         {
                             if (listBox.SelectedItem != null)
                             {
-                                string selectedFull = listBox.SelectedItem.ToString();
+                                string? selectedFull = listBox.SelectedItem?.ToString();
+                                if (string.IsNullOrWhiteSpace(selectedFull))
+                                {
+                                    return;
+                                }
+
                                 string selectedName = selectedFull.Split(" -> ")[0].Split(" (")[0];
                                 if (startupItems.TryGetValue(selectedName, out var item))
                                 {
@@ -225,7 +230,8 @@ namespace DarkHub.UI
                 object? shortcut = shellType.InvokeMember("CreateShortcut", System.Reflection.BindingFlags.InvokeMethod, null, shell, new object[] { shortcutPath });
                 if (shortcut == null) return string.Empty;
 
-                string target = (string)shortcut.GetType().InvokeMember("TargetPath", System.Reflection.BindingFlags.GetProperty, null, shortcut, null);
+                object? targetObject = shortcut.GetType().InvokeMember("TargetPath", System.Reflection.BindingFlags.GetProperty, null, shortcut, null);
+                string target = targetObject?.ToString() ?? string.Empty;
                 Marshal.ReleaseComObject(shortcut);
                 Marshal.ReleaseComObject(shell);
                 return target ?? string.Empty;

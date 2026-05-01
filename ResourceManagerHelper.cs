@@ -5,14 +5,14 @@ namespace DarkHub
 {
     public class ResourceManagerHelper : INotifyPropertyChanged
     {
-        private static ResourceManagerHelper _instance;
+        private static ResourceManagerHelper? _instance;
         public static ResourceManagerHelper Instance => _instance ??= new ResourceManagerHelper();
 
         private ResourceManagerHelper()
         {
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public string OptimizerTitle => DarkHub.Properties.AppResources.OptimizerTitle;
         public string SystemInfoButton => DarkHub.Properties.AppResources.SystemInfoButton;
@@ -664,7 +664,7 @@ namespace DarkHub
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

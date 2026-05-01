@@ -8,9 +8,9 @@ namespace DarkHub
     public class InjectorViewModel : INotifyPropertyChanged
     {
         private readonly DllInjectionService _injectionService;
-        private string _processName;
-        private string _dllPath;
-        private string _status;
+        private string _processName = string.Empty;
+        private string _dllPath = string.Empty;
+        private string _status = string.Empty;
         private bool _isInjecting;
 
         public InjectorViewModel()

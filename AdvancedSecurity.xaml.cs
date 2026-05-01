@@ -22,14 +22,14 @@ namespace DarkHub
 {
     public partial class AdvancedSecurity : Page
     {
-        private Button _activeButton;
+        private Button? _activeButton;
         private bool _isScanning;
         private bool _isMonitoring;
         private bool _isExploitMonitoring;
         private readonly List<string> _blockedDomainsHistory = new List<string>();
-        private string _originalHostsBackupPath;
-        private CancellationTokenSource _monitoringCancellationTokenSource;
-        private CancellationTokenSource _exploitCancellationTokenSource;
+        private string? _originalHostsBackupPath;
+        private CancellationTokenSource? _monitoringCancellationTokenSource;
+        private CancellationTokenSource? _exploitCancellationTokenSource;
         private readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
 
         public AdvancedSecurity()
@@ -65,9 +65,13 @@ namespace DarkHub
             }
         }
 
-        private void NavigateToSection(object sender, RoutedEventArgs e)
+        private void NavigateToSection(object sender, RoutedEventArgs? e)
         {
             var button = sender as Button;
+            if (button?.Tag is not string section)
+            {
+                return;
+            }
 
             InitialMessagePanel.Visibility = Visibility.Collapsed;
             MalwarePanel.Visibility = Visibility.Collapsed;
@@ -77,7 +81,7 @@ namespace DarkHub
             PhishingPanel.Visibility = Visibility.Collapsed;
             ExploitPanel.Visibility = Visibility.Collapsed;
 
-            switch (button.Tag.ToString())
+            switch (section)
             {
                 case "Malware":
                     MalwarePanel.Visibility = Visibility.Visible;
@@ -172,9 +176,9 @@ namespace DarkHub
 
         private class ProcessInfo
         {
-            public string Name { get; set; }
+            public string Name { get; set; } = string.Empty;
             public int PID { get; set; }
-            public string Details { get; set; }
+            public string Details { get; set; } = string.Empty;
             public bool IsSelected { get; set; }
         }
 
@@ -195,7 +199,7 @@ namespace DarkHub
                     {
                         try
                         {
-                            string fileName = process.MainModule?.FileName;
+                            string? fileName = process.MainModule?.FileName;
                             if (string.IsNullOrEmpty(fileName)) continue;
 
                             if (process.ProcessName.ToLower().Contains("darkhub")) continue;
@@ -281,7 +285,7 @@ namespace DarkHub
                 if (hasValidSig && trustedPublishers.Any(tp => publisher.Contains(tp)))
                     return (false, ResourceManagerHelper.Instance.ValidPfx);
 
-                string dir = Path.GetDirectoryName(filePath).ToLower();
+                string dir = Path.GetDirectoryName(filePath)?.ToLowerInvariant() ?? string.Empty;
                 bool isInSafeLocation = knownSafeLocations.Any(loc => dir.StartsWith(loc));
                 if (!isInSafeLocation)
                 {
@@ -681,66 +685,74 @@ namespace DarkHub
                 refreshTimer.Stop();
             }
 
-            private void UpdateProcessDetails(object sender, SelectionChangedEventArgs e)
+            private void UpdateProcessDetails(object? sender, SelectionChangedEventArgs? e)
             {
-                if (processList.SelectedItem == null)
+                if (!TryGetSelectedProcessId(out int pid))
                 {
                     processDetailsLabel.Content = "Selecione um processo para ver detalhes.";
                     return;
                 }
 
-                var selectedItem = processList.SelectedItem.ToString();
-                var pidStr = selectedItem.Split(new[] { "PID: " }, StringSplitOptions.None)[1].Trim(')');
-                if (int.TryParse(pidStr, out int pid))
+                try
                 {
-                    try
-                    {
-                        var process = Process.GetProcessById(pid);
-                        var memUsage = process.WorkingSet64 / 1024 / 1024;
-                        var cpuCounter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
-                        cpuCounter.NextValue();
-                        Thread.Sleep(100);
-                        var cpuUsage = cpuCounter.NextValue() / Environment.ProcessorCount;
+                    var process = Process.GetProcessById(pid);
+                    var memUsage = process.WorkingSet64 / 1024 / 1024;
+                    var cpuCounter = new PerformanceCounter("Process", "% Processor Time", process.ProcessName, true);
+                    cpuCounter.NextValue();
+                    Thread.Sleep(100);
+                    var cpuUsage = cpuCounter.NextValue() / Environment.ProcessorCount;
 
-                        processDetailsLabel.Content = $"Nome: {process.ProcessName}\n" +
-                                                      $"PID: {process.Id}\n" +
-                                                      $"Uso de CPU: {cpuUsage:F2}%\n" +
-                                                      $"Uso de Memória: {memUsage} MB\n" +
-                                                      $"Prioridade Atual: {process.PriorityClass}\n" +
-                                                      $"Caminho: {process.MainModule?.FileName ?? "N/A"}";
-                    }
-                    catch (Exception ex)
-                    {
-                        processDetailsLabel.Content = $"Erro ao obter detalhes: {ex.Message}";
-                    }
+                    processDetailsLabel.Content = $"Nome: {process.ProcessName}\n" +
+                                                  $"PID: {process.Id}\n" +
+                                                  $"Uso de CPU: {cpuUsage:F2}%\n" +
+                                                  $"Uso de Memória: {memUsage} MB\n" +
+                                                  $"Prioridade Atual: {process.PriorityClass}\n" +
+                                                  $"Caminho: {process.MainModule?.FileName ?? "N/A"}";
+                }
+                catch (Exception ex)
+                {
+                    processDetailsLabel.Content = $"Erro ao obter detalhes: {ex.Message}";
                 }
             }
 
             private void ApplyPriority(object sender, RoutedEventArgs e)
             {
-                if (processList.SelectedItem == null)
+                if (!TryGetSelectedProcessId(out int pid))
                 {
                     MessageBox.Show("Selecione um processo primeiro!");
                     return;
                 }
 
-                var selectedItem = processList.SelectedItem.ToString();
-                var pidStr = selectedItem.Split(new[] { "PID: " }, StringSplitOptions.None)[1].Trim(')');
-                if (int.TryParse(pidStr, out int pid))
+                try
                 {
-                    try
+                    var process = Process.GetProcessById(pid);
+                    if (processPriorityCombo.SelectedItem is not ProcessPriorityClass newPriority)
                     {
-                        var process = Process.GetProcessById(pid);
-                        var newPriority = (ProcessPriorityClass)processPriorityCombo.SelectedItem;
-                        process.PriorityClass = newPriority;
-                        MessageBox.Show($"Prioridade de {process.ProcessName} ajustada para {newPriority} com sucesso!");
-                        UpdateProcessDetails(null, null);
+                        MessageBox.Show("Selecione uma prioridade válida.");
+                        return;
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erro ao ajustar prioridade: {ex.Message}");
-                    }
+
+                    process.PriorityClass = newPriority;
+                    MessageBox.Show($"Prioridade de {process.ProcessName} ajustada para {newPriority} com sucesso!");
+                    UpdateProcessDetails(null, null);
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Erro ao ajustar prioridade: {ex.Message}");
+                }
+            }
+
+            private bool TryGetSelectedProcessId(out int pid)
+            {
+                pid = 0;
+                var selectedItem = processList.SelectedItem?.ToString();
+                if (string.IsNullOrWhiteSpace(selectedItem))
+                {
+                    return false;
+                }
+
+                var parts = selectedItem.Split(new[] { "PID: " }, StringSplitOptions.None);
+                return parts.Length > 1 && int.TryParse(parts[1].Trim(')'), out pid);
             }
         }
 
@@ -1023,9 +1035,9 @@ namespace DarkHub
 
         private class TrackingItem
         {
-            public string Source { get; set; }
-            public string Details { get; set; }
-            public string Category { get; set; }
+            public string Source { get; set; } = string.Empty;
+            public string Details { get; set; } = string.Empty;
+            public string Category { get; set; } = string.Empty;
             public bool IsSelected { get; set; }
         }
 
@@ -1161,7 +1173,7 @@ namespace DarkHub
             {
                 var handler = new HttpClientHandler
                 {
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => cert.Verify()
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => cert?.Verify() == true
                 };
                 using (var client = new HttpClient(handler))
                 {
@@ -1264,7 +1276,7 @@ namespace DarkHub
             return Regex.Matches(text, urlPattern).Cast<Match>().Select(m => m.Value).ToList();
         }
 
-        private string ExtractURLFromConnection(string connection)
+        private string? ExtractURLFromConnection(string connection)
         {
             var parts = connection.Split(new[] { "->" }, StringSplitOptions.None);
             if (parts.Length > 1)
@@ -1280,8 +1292,8 @@ namespace DarkHub
 
         private class PhishingItem
         {
-            public string URL { get; set; }
-            public string Reason { get; set; }
+            public string URL { get; set; } = string.Empty;
+            public string Reason { get; set; } = string.Empty;
             public bool IsSelected { get; set; }
         }
 
@@ -1369,12 +1381,16 @@ namespace DarkHub
             StatusText.Foreground = new SolidColorBrush(Colors.Yellow);
         }
 
-        private async Task<(bool IsSuspicious, string Reason)> DetectExploit(Process process)
+        private Task<(bool IsSuspicious, string Reason)> DetectExploit(Process process)
         {
             try
             {
                 string reason = "";
-                var filePath = process.MainModule.FileName;
+                var filePath = process.MainModule?.FileName;
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    return Task.FromResult((true, "Unable to resolve process executable path"));
+                }
 
                 bool hasValidSig = VerifyBinarySignature(filePath);
                 if (!hasValidSig)
@@ -1401,11 +1417,11 @@ namespace DarkHub
                     reason += "Possible code injection detected; ";
                 }
 
-                return (reason.Length > 0, reason.Length > 0 ? reason.TrimEnd(' ', ';') : "Seguro");
+                return Task.FromResult((reason.Length > 0, reason.Length > 0 ? reason.TrimEnd(' ', ';') : "Seguro"));
             }
             catch (Exception ex)
             {
-                return (true, $"Error when analyzing: {ex.Message}");
+                return Task.FromResult((true, $"Error when analyzing: {ex.Message}"));
             }
         }
 
@@ -1484,9 +1500,9 @@ namespace DarkHub
 
         private class ExploitItem
         {
-            public string ProcessName { get; set; }
+            public string ProcessName { get; set; } = string.Empty;
             public int PID { get; set; }
-            public string Reason { get; set; }
+            public string Reason { get; set; } = string.Empty;
             public bool IsSelected { get; set; }
         }
 

@@ -6,6 +6,9 @@
 *.pdb
 *.cache
 *.log
+*.pfx
+*.p12
+*.snk
 
 /DarkHubRmk/bin/
 /DarkHubRmk/obj/

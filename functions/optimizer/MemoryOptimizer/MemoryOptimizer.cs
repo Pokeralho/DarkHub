@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +13,7 @@ namespace DarkHub.UI
         private TextBox _progressTextBox;
         private readonly Button _button;
 
-        public MemoryOptimizer(Window owner, Button button)
+        public MemoryOptimizer(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.OptimizingMemoryTitle);
@@ -70,7 +71,7 @@ namespace DarkHub.UI
                     await Task.Delay(1000);
 
                     WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.ClearingFileSystemCache);
-                    await WindowFactory.ExecuteCommandWithOutputAsync("powershell -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"", _progressTextBox);
+                    await WindowFactory.ExecuteCommandWithOutputAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Clear-RecycleBin -Force -ErrorAction SilentlyContinue\"", _progressTextBox);
                     await Task.Delay(1000);
 
                     WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.ClearingTempFiles);
@@ -197,17 +198,13 @@ namespace DarkHub.UI
         {
             try
             {
-                string result = await WindowFactory.ExecuteCommandWithOutputAsync("powershell -Command \"Get-CimInstance Win32_OperatingSystem | Select-Object -Property TotalVisibleMemorySize,FreePhysicalMemory | ConvertTo-Json\"", _progressTextBox);
+                await Task.Yield();
+                using var searcher = new ManagementObjectSearcher("SELECT TotalVisibleMemorySize,FreePhysicalMemory FROM Win32_OperatingSystem");
+                var os = searcher.Get().Cast<ManagementObject>().FirstOrDefault();
 
-                result = result.Trim().Replace("\r", "").Replace("\n", "");
-
-                int totalIndex = result.IndexOf("TotalVisibleMemorySize") + "TotalVisibleMemorySize".Length + 2;
-                int freeIndex = result.IndexOf("FreePhysicalMemory") + "FreePhysicalMemory".Length + 2;
-
-                string totalStr = result.Substring(totalIndex, result.IndexOf(",", totalIndex) - totalIndex);
-                string freeStr = result.Substring(freeIndex, result.IndexOf("}", freeIndex) - freeIndex);
-
-                if (double.TryParse(totalStr, out double totalMemoryKB) && double.TryParse(freeStr, out double freeMemoryKB))
+                if (os != null &&
+                    double.TryParse(os["TotalVisibleMemorySize"]?.ToString(), out double totalMemoryKB) &&
+                    double.TryParse(os["FreePhysicalMemory"]?.ToString(), out double freeMemoryKB))
                 {
                     double totalMemoryGB = totalMemoryKB / (1024 * 1024);
                     double freeMemoryGB = freeMemoryKB / (1024 * 1024);
@@ -218,7 +215,7 @@ namespace DarkHub.UI
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Erro em GetMemoryInfo (PowerShell): {ex.Message}");
+                Debug.WriteLine($"Erro em GetMemoryInfo (WMI): {ex.Message}");
             }
 
             try

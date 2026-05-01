@@ -13,7 +13,7 @@ namespace DarkHub.UI
         private readonly TextBox _progressTextBox;
         private readonly Button _button;
 
-        public HighPerformanceModeActivator(Window owner, Button button)
+        public HighPerformanceModeActivator(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.HighPerformanceModeTitle);
@@ -90,7 +90,7 @@ namespace DarkHub.UI
             var ownerState = owner?.WindowState ?? WindowState.Normal;
             var isOwnerVisible = owner?.IsVisible ?? false;
 
-            Window window = null;
+            Window? window = null;
             bool? result = null;
 
             try
@@ -221,18 +221,24 @@ namespace DarkHub.UI
 
                 WindowFactory.AppendProgress(_progressTextBox, "Ativando Ultimate Performance Mode...");
                 string checkUltimate = ExecuteCommandWithOutput("powercfg -list", _progressTextBox);
-                if (!checkUltimate.Contains("Ultimate Performance"))
-                {
-                    ExecuteCommandWithOutput("powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61", _progressTextBox);
-                }
                 string ultimateGuid = ExtractGuid(checkUltimate, "Ultimate Performance");
+                if (string.IsNullOrEmpty(ultimateGuid))
+                {
+                    string duplicateOutput = ExecuteCommandWithOutput("powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61", _progressTextBox);
+                    ultimateGuid = ExtractGuid(duplicateOutput, null);
+                }
+                if (string.IsNullOrEmpty(ultimateGuid))
+                {
+                    checkUltimate = ExecuteCommandWithOutput("powercfg -list", _progressTextBox);
+                    ultimateGuid = ExtractGuid(checkUltimate, "Ultimate");
+                }
                 if (!string.IsNullOrEmpty(ultimateGuid))
                 {
                     ExecuteCommandWithOutput($"powercfg -setactive {ultimateGuid}", _progressTextBox);
                 }
 
                 WindowFactory.AppendProgress(_progressTextBox, "Desativando Core Isolation...");
-                ExecuteCommandWithOutput("reg add \"HKLM\\SOFTWARE\\CurrentControlSet\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v \"Enabled\" /t REG_DWORD /d 0 /f", _progressTextBox);
+                ExecuteCommandWithOutput("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v \"Enabled\" /t REG_DWORD /d 0 /f", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Desativando Storage Sense...");
                 ExecuteCommandWithOutput("reg add \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy\" /v \"01\" /t REG_DWORD /d 0 /f", _progressTextBox);
@@ -304,7 +310,7 @@ namespace DarkHub.UI
                 ExecuteCommandWithOutput("reg add \"HKLM\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection\" /v \"AllowTelemetry\" /t REG_DWORD /d 0 /f", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Desativando recursos de economia de energia em USB e Ethernet...");
-                ExecuteCommandWithOutput("powershell -Command \"$devicesUSB = Get-PnpDevice | Where-Object {$_.InstanceId -like '*USB\\ROOT*'} ; foreach ($device in $devicesUSB) { Get-CimInstance -ClassName MSPower_DeviceEnable -Namespace root\\wmi | Where-Object {$_.InstanceName -like '*'+$device.PnpDeviceID+'*'} | Set-CimInstance -Property @{Enable=$false} } ; $adapters = Get-NetAdapter -Physical | Get-NetAdapterPowerManagement ; foreach ($adapter in $adapters) { $adapter.AllowComputerToTurnOffDevice = 'Disabled' ; $adapter | Set-NetAdapterPowerManagement }\"", _progressTextBox);
+                ExecuteCommandWithOutput("powershell -NoProfile -ExecutionPolicy Bypass -Command \"$devicesUSB = Get-PnpDevice | Where-Object {$_.InstanceId -like '*USB\\ROOT*'} ; foreach ($device in $devicesUSB) { Get-CimInstance -ClassName MSPower_DeviceEnable -Namespace root\\wmi | Where-Object {$_.InstanceName -like '*'+$device.PnpDeviceID+'*'} | Set-CimInstance -Property @{Enable=$false} } ; $adapters = Get-NetAdapter -Physical | Get-NetAdapterPowerManagement ; foreach ($adapter in $adapters) { $adapter.AllowComputerToTurnOffDevice = 'Disabled' ; $adapter | Set-NetAdapterPowerManagement }\"", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Desativando HPET e ajustando timers...");
                 ExecuteCommandWithOutput("bcdedit /deletevalue useplatformclock", _progressTextBox);
@@ -332,7 +338,7 @@ namespace DarkHub.UI
                 ExecuteCommandWithOutput("powercfg -setactive 381b4222-f694-41f0-9685-ff5bb260df2e", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Reativando Core Isolation...");
-                ExecuteCommandWithOutput("reg add \"HKLM\\SOFTWARE\\CurrentControlSet\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v \"Enabled\" /t REG_DWORD /d 1 /f", _progressTextBox);
+                ExecuteCommandWithOutput("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v \"Enabled\" /t REG_DWORD /d 1 /f", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Reativando Storage Sense...");
                 ExecuteCommandWithOutput("reg add \"HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\StorageSense\\Parameters\\StoragePolicy\" /v \"01\" /t REG_DWORD /d 1 /f", _progressTextBox);
@@ -348,7 +354,7 @@ namespace DarkHub.UI
                 ExecuteCommandWithOutput("reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"AllowTelemetry\" /f", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Removendo bloqueios do Adobe do arquivo hosts...");
-                ExecuteCommandWithOutput("powershell -command \"(Get-Content $env:windir\\System32\\drivers\\etc\\hosts) -notmatch 'dove.isdumb.one' | Set-Content $env:windir\\System32\\drivers\\etc\\hosts\"", _progressTextBox);
+                ExecuteCommandWithOutput("powershell -NoProfile -ExecutionPolicy Bypass -Command \"(Get-Content $env:windir\\System32\\drivers\\etc\\hosts) -notmatch 'dove.isdumb.one' | Set-Content $env:windir\\System32\\drivers\\etc\\hosts\"", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Reativando NVIDIA Telemetry...");
                 ExecuteCommandWithOutput("reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\nvlddmkm\\Global\\Startup\" /v \"SendTelemetryData\" /t REG_DWORD /d 1 /f", _progressTextBox);
@@ -397,7 +403,7 @@ namespace DarkHub.UI
                 ExecuteCommandWithOutput("reg delete \"HKLM\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection\" /v \"AllowTelemetry\" /f", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Reativando recursos de economia de energia em USB e Ethernet...");
-                ExecuteCommandWithOutput("powershell -Command \"$devicesUSB = Get-PnpDevice | Where-Object {$_.InstanceId -like '*USB\\ROOT*'} ; foreach ($device in $devicesUSB) { Get-CimInstance -ClassName MSPower_DeviceEnable -Namespace root\\wmi | Where-Object {$_.InstanceName -like '*'+$device.PnpDeviceID+'*'} | Set-CimInstance -Property @{Enable=$true} } ; $adapters = Get-NetAdapter -Physical | Get-NetAdapterPowerManagement ; foreach ($adapter in $adapters) { $adapter.AllowComputerToTurnOffDevice = 'Enabled' ; $adapter | Set-NetAdapterPowerManagement }\"", _progressTextBox);
+                ExecuteCommandWithOutput("powershell -NoProfile -ExecutionPolicy Bypass -Command \"$devicesUSB = Get-PnpDevice | Where-Object {$_.InstanceId -like '*USB\\ROOT*'} ; foreach ($device in $devicesUSB) { Get-CimInstance -ClassName MSPower_DeviceEnable -Namespace root\\wmi | Where-Object {$_.InstanceName -like '*'+$device.PnpDeviceID+'*'} | Set-CimInstance -Property @{Enable=$true} } ; $adapters = Get-NetAdapter -Physical | Get-NetAdapterPowerManagement ; foreach ($adapter in $adapters) { $adapter.AllowComputerToTurnOffDevice = 'Enabled' ; $adapter | Set-NetAdapterPowerManagement }\"", _progressTextBox);
 
                 WindowFactory.AppendProgress(_progressTextBox, "Reativando HPET e restaurando timers...");
                 ExecuteCommandWithOutput("bcdedit /set useplatformclock yes", _progressTextBox);
@@ -432,9 +438,26 @@ namespace DarkHub.UI
 
                 process.Start();
 
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
+                Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                Task<string> errorTask = process.StandardError.ReadToEndAsync();
+
+                if (!process.WaitForExit((int)TimeSpan.FromMinutes(10).TotalMilliseconds))
+                {
+                    try
+                    {
+                        process.Kill(entireProcessTree: true);
+                    }
+                    catch
+                    {
+                    }
+
+                    WindowFactory.AppendProgress(progressTextBox, "Erro: comando excedeu o tempo limite.");
+                    return string.Empty;
+                }
+
+                Task.WaitAll(outputTask, errorTask);
+                string output = outputTask.Result;
+                string error = errorTask.Result;
 
                 if (!string.IsNullOrEmpty(output))
                     WindowFactory.AppendProgress(progressTextBox, output);
@@ -464,22 +487,23 @@ namespace DarkHub.UI
             }
         }
 
-        private static string ExtractGuid(string powercfgOutput, string planName)
+        private static string ExtractGuid(string powercfgOutput, string? planName)
         {
             var lines = powercfgOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in lines)
             {
-                if (line.Contains(planName))
+                if (string.IsNullOrEmpty(planName) || line.Contains(planName, StringComparison.OrdinalIgnoreCase))
                 {
-                    var parts = line.Split(' ');
+                    var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     foreach (var part in parts)
                     {
-                        if (Guid.TryParse(part, out _))
-                            return part;
+                        string candidate = part.Trim(':', '*', '(', ')');
+                        if (Guid.TryParse(candidate, out _))
+                            return candidate;
                     }
                 }
             }
-            return null;
+            return string.Empty;
         }
     }
 }

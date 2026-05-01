@@ -11,7 +11,7 @@ namespace DarkHub.UI
         private TextBox _progressTextBox;
         private readonly Button _button;
 
-        public GameRouteOptimizer(Window owner, Button button)
+        public GameRouteOptimizer(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.OptimizingGameRouteTitle);
@@ -24,7 +24,7 @@ namespace DarkHub.UI
 
             try
             {
-                string gameServerIP = await ShowIpInputDialogAsync();
+                string? gameServerIP = await ShowIpInputDialogAsync();
                 if (string.IsNullOrEmpty(gameServerIP))
                 {
                     _button.IsEnabled = true;
@@ -138,14 +138,14 @@ namespace DarkHub.UI
             }
         }
 
-        private async Task<string> ShowIpInputDialogAsync()
+        private async Task<string?> ShowIpInputDialogAsync()
         {
             var owner = _progressWindow.Owner;
 
             WindowState ownerState = WindowState.Normal;
             bool isOwnerVisible = false;
 
-            var tcs = new TaskCompletionSource<string>();
+            var tcs = new TaskCompletionSource<string?>();
 
             await Task.Run(() =>
             {

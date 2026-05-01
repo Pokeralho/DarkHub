@@ -12,7 +12,7 @@ namespace DarkHub.UI
         private readonly TextBox _progressTextBox;
         private readonly Button _button;
 
-        public TimerResolutionAdjuster(Window owner, Button button)
+        public TimerResolutionAdjuster(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.TimerResolutionTitle);
@@ -52,7 +52,7 @@ namespace DarkHub.UI
                     {
                         WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.ErrorAdjustingTimerAPI, ex.Message));
                         WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.RunningPowercfgFallback);
-                        ExecuteCommandWithOutput("powercfg /energy", _progressTextBox);
+                        await WindowFactory.ExecuteCommandWithOutputAsync("powercfg /energy", _progressTextBox, requiresAdmin: true);
                         WindowFactory.AppendProgress(_progressTextBox, ResourceManagerHelper.Instance.FallbackCompleted);
                     }
 
@@ -85,45 +85,6 @@ namespace DarkHub.UI
                         mainWindow.Topmost = false;
                     }
                 });
-            }
-        }
-
-        private static string ExecuteCommandWithOutput(string command, TextBox progressTextBox)
-        {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = $"/c {command}",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true,
-                        StandardOutputEncoding = Encoding.GetEncoding(850),
-                        StandardErrorEncoding = Encoding.GetEncoding(850)
-                    }
-                };
-
-                process.Start();
-
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-
-                if (!string.IsNullOrEmpty(output))
-                    WindowFactory.AppendProgress(progressTextBox, output);
-                if (!string.IsNullOrEmpty(error))
-                    WindowFactory.AppendProgress(progressTextBox, $"Erro: {error}");
-
-                return output + error;
-            }
-            catch (Exception ex)
-            {
-                WindowFactory.AppendProgress(progressTextBox, $"Erro ao executar comando: {ex.Message}");
-                return string.Empty;
             }
         }
 

@@ -11,7 +11,7 @@ namespace DarkHub.UI
         private TextBox _progressTextBox;
         private readonly Button _button;
 
-        public SpaceSnifferRunner(Window owner, Button button)
+        public SpaceSnifferRunner(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow(ResourceManagerHelper.Instance.RunningSpaceSnifferTitle);
@@ -59,12 +59,12 @@ namespace DarkHub.UI
         {
             await Task.Run(async () =>
             {
-                string assetsFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets");
+                string assetsFolder = Path.Combine(AppContext.BaseDirectory, "assets");
                 string executablePath = Path.Combine(assetsFolder, "SpaceSniffer.exe");
 
                 if (!Directory.Exists(assetsFolder))
                 {
-                    WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.AssetsFolderNotFound, AppDomain.CurrentDomain.BaseDirectory));
+                    WindowFactory.AppendProgress(_progressTextBox, string.Format(ResourceManagerHelper.Instance.AssetsFolderNotFound, AppContext.BaseDirectory));
                     throw new DirectoryNotFoundException("Pasta 'assets' não encontrada.");
                 }
 
@@ -79,11 +79,12 @@ namespace DarkHub.UI
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
                     FileName = executablePath,
+                    WorkingDirectory = assetsFolder,
                     UseShellExecute = true,
                     CreateNoWindow = false
                 };
 
-                using (Process process = Process.Start(psi))
+                using (Process? process = Process.Start(psi))
                 {
                     if (process == null)
                     {

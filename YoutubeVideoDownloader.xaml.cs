@@ -12,6 +12,7 @@ namespace DarkHub
     public partial class YoutubeVideoDownloader : Page
     {
         private readonly YoutubeDL? ytdl;
+        private readonly string? ytdlInitializationError;
 
         public YoutubeVideoDownloader()
         {
@@ -19,17 +20,33 @@ namespace DarkHub
             {
                 InitializeComponent();
                 this.Unloaded += YoutubeVideoDownloader_Unloaded;
+
+                string youtubeDlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "yt-dlp.exe");
+                string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
+                string outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "DarkHubDownloads");
+
+                var missingFiles = new List<string>();
+                if (!File.Exists(youtubeDlPath))
+                    missingFiles.Add(youtubeDlPath);
+                if (!File.Exists(ffmpegPath))
+                    missingFiles.Add(ffmpegPath);
+
+                if (missingFiles.Count > 0)
+                {
+                    ytdlInitializationError = $"Dependências opcionais do downloader não encontradas:{Environment.NewLine}{string.Join(Environment.NewLine, missingFiles)}";
+                    Loaded += (_, _) => statusTextBox.Text = ytdlInitializationError;
+                    ytdl = null;
+                    Debug.WriteLine(ytdlInitializationError);
+                    return;
+                }
+
                 ytdl = new YoutubeDL
                 {
-                    YoutubeDLPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "yt-dlp.exe"),
-                    FFmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe"),
-                    OutputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "DarkHubDownloads"),
+                    YoutubeDLPath = youtubeDlPath,
+                    FFmpegPath = ffmpegPath,
+                    OutputFolder = outputFolder,
                     OverwriteFiles = true
                 };
-                if (!File.Exists(ytdl.YoutubeDLPath))
-                    throw new FileNotFoundException("yt-dlp.exe não encontrado em 'assets'.");
-                if (!File.Exists(ytdl.FFmpegPath))
-                    throw new FileNotFoundException("ffmpeg.exe não encontrado em 'assets'.");
                 if (!Directory.Exists(ytdl.OutputFolder))
                     Directory.CreateDirectory(ytdl.OutputFolder);
                 Debug.WriteLine("YoutubeVideoDownloader inicializado com sucesso.");
@@ -58,7 +75,7 @@ namespace DarkHub
                 if (ytdl == null)
                 {
                     await Dispatcher.InvokeAsync(() =>
-                        statusTextBox.Text = ResourceManagerHelper.Instance.YoutubeDLNotInitializedError);
+                        statusTextBox.Text = ytdlInitializationError ?? ResourceManagerHelper.Instance.YoutubeDLNotInitializedError);
                     return;
                 }
 
@@ -79,7 +96,13 @@ namespace DarkHub
                     return;
                 }
 
-                string selectedFormat = selectedItem.Content.ToString().ToLower();
+                string selectedFormat = selectedItem.Content?.ToString()?.ToLowerInvariant() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(selectedFormat))
+                {
+                    await Dispatcher.InvokeAsync(() =>
+                        statusTextBox.Text = ResourceManagerHelper.Instance.NoFormatSelectedError);
+                    return;
+                }
 
                 await Dispatcher.InvokeAsync(() =>
                 {
@@ -187,7 +210,7 @@ namespace DarkHub
             {
                 Debug.WriteLine("Transcribe_Click iniciado.");
                 string url = urlTextBox.Text.Trim();
-                if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult))
+                if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out _))
                 {
                     await Dispatcher.InvokeAsync(() =>
                         statusTextBox.Text = ResourceManagerHelper.Instance.InvalidUrlError);
@@ -195,7 +218,7 @@ namespace DarkHub
                     return;
                 }
 
-                string videoId = ExtractVideoId(url);
+                string? videoId = ExtractVideoId(url);
                 if (string.IsNullOrEmpty(videoId))
                 {
                     await Dispatcher.InvokeAsync(() =>
@@ -215,30 +238,28 @@ namespace DarkHub
                 {
                     try
                     {
-                        using (var youtubeTranscriptApi = new YouTubeTranscriptApi())
+                        var youtubeTranscriptApi = new YouTubeTranscriptApi();
+                        var transcriptItems = youtubeTranscriptApi.GetTranscript(videoId, new[] { "pt", "en" });
+                        if (transcriptItems == null || !transcriptItems.Any())
                         {
-                            var transcriptItems = youtubeTranscriptApi.GetTranscript(videoId, new[] { "pt", "en" });
-                            if (transcriptItems == null || !transcriptItems.Any())
-                            {
-                                await Dispatcher.InvokeAsync(() =>
-                                    statusTextBox.Text = ResourceManagerHelper.Instance.YtVideoNoTranscript);
-                                Debug.WriteLine("Nenhuma transcrição encontrada para o vídeo.");
-                                return;
-                            }
-
-                            StringBuilder transcriptText = new StringBuilder();
-                            foreach (var item in transcriptItems)
-                            {
-                                transcriptText.AppendLine(item.Text);
-                            }
-
                             await Dispatcher.InvokeAsync(() =>
-                            {
-                                statusTextBox.Text = transcriptText.ToString();
-                                downloadListBox.Items[0] = ResourceManagerHelper.Instance.YtVideoTranscriptObtained;
-                            });
-                            Debug.WriteLine("Transcrição obtida com sucesso.");
+                                statusTextBox.Text = ResourceManagerHelper.Instance.YtVideoNoTranscript);
+                            Debug.WriteLine("Nenhuma transcrição encontrada para o vídeo.");
+                            return;
                         }
+
+                        StringBuilder transcriptText = new StringBuilder();
+                        foreach (var item in transcriptItems)
+                        {
+                            transcriptText.AppendLine(item.Text);
+                        }
+
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            statusTextBox.Text = transcriptText.ToString();
+                            downloadListBox.Items[0] = ResourceManagerHelper.Instance.YtVideoTranscriptObtained;
+                        });
+                        Debug.WriteLine("Transcrição obtida com sucesso.");
                     }
                     catch (Exception ex)
                     {
@@ -282,14 +303,14 @@ namespace DarkHub
             }
         }
 
-        private string ExtractVideoId(string url)
+        private string? ExtractVideoId(string url)
         {
             try
             {
                 Uri uri = new Uri(url);
                 string query = uri.Query;
                 var queryParams = System.Web.HttpUtility.ParseQueryString(query);
-                string videoId = queryParams["v"];
+                string? videoId = queryParams["v"];
                 if (!string.IsNullOrEmpty(videoId))
                     return videoId;
 

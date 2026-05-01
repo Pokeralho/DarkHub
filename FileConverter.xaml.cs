@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using PdfSharp.Drawing;
+using PDFtoImage;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
@@ -13,6 +14,13 @@ namespace DarkHub
     {
         private List<string> inputFiles = new();
         private string outputDir = string.Empty;
+        private static readonly PDFtoImage.RenderOptions PdfRenderOptions = new()
+        {
+            Dpi = 300,
+            WithAnnotations = true,
+            WithFormFill = true,
+            UseTiling = true
+        };
 
         public FileConverter()
         {
@@ -153,6 +161,11 @@ namespace DarkHub
                                 {
                                     ConvertMedia(inputFile, outputFile, outputFormat);
                                 }
+                                else if ((outputFormat == "gif" || IsVideoFormat(outputFormat) || IsAudioFormat(outputFormat)) &&
+                                         IsRawOrBinFormat(inputExtension.Replace(".", "")))
+                                {
+                                    ConvertBinOrRawToMedia(inputFile, outputFile, outputFormat);
+                                }
                                 else if (IsImageFormat(outputFormat))
                                 {
                                     if (inputExtension == ".pdf")
@@ -288,40 +301,20 @@ namespace DarkHub
         {
             try
             {
-                string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
-                if (!File.Exists(ffmpegPath))
-                    throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}");
-
-                string arguments = outputFormat switch
+                string ffmpegPath = GetRequiredFfmpegPath();
+                string[] arguments = outputFormat switch
                 {
-                    "mp3" => $"-i \"{inputFile}\" -vn -acodec mp3 -ab 192k \"{outputFile}\"",
-                    "wav" => $"-i \"{inputFile}\" -vn -acodec pcm_s16le \"{outputFile}\"",
-                    "aac" => $"-i \"{inputFile}\" -vn -acodec aac -ab 128k \"{outputFile}\"",
-                    "mp4" => $"-i \"{inputFile}\" -c:v libx264 -preset fast -c:a aac \"{outputFile}\"",
-                    "avi" => $"-i \"{inputFile}\" -c:v mpeg4 -c:a mp3 \"{outputFile}\"",
-                    "mkv" => $"-i \"{inputFile}\" -c:v copy -c:a copy \"{outputFile}\"",
-                    "gif" => $"-i \"{inputFile}\" -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 \"{outputFile}\"",
+                    "mp3" => ["-y", "-i", inputFile, "-vn", "-acodec", "mp3", "-ab", "192k", outputFile],
+                    "wav" => ["-y", "-i", inputFile, "-vn", "-acodec", "pcm_s16le", outputFile],
+                    "aac" => ["-y", "-i", inputFile, "-vn", "-acodec", "aac", "-ab", "128k", outputFile],
+                    "mp4" => ["-y", "-i", inputFile, "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", outputFile],
+                    "avi" => ["-y", "-i", inputFile, "-c:v", "mpeg4", "-c:a", "mp3", outputFile],
+                    "mkv" => ["-y", "-i", inputFile, "-c:v", "copy", "-c:a", "copy", outputFile],
+                    "gif" => ["-y", "-i", inputFile, "-vf", "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse", "-loop", "0", outputFile],
                     _ => throw new ArgumentException($"Formato de mídia não suportado: {outputFormat}")
                 };
 
-                using var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = ffmpegPath,
-                        Arguments = arguments,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-                if (process.ExitCode != 0)
-                    throw new Exception($"Erro na conversão de mídia: {error}\nSaída: {output}");
+                RunExternalProcess(ffmpegPath, arguments);
                 Debug.WriteLine($"Mídia convertida: {inputFile} -> {outputFile}");
             }
             catch (Exception ex)
@@ -382,40 +375,20 @@ namespace DarkHub
         {
             try
             {
-                string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
-                if (!File.Exists(ffmpegPath))
-                    throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}");
-
-                string arguments = outputFormat switch
+                string ffmpegPath = GetRequiredFfmpegPath();
+                string[] arguments = outputFormat switch
                 {
-                    "mp3" => $"-f s16le -ar 44100 -ac 1 -i \"{inputFile}\" -acodec mp3 -ab 192k \"{outputFile}\"",
-                    "wav" => $"-f s16le -ar 44100 -ac 1 -i \"{inputFile}\" -acodec pcm_s16le \"{outputFile}\"",
-                    "aac" => $"-f s16le -ar 44100 -ac 1 -i \"{inputFile}\" -acodec aac -ab 128k \"{outputFile}\"",
-                    "mp4" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v libx264 -preset fast -c:a aac \"{outputFile}\"",
-                    "avi" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v mpeg4 -c:a mp3 \"{outputFile}\"",
-                    "mkv" => $"-f rawvideo -pix_fmt yuv420p -s 1920x1080 -r 30 -i \"{inputFile}\" -c:v copy -c:a copy \"{outputFile}\"",
-                    "gif" => $"-f rawvideo -pix_fmt rgb24 -s 1920x1080 -r 30 -i \"{inputFile}\" -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 \"{outputFile}\"",
+                    "mp3" => ["-y", "-f", "s16le", "-ar", "44100", "-ac", "1", "-i", inputFile, "-acodec", "mp3", "-ab", "192k", outputFile],
+                    "wav" => ["-y", "-f", "s16le", "-ar", "44100", "-ac", "1", "-i", inputFile, "-acodec", "pcm_s16le", outputFile],
+                    "aac" => ["-y", "-f", "s16le", "-ar", "44100", "-ac", "1", "-i", inputFile, "-acodec", "aac", "-ab", "128k", outputFile],
+                    "mp4" => ["-y", "-f", "rawvideo", "-pix_fmt", "yuv420p", "-s", "1920x1080", "-r", "30", "-i", inputFile, "-c:v", "libx264", "-preset", "fast", "-c:a", "aac", outputFile],
+                    "avi" => ["-y", "-f", "rawvideo", "-pix_fmt", "yuv420p", "-s", "1920x1080", "-r", "30", "-i", inputFile, "-c:v", "mpeg4", "-c:a", "mp3", outputFile],
+                    "mkv" => ["-y", "-f", "rawvideo", "-pix_fmt", "yuv420p", "-s", "1920x1080", "-r", "30", "-i", inputFile, "-c:v", "copy", "-c:a", "copy", outputFile],
+                    "gif" => ["-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", "1920x1080", "-r", "30", "-i", inputFile, "-vf", "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse", "-loop", "0", outputFile],
                     _ => throw new ArgumentException($"Formato de mídia não suportado para .bin/.raw: {outputFormat}")
                 };
 
-                using var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = ffmpegPath,
-                        Arguments = arguments,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-                process.WaitForExit();
-                if (process.ExitCode != 0)
-                    throw new Exception($"Erro na conversão de .bin/.raw para mídia: {error}\nSaída: {output}");
+                RunExternalProcess(ffmpegPath, arguments);
                 Debug.WriteLine($"Arquivo .bin/.raw convertido para mídia: {inputFile} -> {outputFile}");
             }
             catch (Exception ex)
@@ -471,59 +444,47 @@ namespace DarkHub
                 }
                 else if (IsAudioFormat(inputExtension.Replace(".", "")) || IsVideoFormat(inputExtension.Replace(".", "")))
                 {
-                    string ffmpegPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assets", "ffmpeg.exe");
-                    if (!File.Exists(ffmpegPath))
-                        throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}");
+                    string ffmpegPath = GetRequiredFfmpegPath();
 
-                    string tempFile = Path.GetTempFileName();
-                    string arguments = inputExtension switch
+                    string tempFile = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.raw");
+                    string[] arguments = inputExtension switch
                     {
-                        ".mp3" or ".wav" or ".aac" => $"-i \"{inputFile}\" -f s16le -acodec pcm_s16le \"{tempFile}\"",
-                        ".mp4" or ".avi" or ".mkv" => $"-i \"{inputFile}\" -f rawvideo -pix_fmt yuv420p \"{tempFile}\"",
+                        ".mp3" or ".wav" or ".aac" => ["-y", "-i", inputFile, "-f", "s16le", "-acodec", "pcm_s16le", tempFile],
+                        ".mp4" or ".avi" or ".mkv" => ["-y", "-i", inputFile, "-f", "rawvideo", "-pix_fmt", "yuv420p", tempFile],
                         _ => throw new ArgumentException($"Formato de entrada não suportado para conversão para {outputFormat}: {inputExtension}")
                     };
 
-                    using (var process = new Process
+                    try
                     {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = ffmpegPath,
-                            Arguments = arguments,
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        }
-                    })
-                    {
-                        process.Start();
-                        string output = process.StandardOutput.ReadToEnd();
-                        string error = process.StandardError.ReadToEnd();
-                        process.WaitForExit();
-                        if (process.ExitCode != 0)
-                            throw new Exception($"Erro ao extrair dados brutos: {error}\nSaída: {output}");
-                    }
+                        RunExternalProcess(ffmpegPath, arguments);
 
-                    rawData = File.ReadAllBytes(tempFile);
-                    File.Delete(tempFile);
-                    File.WriteAllBytes(outputFile, rawData);
+                        rawData = File.ReadAllBytes(tempFile);
+                        File.WriteAllBytes(outputFile, rawData);
+                    }
+                    finally
+                    {
+                        if (File.Exists(tempFile))
+                            File.Delete(tempFile);
+                    }
                 }
                 else if (inputExtension == ".pdf")
                 {
-                    using (var document = PdfiumViewer.PdfDocument.Load(inputFile))
+                    string tempPng = Path.Combine(Path.GetTempPath(), $"darkhub-pdf-{Guid.NewGuid():N}.png");
+                    try
                     {
-                        using (var image = document.Render(0, 300, 300, true))
+                        Conversion.SavePng(tempPng, File.ReadAllBytes(inputFile), 0, options: PdfRenderOptions);
+                        using (var bitmap = new System.Drawing.Bitmap(tempPng))
                         {
-                            using (var bitmap = new System.Drawing.Bitmap(image))
-                            {
-                                int width = bitmap.Width;
-                                int height = bitmap.Height;
-                                int bytesPerPixel = 3;
-                                int dataSize = width * height * bytesPerPixel;
-                                rawData = new byte[dataSize];
+                            int width = bitmap.Width;
+                            int height = bitmap.Height;
+                            int bytesPerPixel = 3;
+                            int dataSize = width * height * bytesPerPixel;
+                            rawData = new byte[dataSize];
 
-                                var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, width, height),
-                                                                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                            var bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, width, height),
+                                                             ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                            try
+                            {
                                 IntPtr ptr = bitmapData.Scan0;
                                 int stride = bitmapData.Stride;
                                 for (int y = 0; y < height; y++)
@@ -532,19 +493,25 @@ namespace DarkHub
                                     int rowOffset = y * width * bytesPerPixel;
                                     System.Runtime.InteropServices.Marshal.Copy(rowPtr, rawData, rowOffset, width * bytesPerPixel);
                                 }
+                            }
+                            finally
+                            {
                                 bitmap.UnlockBits(bitmapData);
+                            }
 
-                                using (var stream = new FileStream(outputFile, FileMode.Create))
-                                {
-                                    using (var writer = new BinaryWriter(stream))
-                                    {
-                                        writer.Write(width);
-                                        writer.Write(height);
-                                        writer.Write(rawData);
-                                    }
-                                }
+                            using (var stream = new FileStream(outputFile, FileMode.Create))
+                            using (var writer = new BinaryWriter(stream))
+                            {
+                                writer.Write(width);
+                                writer.Write(height);
+                                writer.Write(rawData);
                             }
                         }
+                    }
+                    finally
+                    {
+                        if (File.Exists(tempPng))
+                            File.Delete(tempPng);
                     }
                 }
                 else
@@ -567,21 +534,19 @@ namespace DarkHub
             {
                 string outputBase = Path.Combine(string.IsNullOrEmpty(outputDir) ? Path.GetDirectoryName(inputFile) ?? string.Empty : outputDir,
                                                  Path.GetFileNameWithoutExtension(inputFile));
-                if (!Directory.Exists(Path.GetDirectoryName(outputBase)))
-                    Directory.CreateDirectory(Path.GetDirectoryName(outputBase));
+                string? targetDirectory = Path.GetDirectoryName(outputBase);
+                if (!string.IsNullOrWhiteSpace(targetDirectory) && !Directory.Exists(targetDirectory))
+                    Directory.CreateDirectory(targetDirectory);
 
-                using (var document = PdfiumViewer.PdfDocument.Load(inputFile))
+                byte[] pdfBytes = File.ReadAllBytes(inputFile);
+                int pageCount = Conversion.GetPageCount(pdfBytes);
+                for (int i = 0; i < pageCount; i++)
                 {
-                    for (int i = 0; i < document.PageCount; i++)
-                    {
-                        using (var image = document.Render(i, 300, 300, true))
-                        {
-                            string outputFile = $"{outputBase}-{i}.{imageFormat}";
-                            image.Save(outputFile, GetImageFormat(imageFormat));
-                            Debug.WriteLine($"Página {i + 1} convertida: {outputFile}");
-                        }
-                    }
+                    string outputFile = $"{outputBase}-{i + 1}.{imageFormat}";
+                    SavePdfPageAsImage(pdfBytes, i, outputFile, imageFormat);
+                    Debug.WriteLine($"Página {i + 1} convertida: {outputFile}");
                 }
+
                 Debug.WriteLine($"PDF convertido para imagens: {inputFile} -> {outputBase}-*.{imageFormat}");
             }
             catch (Exception ex)
@@ -591,11 +556,51 @@ namespace DarkHub
             }
         }
 
+        private void SavePdfPageAsImage(byte[] pdfBytes, int pageIndex, string outputFile, string imageFormat)
+        {
+            string normalizedFormat = imageFormat.TrimStart('.').ToLowerInvariant();
+            switch (normalizedFormat)
+            {
+                case "png":
+                    Conversion.SavePng(outputFile, pdfBytes, pageIndex, options: PdfRenderOptions);
+                    break;
+
+                case "jpg":
+                case "jpeg":
+                    Conversion.SaveJpeg(outputFile, pdfBytes, pageIndex, options: PdfRenderOptions);
+                    break;
+
+                case "webp":
+                    Conversion.SaveWebp(outputFile, pdfBytes, pageIndex, options: PdfRenderOptions);
+                    break;
+
+                default:
+                    SavePdfPageThroughPngFallback(pdfBytes, pageIndex, outputFile, normalizedFormat);
+                    break;
+            }
+        }
+
+        private void SavePdfPageThroughPngFallback(byte[] pdfBytes, int pageIndex, string outputFile, string imageFormat)
+        {
+            string tempPng = Path.Combine(Path.GetTempPath(), $"darkhub-pdf-{Guid.NewGuid():N}.png");
+            try
+            {
+                Conversion.SavePng(tempPng, pdfBytes, pageIndex, options: PdfRenderOptions);
+                using var image = System.Drawing.Image.FromFile(tempPng);
+                image.Save(outputFile, GetImageFormat(imageFormat));
+            }
+            finally
+            {
+                if (File.Exists(tempPng))
+                    File.Delete(tempPng);
+            }
+        }
+
         private void ConvertImagesToPdf(List<string> inputFiles, string outputFile)
         {
             try
             {
-                string outputDir = Path.GetDirectoryName(outputFile);
+                string? outputDir = Path.GetDirectoryName(outputFile);
                 if (!string.IsNullOrEmpty(outputDir) && !Directory.Exists(outputDir))
                     Directory.CreateDirectory(outputDir);
 
@@ -641,6 +646,57 @@ namespace DarkHub
             "tiff" => ImageFormat.Tiff,
             _ => throw new ArgumentException($"Formato de imagem não suportado: {format}")
         };
+
+        private static string GetRequiredFfmpegPath()
+        {
+            string ffmpegPath = Path.Combine(AppContext.BaseDirectory, "assets", "ffmpeg.exe");
+            return File.Exists(ffmpegPath)
+                ? ffmpegPath
+                : throw new FileNotFoundException($"FFmpeg (ffmpeg.exe) não encontrado em: {ffmpegPath}. Execute scripts\\Restore-LocalAssets.ps1 ou copie o ffmpeg.exe para a pasta assets.");
+        }
+
+        private static void RunExternalProcess(string fileName, IReadOnlyList<string> arguments)
+        {
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                }
+            };
+
+            foreach (string argument in arguments)
+                process.StartInfo.ArgumentList.Add(argument);
+
+            if (!process.Start())
+                throw new InvalidOperationException($"Não foi possível iniciar o processo: {fileName}");
+
+            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+            Task<string> errorTask = process.StandardError.ReadToEndAsync();
+
+            if (!process.WaitForExit((int)TimeSpan.FromMinutes(30).TotalMilliseconds))
+            {
+                try
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Erro ao finalizar processo travado: {ex.Message}");
+                }
+
+                throw new TimeoutException($"O processo excedeu o tempo limite: {fileName}");
+            }
+
+            Task.WaitAll(outputTask, errorTask);
+
+            if (process.ExitCode != 0)
+                throw new InvalidOperationException($"Processo retornou código {process.ExitCode}: {errorTask.Result}\nSaída: {outputTask.Result}");
+        }
 
         private Window CreateProgressWindow(int totalFiles)
         {

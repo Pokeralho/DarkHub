@@ -1513,9 +1513,6 @@
 	<data name="CopyToClipboardSuccess" xml:space="preserve">
 	<value>Texto copiado para a área de transferência!</value>
   </data>
-	<data name="ImageTextExtractorTitle" xml:space="preserve">
-	<value>Extrair Texto de Imagem</value>
-  </data>
 	<data name="NoProgramsFound" xml:space="preserve">
   <value>Nenhum programa instalado encontrado.</value>
 </data>

@@ -11,11 +11,13 @@ namespace DarkHubRmk
 {
     public partial class App : Application
     {
-        private const string CurrentVersion = "1.1.8";
-        private static readonly HttpClient httpClient = new HttpClient();
+        private const string CurrentVersion = "1.1.9";
+        private static readonly HttpClient httpClient = CreateHttpClient();
         private static readonly string AppUniqueId = "{DarkHub-Single-Instance-GUID-2023}";
-        private static Mutex _mutex;
-        private static readonly string LogPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "app_log.txt");
+        private static readonly string BaseDirectory = AppContext.BaseDirectory;
+        private static Mutex? _mutex;
+        private static readonly string LogPath = Path.Combine(BaseDirectory, "logs", "app_log.txt");
+        private static bool _isShuttingDown;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -47,11 +49,18 @@ namespace DarkHubRmk
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-                if (!VerifyDependencies())
+                var dependencyCheck = VerifyDependencies();
+                if (!dependencyCheck.CanStart)
                 {
-                    MessageBox.Show(ResourceManagerHelper.Instance.DependenciesNotFound, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    string details = string.Join(Environment.NewLine, dependencyCheck.MissingRequiredFiles);
+                    MessageBox.Show($"{ResourceManagerHelper.Instance.DependenciesNotFound}{Environment.NewLine}{Environment.NewLine}{details}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     Shutdown(1);
                     return;
+                }
+
+                foreach (string warning in dependencyCheck.OptionalWarnings)
+                {
+                    LogToFile(warning);
                 }
 
                 base.OnStartup(e);
@@ -80,50 +89,85 @@ namespace DarkHubRmk
             }
         }
 
-        private bool VerifyDependencies()
+        private DependencyCheckResult VerifyDependencies()
         {
+            var result = new DependencyCheckResult();
+
             try
             {
                 string[] requiredDirs = new[] { "assets", "tessdata", "fonts" };
                 foreach (var dir in requiredDirs)
                 {
-                    if (!Directory.Exists(dir))
+                    string path = Path.Combine(BaseDirectory, dir);
+                    if (!Directory.Exists(path))
                     {
-                        LogToFile($"Required directory not found: {dir}");
-                        return false;
+                        result.MissingRequiredFiles.Add(path);
+                        LogToFile($"Required directory not found: {path}");
                     }
                 }
 
                 string[] criticalFiles = new[]
                 {
-                    "assets\\ffmpeg.exe",
-                    "assets\\yt-dlp.exe",
                     "tessdata\\eng.traineddata",
                     "tessdata\\por.traineddata"
                 };
 
                 foreach (var file in criticalFiles)
                 {
-                    if (!File.Exists(file))
+                    string path = Path.Combine(BaseDirectory, file);
+                    if (!File.Exists(path))
                     {
-                        LogToFile($"Critical file not found: {file}");
-                        return false;
+                        result.MissingRequiredFiles.Add(path);
+                        LogToFile($"Critical file not found: {path}");
                     }
                 }
 
-                if (!RuntimeInformation.FrameworkDescription.Contains("8.0"))
+                string[] optionalFiles = new[]
                 {
-                    LogToFile("Runtime .NET 8.0 not found");
-                    return false;
+                    "assets\\ffmpeg.exe",
+                    "assets\\yt-dlp.exe",
+                    "assets\\CPU-Z.exe",
+                    "assets\\GPU-Z.exe",
+                    "assets\\HWiNFO64.exe",
+                    "assets\\DDU.exe",
+                    "assets\\settings\\Settings.xml"
+                };
+
+                foreach (var file in optionalFiles)
+                {
+                    string path = Path.Combine(BaseDirectory, file);
+                    if (!File.Exists(path))
+                    {
+                        result.OptionalWarnings.Add($"Optional dependency not found: {path}");
+                    }
                 }
 
-                return true;
+                if (!RuntimeInformation.FrameworkDescription.StartsWith(".NET 8.", StringComparison.OrdinalIgnoreCase) &&
+                    !RuntimeInformation.FrameworkDescription.StartsWith(".NET 9.", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.MissingRequiredFiles.Add($".NET runtime 8.0+ ({RuntimeInformation.FrameworkDescription})");
+                    LogToFile($"Runtime .NET 8.0+ not found: {RuntimeInformation.FrameworkDescription}");
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
                 LogToFile($"Error checking dependencies: {ex.Message}");
-                return false;
+                result.MissingRequiredFiles.Add(ex.Message);
+                return result;
             }
+        }
+
+        private static HttpClient CreateHttpClient()
+        {
+            var client = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(30)
+            };
+
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("DarkHub-Update-Checker/1.1.9");
+            return client;
         }
 
         private void SetupExceptionHandlers()
@@ -157,6 +201,13 @@ namespace DarkHubRmk
 
         private void CleanupAndExit()
         {
+            if (_isShuttingDown)
+            {
+                return;
+            }
+
+            _isShuttingDown = true;
+
             try
             {
                 LogToFile("Iniciando limpeza e encerramento do aplicativo.");
@@ -172,15 +223,15 @@ namespace DarkHubRmk
                 httpClient?.Dispose();
                 LogToFile("HttpClient descartado.");
 
-                Shutdown(0);
-                LogToFile("Shutdown chamado.");
-
-                Environment.Exit(0);
+                if (Current != null)
+                {
+                    Shutdown(0);
+                    LogToFile("Shutdown chamado.");
+                }
             }
             catch (Exception ex)
             {
                 LogToFile($"Erro durante a limpeza: {ex.Message}\nStackTrace: {ex.StackTrace}");
-                Environment.Exit(1);
             }
         }
 
@@ -250,9 +301,6 @@ namespace DarkHubRmk
             LogToFile("CheckForUpdatesAsync iniciado.");
             try
             {
-                httpClient.DefaultRequestHeaders.Add("User-Agent", "DarkHub-Update-Checker");
-                httpClient.Timeout = TimeSpan.FromSeconds(30);
-
                 LogToFile("Fazendo requisição à API do GitHub...");
                 string jsonResponse = await httpClient.GetStringAsync("https://api.github.com/repos/Pokeralho/DarkHub/releases/latest");
                 LogToFile("Resposta da API do GitHub recebida.");
@@ -260,7 +308,7 @@ namespace DarkHubRmk
                 using JsonDocument doc = JsonDocument.Parse(jsonResponse);
                 JsonElement root = doc.RootElement;
 
-                string latestVersion = root.GetProperty("tag_name").GetString()?.TrimStart('v');
+                string? latestVersion = root.GetProperty("tag_name").GetString()?.TrimStart('v');
                 LogToFile($"Versão atual: {CurrentVersion}, Versão mais recente: {latestVersion}");
 
                 if (string.IsNullOrEmpty(latestVersion))
@@ -272,10 +320,10 @@ namespace DarkHubRmk
                 if (IsNewerVersion(latestVersion, CurrentVersion))
                 {
                     LogToFile("Nova versão encontrada. Procurando arquivo de atualização...");
-                    string downloadUrl = null;
+                    string? downloadUrl = null;
                     foreach (var asset in root.GetProperty("assets").EnumerateArray())
                     {
-                        string assetName = asset.GetProperty("name").GetString();
+                        string? assetName = asset.GetProperty("name").GetString();
                         LogToFile($"Asset encontrado: {assetName}");
 
                         if (assetName == "DarkHub.Setup.exe")
@@ -371,8 +419,8 @@ namespace DarkHubRmk
                 string downloadPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", "DarkHub.Setup.exe");
                 LogToFile($"Caminho de destino: {downloadPath}");
 
-                string directory = Path.GetDirectoryName(downloadPath);
-                if (!Directory.Exists(directory))
+                string? directory = Path.GetDirectoryName(downloadPath);
+                if (!string.IsNullOrWhiteSpace(directory) && !Directory.Exists(directory))
                 {
                     LogToFile("Diretório de downloads não existe. Criando...");
                     Directory.CreateDirectory(directory);
@@ -417,6 +465,13 @@ namespace DarkHubRmk
                 MessageBox.Show("Erro ao baixar a atualização. Tente novamente mais tarde.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+    }
+
+    internal sealed class DependencyCheckResult
+    {
+        public List<string> MissingRequiredFiles { get; } = new();
+        public List<string> OptionalWarnings { get; } = new();
+        public bool CanStart => MissingRequiredFiles.Count == 0;
     }
 
     internal static class NativeMethods

@@ -11,12 +11,12 @@ namespace DarkHub
 {
     public class PasswordEntry
     {
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
-        public string EncryptedPassword { get; set; }
+        public string EncryptedPassword { get; set; } = string.Empty;
         public int Id { get; set; }
-        public string Password { get; set; }
-        public string Title { get; set; }
+        public string Password { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
     }
 
     public partial class PasswordManager : Page
@@ -236,17 +236,17 @@ namespace DarkHub
     "young", "youth", "zebra", "zero", "zone", "zoo"
 };
 
-        private TextBox confirmPasswordTextBox;
+        private TextBox confirmPasswordTextBox = null!;
         private bool isConfirmPasswordVisible = false;
         private bool isMasterPasswordVisible = false;
         private bool isNewPasswordVisible = false;
 
         private DateTime LastActivity;
 
-        private string MasterKey;
-        private TextBox masterPasswordTextBox;
-        private TextBox newPasswordTextBox;
-        private string[] RecoveryWords;
+        private string MasterKey = string.Empty;
+        private TextBox masterPasswordTextBox = null!;
+        private TextBox newPasswordTextBox = null!;
+        private string[] RecoveryWords = Array.Empty<string>();
 
         public PasswordManager()
         {
@@ -328,7 +328,7 @@ namespace DarkHub
                 {
                     MasterKey = DeriveKey(inputPassword);
                     string computedMasterKeyId = Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(MasterKey)));
-                    string storedMasterKeyId = GetStoredMasterKeyId();
+                    string? storedMasterKeyId = GetStoredMasterKeyId();
 
                     if (storedMasterKeyId != null && computedMasterKeyId != storedMasterKeyId)
                     {
@@ -376,7 +376,7 @@ namespace DarkHub
             return count > 0;
         }
 
-        private string GetStoredMasterKeyId()
+        private string? GetStoredMasterKeyId()
         {
             if (File.Exists(MasterKeyIdPath))
                 return File.ReadAllText(MasterKeyIdPath);
@@ -420,11 +420,11 @@ namespace DarkHub
             }
         }
 
-        private void CheckInactivity(object sender, EventArgs e)
+        private void CheckInactivity(object? sender, EventArgs e)
         {
             if (MainPanel.Visibility == Visibility.Visible && (DateTime.Now - LastActivity).TotalSeconds > InactivityTimeout)
             {
-                LogoutButton_Click(null, null);
+                Logout();
                 MessageBox.Show(ResourceManagerHelper.Instance.Sessãobloqueadaporin36, "Bloqueio", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -970,17 +970,17 @@ namespace DarkHub
         private string GenerateRandomPassword(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-            var random = new Random();
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            return new string(Enumerable.Range(0, length)
+                .Select(_ => chars[RandomNumberGenerator.GetInt32(chars.Length)])
+                .ToArray());
         }
 
         private string[] GenerateRecoveryWords(int count)
         {
-            var random = new Random();
             var selectedWords = new HashSet<string>();
             while (selectedWords.Count < count)
             {
-                selectedWords.Add(WordList[random.Next(WordList.Length)]);
+                selectedWords.Add(WordList[RandomNumberGenerator.GetInt32(WordList.Length)]);
             }
             return selectedWords.ToArray();
         }
@@ -1013,9 +1013,14 @@ namespace DarkHub
             Authenticate();
         }
 
-        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        private void LogoutButton_Click(object? sender, RoutedEventArgs? e)
         {
-            MasterKey = null;
+            Logout();
+        }
+
+        private void Logout()
+        {
+            MasterKey = string.Empty;
             MainPanel.Visibility = Visibility.Collapsed;
             LoginPanel.Visibility = Visibility.Visible;
             MasterPasswordBox.Password = "";

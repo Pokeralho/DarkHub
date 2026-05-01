@@ -11,21 +11,20 @@ namespace DarkHub
 {
     public partial class SystemMonitor : Page
     {
-        private readonly DispatcherTimer updateTimer;
-        private readonly PerformanceCounter cpuCounter;
-        private readonly PerformanceCounter ramCounter;
-        private readonly PerformanceCounter diskReadCounter;
-        private readonly PerformanceCounter diskWriteCounter;
+        private readonly DispatcherTimer updateTimer = new();
+        private readonly PerformanceCounter? cpuCounter;
+        private readonly PerformanceCounter? ramCounter;
+        private readonly PerformanceCounter? diskReadCounter;
+        private readonly PerformanceCounter? diskWriteCounter;
         private readonly Dictionary<string, PerformanceCounter> gpuCounters;
-        private PerformanceCounter gpuLoadCounter;
 
-        private string cpuNameText, cpuCoresText, gpuNameText, osInfoText;
+        private string cpuNameText = string.Empty, cpuCoresText = string.Empty, gpuNameText = string.Empty, osInfoText = string.Empty;
         private ulong ramTotalValue, gpuMemoryValue;
         private bool isInitialized = false;
         private DateTime lastDiskInfoUpdate = DateTime.MinValue;
         private (ulong TotalSize, ulong UsedSize, ulong FreeSize) cachedDiskInfo;
         private DateTime lastNetworkInfoUpdate = DateTime.MinValue;
-        private (string AdapterName, string Speed, string IP) cachedNetworkInfo;
+        private (string AdapterName, string Speed, string IP) cachedNetworkInfo = ("-", "-", "-");
         private DateTime lastGPUInfoUpdate = DateTime.MinValue;
         private float cachedGPUUsage = 0;
         private float cachedVRAMUsage = 0;
@@ -38,17 +37,16 @@ namespace DarkHub
 
             try
             {
-                cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-                ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-                diskReadCounter = new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
-                diskWriteCounter = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
+                cpuCounter = TryCreateCounter("Processor", "% Processor Time", "_Total");
+                ramCounter = TryCreateCounter("Memory", "Available MBytes", string.Empty);
+                diskReadCounter = TryCreateCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
+                diskWriteCounter = TryCreateCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
 
-                cpuCounter.NextValue();
-                ramCounter.NextValue();
-                diskReadCounter.NextValue();
-                diskWriteCounter.NextValue();
+                cpuCounter?.NextValue();
+                ramCounter?.NextValue();
+                diskReadCounter?.NextValue();
+                diskWriteCounter?.NextValue();
 
-                updateTimer = new DispatcherTimer();
                 updateTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 updateTimer.Tick += UpdateTimer_Tick;
 
@@ -58,6 +56,37 @@ namespace DarkHub
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro ao inicializar contadores: {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        private static PerformanceCounter? TryCreateCounter(string categoryName, string counterName, string instanceName)
+        {
+            try
+            {
+                return string.IsNullOrEmpty(instanceName)
+                    ? new PerformanceCounter(categoryName, counterName)
+                    : new PerformanceCounter(categoryName, counterName, instanceName);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Contador indisponível ({categoryName}/{counterName}/{instanceName}): {ex.Message}");
+                return null;
+            }
+        }
+
+        private static float NextCounterValue(PerformanceCounter? counter)
+        {
+            if (counter == null)
+                return 0;
+
+            try
+            {
+                return Math.Max(0, counter.NextValue());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao ler contador {counter.CategoryName}/{counter.CounterName}: {ex.Message}");
+                return 0;
             }
         }
 
@@ -209,7 +238,7 @@ namespace DarkHub
             }
         }
 
-        private async Task LoadGPUInfo()
+        private void LoadGPUInfo()
         {
             try
             {
@@ -219,15 +248,12 @@ namespace DarkHub
                     if (gpu != null)
                     {
                         gpuNameText = string.Format(ResourceManagerHelper.Instance.GPUNameFormat, gpu["Name"]);
-                        gpuMemoryValue = Convert.ToUInt64(gpu["AdapterRAM"]) * 2;
+                        gpuMemoryValue = GetAdapterRamBytes(gpu);
 
-                        if (gpuMemoryValue == 4294967295 || gpuMemoryValue < 8UL * 1024 * 1024 * 1024)
+                        var vramFromRegistry = GetVRAMFromRegistry();
+                        if (vramFromRegistry.HasValue && vramFromRegistry.Value > gpuMemoryValue)
                         {
-                            var vramFromRegistry = await GetVRAMFromRegistry();
-                            if (vramFromRegistry.HasValue)
-                            {
-                                gpuMemoryValue = vramFromRegistry.Value;
-                            }
+                            gpuMemoryValue = vramFromRegistry.Value;
                         }
 
                         InitializeGPUCounters();
@@ -246,11 +272,26 @@ namespace DarkHub
             }
         }
 
+        private static ulong GetAdapterRamBytes(ManagementObject gpu)
+        {
+            try
+            {
+                object? adapterRam = gpu["AdapterRAM"];
+                return adapterRam == null ? 0 : Convert.ToUInt64(adapterRam);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao ler AdapterRAM: {ex.Message}");
+                return 0;
+            }
+        }
+
         private void LoadSystemInfo()
         {
-            osInfoText = string.Format(ResourceManagerHelper.Instance.SystemVersionFormat, Environment.OSVersion.VersionString) + "\n" +
+            var osDetails = GetWindowsVersionDetails();
+            osInfoText = string.Format(ResourceManagerHelper.Instance.SystemVersionFormat, osDetails.DisplayName) + "\n" +
                          string.Format(ResourceManagerHelper.Instance.SystemArchitectureFormat, Environment.Is64BitOperatingSystem ? "x64" : "x86") + "\n" +
-                         string.Format(ResourceManagerHelper.Instance.SystemBuildFormat, Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", ResourceManagerHelper.Instance.Unknown));
+                         string.Format(ResourceManagerHelper.Instance.SystemBuildFormat, osDetails.Build);
 
             using (var mbSearcher = new ManagementObjectSearcher("SELECT Product, Manufacturer FROM Win32_BaseBoard"))
             {
@@ -272,6 +313,55 @@ namespace DarkHub
                 osArchitecture.Text = osInfoText.Split('\n')[1];
                 osBuild.Text = string.Join("\n", osInfoText.Split('\n').Skip(2));
             });
+        }
+
+        private static (string DisplayName, string Build) GetWindowsVersionDetails()
+        {
+            string caption = "Windows";
+            string version = Environment.OSVersion.Version.ToString();
+            string build = Environment.OSVersion.Version.Build.ToString();
+
+            try
+            {
+                using var searcher = new ManagementObjectSearcher("SELECT Caption, Version, BuildNumber FROM Win32_OperatingSystem");
+                var os = searcher.Get().Cast<ManagementObject>().FirstOrDefault();
+                if (os != null)
+                {
+                    caption = os["Caption"]?.ToString() ?? caption;
+                    version = os["Version"]?.ToString() ?? version;
+                    build = os["BuildNumber"]?.ToString() ?? build;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter versão do Windows via WMI: {ex.Message}");
+            }
+
+            string displayVersion = ReadRegistryString(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "DisplayVersion");
+            string ubr = ReadRegistryString(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "UBR");
+            string currentBuild = ReadRegistryString(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuildNumber");
+
+            if (!string.IsNullOrWhiteSpace(currentBuild))
+            {
+                build = currentBuild;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ubr))
+            {
+                build = $"{build}.{ubr}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(displayVersion) && !caption.Contains(displayVersion, StringComparison.OrdinalIgnoreCase))
+            {
+                caption = $"{caption} {displayVersion}";
+            }
+
+            return ($"{caption} ({version})", build);
+        }
+
+        private static string ReadRegistryString(string keyName, string valueName)
+        {
+            return Registry.GetValue(keyName, valueName, null)?.ToString() ?? string.Empty;
         }
 
         private void InitializeGPUCounters()
@@ -345,22 +435,6 @@ namespace DarkHub
                     }
                 }
 
-                if (gpuLoadCounter != null)
-                {
-                    try
-                    {
-                        float gpuLoad = gpuLoadCounter.NextValue();
-                        if (gpuLoad > 0)
-                        {
-                            Debug.WriteLine($"Uso GPU (contador principal): {gpuLoad:F1}%");
-                            return gpuLoad;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Erro ao ler contador principal: {ex.Message}");
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -378,7 +452,7 @@ namespace DarkHub
                     var gpu = searcher.Get().Cast<ManagementObject>().FirstOrDefault();
                     if (gpu != null)
                     {
-                        ulong totalVRAM = Convert.ToUInt64(gpu["AdapterRAM"]) * 2;
+                        ulong totalVRAM = GetAdapterRamBytes(gpu);
                         if (totalVRAM > 0)
                         {
                             float gpuUsage = GetGPUUsage();
@@ -479,7 +553,8 @@ namespace DarkHub
             long fileSize = new FileInfo(tempFile).Length;
             for (int i = 0; i < 1000; i++)
             {
-                long position = rand.NextInt64(fileSize - bufferSize);
+                long maxStartPosition = Math.Max(0, fileSize - bufferSize);
+                long position = maxStartPosition == 0 ? 0 : rand.NextInt64(maxStartPosition);
                 using (var fs = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.None, 131072))
                 {
                     fs.Seek(position, SeekOrigin.Begin);
@@ -525,7 +600,7 @@ namespace DarkHub
             return mpixelsPerSec;
         }
 
-        private async Task<ulong?> GetVRAMFromRegistry()
+        private ulong? GetVRAMFromRegistry()
         {
             try
             {
@@ -559,7 +634,7 @@ namespace DarkHub
             return string.Format(ResourceManagerHelper.Instance.ByteFormat, size, sizes[order]);
         }
 
-        private void UpdateTimer_Tick(object sender, EventArgs e)
+        private void UpdateTimer_Tick(object? sender, EventArgs e)
         {
             UpdatePerformanceInfo();
         }
@@ -571,9 +646,12 @@ namespace DarkHub
 
             try
             {
-                float cpuUsage = cpuCounter.NextValue();
-                ulong ramAvailable = (ulong)ramCounter.NextValue() * 1024 * 1024;
-                ulong ramUsedValue = ramTotalValue - ramAvailable;
+                float cpuUsage = Math.Clamp(NextCounterValue(cpuCounter), 0, 100);
+                ulong ramAvailable = (ulong)NextCounterValue(ramCounter) * 1024 * 1024;
+                if (ramAvailable == 0)
+                    ramAvailable = GetAvailableMemoryFromWmi();
+
+                ulong ramUsedValue = ramTotalValue > ramAvailable ? ramTotalValue - ramAvailable : 0;
 
                 Application.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -581,7 +659,7 @@ namespace DarkHub
                     cpuProgress.Value = cpuUsage;
                     ramUsed.Text = string.Format(ResourceManagerHelper.Instance.RAMUsedFormat, FormatBytes(ramUsedValue));
                     ramFree.Text = string.Format(ResourceManagerHelper.Instance.RAMFreeFormat, FormatBytes(ramAvailable));
-                    ramProgress.Value = (double)ramUsedValue / ramTotalValue * 100;
+                    ramProgress.Value = ramTotalValue == 0 ? 0 : (double)ramUsedValue / ramTotalValue * 100;
                 });
 
                 if ((DateTime.Now - lastDiskInfoUpdate).TotalSeconds >= 2)
@@ -590,7 +668,7 @@ namespace DarkHub
                     lastDiskInfoUpdate = DateTime.Now;
                 }
 
-                float diskActivity = (diskReadCounter.NextValue() + diskWriteCounter.NextValue()) / 1024 / 1024;
+                float diskActivity = (NextCounterValue(diskReadCounter) + NextCounterValue(diskWriteCounter)) / 1024 / 1024;
 
                 Application.Current.Dispatcher.BeginInvoke(() =>
                 {
@@ -598,13 +676,13 @@ namespace DarkHub
                     diskUsed.Text = string.Format(ResourceManagerHelper.Instance.DiskUsedFormat, FormatBytes(cachedDiskInfo.UsedSize));
                     diskFree.Text = string.Format(ResourceManagerHelper.Instance.DiskFreeFormat, FormatBytes(cachedDiskInfo.FreeSize));
                     diskUsage.Text = string.Format(ResourceManagerHelper.Instance.DiskActivityFormat, diskActivity);
-                    diskProgress.Value = Math.Min(diskActivity / 100, 100);
+                    diskProgress.Value = Math.Clamp(diskActivity, 0, 100);
                 });
 
                 if ((DateTime.Now - lastGPUInfoUpdate).TotalSeconds >= 1)
                 {
-                    cachedGPUUsage = GetGPUUsage() * 4.1f;
-                    cachedVRAMUsage = GetVRAMUsage();
+                    cachedGPUUsage = Math.Clamp(GetGPUUsage(), 0, 100);
+                    cachedVRAMUsage = Math.Clamp(GetVRAMUsage(), 0, 100);
                     lastGPUInfoUpdate = DateTime.Now;
                 }
 
@@ -612,7 +690,7 @@ namespace DarkHub
                 {
                     gpuUsage.Text = string.Format(ResourceManagerHelper.Instance.GPUUsageFormat, cachedGPUUsage) + "\n" +
                                     string.Format(ResourceManagerHelper.Instance.VRAMUsageFormat, cachedVRAMUsage);
-                    gpuProgress.Value = cachedGPUUsage;
+                    gpuProgress.Value = Math.Clamp(cachedGPUUsage, 0, 100);
                 });
 
                 if ((DateTime.Now - lastNetworkInfoUpdate).TotalSeconds >= 3)
@@ -635,6 +713,21 @@ namespace DarkHub
             finally
             {
                 isUpdating = false;
+            }
+        }
+
+        private static ulong GetAvailableMemoryFromWmi()
+        {
+            try
+            {
+                using var searcher = new ManagementObjectSearcher("SELECT FreePhysicalMemory FROM Win32_OperatingSystem");
+                var os = searcher.Get().Cast<ManagementObject>().FirstOrDefault();
+                return Convert.ToUInt64(os?["FreePhysicalMemory"] ?? 0) * 1024;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Erro ao obter memória livre via WMI: {ex.Message}");
+                return 0;
             }
         }
 
@@ -685,7 +778,8 @@ namespace DarkHub
         {
             try
             {
-                var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.IsReady && d.Name.Contains(Path.GetPathRoot(Environment.SystemDirectory)));
+                string systemRoot = Path.GetPathRoot(Environment.SystemDirectory) ?? string.Empty;
+                var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.IsReady && d.Name.Contains(systemRoot, StringComparison.OrdinalIgnoreCase));
                 if (drive != null)
                 {
                     return ((ulong)drive.TotalSize, (ulong)(drive.TotalSize - drive.AvailableFreeSpace), (ulong)drive.AvailableFreeSpace);
@@ -721,7 +815,7 @@ namespace DarkHub
 
         private void MainScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = sender as ScrollViewer;
+            ScrollViewer? scrollViewer = sender as ScrollViewer;
             Border scrollIndicator = ScrollIndicator;
 
             if (scrollViewer != null && scrollIndicator != null)

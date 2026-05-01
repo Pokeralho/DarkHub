@@ -1,4 +1,4 @@
-﻿using iTextSharp.text.pdf;
+﻿using iText.Kernel.Pdf;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Drawing.Imaging;
@@ -15,8 +15,6 @@ namespace DarkHub
         private string? selectedFilePath;
         private List<MetadataItem> metadataItems = new();
         private readonly Dictionary<int, string> imageMetadataProperties = new();
-        private readonly Dictionary<string, string> documentMetadata = new();
-
         public MetaDataEditor()
         {
             try
@@ -286,22 +284,34 @@ namespace DarkHub
             try
             {
                 using var reader = new PdfReader(selectedFilePath!);
-                var info = reader.Info;
-                foreach (var key in info.Keys)
-                {
-                    metadataItems.Add(new MetadataItem
-                    {
-                        PropertyName = key,
-                        Value = info[key] ?? "N/A",
-                        FileType = "PDF"
-                    });
-                }
+                using var document = new PdfDocument(reader);
+                var info = document.GetDocumentInfo();
+
+                AddPdfMetadataItem("Title", info.GetTitle());
+                AddPdfMetadataItem("Author", info.GetAuthor());
+                AddPdfMetadataItem("Subject", info.GetSubject());
+                AddPdfMetadataItem("Keywords", info.GetKeywords());
+                AddPdfMetadataItem("Creator", info.GetCreator());
+                AddPdfMetadataItem("Producer", info.GetProducer());
+                AddPdfMetadataItem("CreationDate", info.GetMoreInfo("CreationDate"));
+                AddPdfMetadataItem("ModDate", info.GetMoreInfo("ModDate"));
+                AddPdfMetadataItem("Trapped", info.GetTrapped()?.ToString());
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro em LoadPdfMetadata {ex.Message}");
                 throw;
             }
+        }
+
+        private void AddPdfMetadataItem(string propertyName, string? value)
+        {
+            metadataItems.Add(new MetadataItem
+            {
+                PropertyName = propertyName,
+                Value = string.IsNullOrWhiteSpace(value) ? "N/A" : value,
+                FileType = "PDF"
+            });
         }
 
         private void LoadDocxMetadata()
@@ -390,16 +400,21 @@ namespace DarkHub
         {
             try
             {
+                byte[] value = propItem.Value ?? Array.Empty<byte>();
+                if (value.Length == 0)
+                    return "N/A";
+
                 switch (propItem.Type)
                 {
                     case 1:
-                        return propItem.Value[0].ToString();
+                        return value[0].ToString();
 
                     case 2:
-                        return Encoding.ASCII.GetString(propItem.Value).TrimEnd('\0');
+                        return Encoding.ASCII.GetString(value).TrimEnd('\0');
 
                     case 3:
-                        ushort shortValue = BitConverter.ToUInt16(propItem.Value, 0);
+                        if (value.Length < sizeof(ushort)) return "Invalid Short";
+                        ushort shortValue = BitConverter.ToUInt16(value, 0);
                         return propItem.Id == 0x0112 ? GetOrientationDescription(shortValue) :
                                propItem.Id == 0x8822 ? GetExposureProgramDescription(shortValue) :
                                propItem.Id == 0x9207 ? GetMeteringModeDescription(shortValue) :
@@ -407,23 +422,26 @@ namespace DarkHub
                                propItem.Id == 0x9209 ? GetFlashDescription(shortValue) : shortValue.ToString();
 
                     case 4:
-                        return BitConverter.ToUInt32(propItem.Value, 0).ToString();
+                        if (value.Length < sizeof(uint)) return "Invalid Long";
+                        return BitConverter.ToUInt32(value, 0).ToString();
 
                     case 5:
-                        uint num = BitConverter.ToUInt32(propItem.Value, 0);
-                        uint den = BitConverter.ToUInt32(propItem.Value, 4);
+                        if (value.Length < 8) return "Invalid Rational";
+                        uint num = BitConverter.ToUInt32(value, 0);
+                        uint den = BitConverter.ToUInt32(value, 4);
                         return den == 0 ? "Invalid Rational" : $"{num}/{den} ({(double)num / den})";
 
                     case 7:
                         if (propItem.Id == 0xA000)
-                            return Encoding.ASCII.GetString(propItem.Value).TrimEnd('\0');
+                            return Encoding.ASCII.GetString(value).TrimEnd('\0');
                         else if (propItem.Id == 0x927C)
-                            return BitConverter.ToString(propItem.Value);
-                        return BitConverter.ToString(propItem.Value);
+                            return BitConverter.ToString(value);
+                        return BitConverter.ToString(value);
 
                     case 10:
-                        int sNum = BitConverter.ToInt32(propItem.Value, 0);
-                        int sDen = BitConverter.ToInt32(propItem.Value, 4);
+                        if (value.Length < 8) return "Invalid SRational";
+                        int sNum = BitConverter.ToInt32(value, 0);
+                        int sDen = BitConverter.ToInt32(value, 4);
                         return sDen == 0 ? "Invalid SRational" : $"{sNum}/{sDen} ({(double)sNum / sDen})";
 
                     default:
@@ -636,7 +654,7 @@ namespace DarkHub
                             break;
 
                         case 5:
-                            string[] rationalParts = item.Value.Split('/');
+                            string[] rationalParts = (item.Value ?? string.Empty).Split('/');
                             if (rationalParts.Length == 2 &&
                                 uint.TryParse(rationalParts[0], out uint num) &&
                                 uint.TryParse(rationalParts[1], out uint den))
@@ -672,24 +690,60 @@ namespace DarkHub
         {
             try
             {
-                using var reader = new PdfReader(selectedFilePath!);
-                using var stream = new FileStream(selectedFilePath + ".temp", FileMode.Create, FileAccess.Write);
-                using var stamper = new PdfStamper(reader, stream);
-                var info = reader.Info;
-                foreach (MetadataItem item in metadataItems)
+                string tempPath = Path.Combine(
+                    Path.GetDirectoryName(selectedFilePath!) ?? AppContext.BaseDirectory,
+                    Path.GetFileName(selectedFilePath!) + ".tmp");
+
+                using (var reader = new PdfReader(selectedFilePath!))
+                using (var writer = new PdfWriter(tempPath))
+                using (var document = new PdfDocument(reader, writer))
                 {
-                    if (item.FileType != "PDF") continue;
-                    info[item.PropertyName] = item.Value;
+                    var info = document.GetDocumentInfo();
+
+                    foreach (MetadataItem item in metadataItems)
+                    {
+                        if (item.FileType != "PDF" || string.IsNullOrWhiteSpace(item.PropertyName)) continue;
+                        SetPdfMetadata(info, item.PropertyName, item.Value);
+                    }
                 }
-                stamper.MoreInfo = info;
-                stamper.Close();
-                System.IO.File.Copy(selectedFilePath + ".temp", selectedFilePath!, true);
-                System.IO.File.Delete(selectedFilePath + ".temp");
+
+                System.IO.File.Copy(tempPath, selectedFilePath!, true);
+                System.IO.File.Delete(tempPath);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Erro em SavePdfMetadata {ex.Message}");
                 throw;
+            }
+        }
+
+        private static void SetPdfMetadata(PdfDocumentInfo info, string propertyName, string? value)
+        {
+            string metadataValue = value == "N/A" ? string.Empty : value ?? string.Empty;
+
+            switch (propertyName)
+            {
+                case "Title":
+                    info.SetTitle(metadataValue);
+                    break;
+                case "Author":
+                    info.SetAuthor(metadataValue);
+                    break;
+                case "Subject":
+                    info.SetSubject(metadataValue);
+                    break;
+                case "Keywords":
+                    info.SetKeywords(metadataValue);
+                    break;
+                case "Creator":
+                    info.SetCreator(metadataValue);
+                    break;
+                case "Producer":
+                    info.SetProducer(metadataValue);
+                    break;
+                default:
+                    info.SetMoreInfo(propertyName, metadataValue);
+                    break;
             }
         }
 
@@ -783,17 +837,17 @@ namespace DarkHub
                             break;
 
                         case "Artists":
-                            tag.Performers = item.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                            tag.Performers = (item.Value ?? string.Empty).Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                                 .Select(s => s.Trim()).ToArray();
                             break;
 
                         case "Album Artists":
-                            tag.AlbumArtists = item.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                            tag.AlbumArtists = (item.Value ?? string.Empty).Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                                 .Select(s => s.Trim()).ToArray();
                             break;
 
                         case "Genres":
-                            tag.Genres = item.Value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                            tag.Genres = (item.Value ?? string.Empty).Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                                 .Select(s => s.Trim()).ToArray();
                             break;
 

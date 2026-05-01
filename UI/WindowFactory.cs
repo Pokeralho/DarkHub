@@ -127,7 +127,7 @@ namespace DarkHub.UI
             return listBox;
         }
 
-        public static CheckBox CreateStyledCheckBox(string content, object tag = null, bool isChecked = false)
+        public static CheckBox CreateStyledCheckBox(string content, object? tag = null, bool isChecked = false)
         {
             var checkBox = new CheckBox
             {
@@ -202,9 +202,26 @@ namespace DarkHub.UI
                 using (Process process = new Process { StartInfo = processInfo })
                 {
                     process.Start();
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-                    process.WaitForExit();
+                    Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                    Task<string> errorTask = process.StandardError.ReadToEndAsync();
+
+                    if (!process.WaitForExit((int)TimeSpan.FromMinutes(10).TotalMilliseconds))
+                    {
+                        try
+                        {
+                            process.Kill(entireProcessTree: true);
+                        }
+                        catch
+                        {
+                        }
+
+                        AppendProgress(progressTextBox, $"Tempo limite excedido ao executar '{command}'.");
+                        return "Erro: comando excedeu o tempo limite.";
+                    }
+
+                    Task.WaitAll(outputTask, errorTask);
+                    string output = outputTask.Result;
+                    string error = errorTask.Result;
 
                     string result = output;
                     if (!string.IsNullOrEmpty(error))
@@ -227,95 +244,33 @@ namespace DarkHub.UI
         {
             try
             {
-                if (requiresAdmin)
+                if (requiresAdmin && !IsCurrentProcessAdmin())
                 {
-                    string escapedCommand = command.Replace("\"", "\\\"");
-
-                    string tempDir = System.IO.Path.GetTempPath();
-                    string scriptPath = System.IO.Path.Combine(tempDir, $"DarkHub_ElevatedCmd_{Guid.NewGuid()}.ps1");
-
-                    string scriptContent = @"
-                    # Script para executar comandos elevados sem mostrar janelas
-                    $command = """ + escapedCommand + @"""
-
-                    # Criar um objeto StartInfo para iniciar o processo
-                    $psi = New-Object System.Diagnostics.ProcessStartInfo
-                    $psi.FileName = 'cmd.exe'
-                    $psi.Arguments = '/c ' + $command
-                    $psi.RedirectStandardOutput = $true
-                    $psi.RedirectStandardError = $true
-                    $psi.UseShellExecute = $false
-                    $psi.CreateNoWindow = $true
-
-                    # Iniciar o processo
-                    $process = New-Object System.Diagnostics.Process
-                    $process.StartInfo = $psi
-                    $process.Start() | Out-Null
-
-                    # Capturar saída
-                    $output = $process.StandardOutput.ReadToEnd()
-                    $error = $process.StandardError.ReadToEnd()
-                    $process.WaitForExit()
-
-                    # Retornar resultado
-                    if ($error) {
-                        Write-Output ""Erro: $error""
-                    }
-                    Write-Output $output
-                    ";
-
-                    File.WriteAllText(scriptPath, scriptContent);
-
-                    try
+                    var psi = new ProcessStartInfo
                     {
-                        var psi = new ProcessStartInfo
-                        {
-                            FileName = "powershell.exe",
-                            Arguments = $"-ExecutionPolicy Bypass -Command \"Start-Process powershell -Verb RunAs -ArgumentList '-ExecutionPolicy Bypass -File \"\"{scriptPath}\"\"' -WindowStyle Hidden -Wait\"",
-                            UseShellExecute = true,
-                            CreateNoWindow = false,
-                            WindowStyle = ProcessWindowStyle.Minimized
-                        };
+                        FileName = "cmd.exe",
+                        Arguments = $"/d /c {command}",
+                        UseShellExecute = true,
+                        Verb = "runas",
+                        CreateNoWindow = false,
+                        WindowStyle = ProcessWindowStyle.Normal
+                    };
 
-                        AppendProgress(progressTextBox, $"Executando comando com privilégios de administrador: {command}");
+                    AppendProgress(progressTextBox, $"Executando comando com privilégios de administrador: {command}");
+                    using var elevatedProcess = Process.Start(psi);
+                    if (elevatedProcess == null)
+                        return "Erro: processo administrativo não foi iniciado.";
 
-                        var process = Process.Start(psi);
-                        await Task.Run(() =>
-                        {
-                            process.WaitForExit();
-                            System.Threading.Thread.Sleep(1000);
-                        });
-
-                        string outputPath = scriptPath + ".log";
-                        string result = "Comando executado com privilégios de administrador";
-
-                        if (File.Exists(outputPath))
-                        {
-                            result = File.ReadAllText(outputPath);
-                            File.Delete(outputPath);
-                        }
-
-                        try { File.Delete(scriptPath); } catch { }
-
-                        AppendProgress(progressTextBox, "Comando administrativo concluído.");
-                        return result;
-                    }
-                    catch (Exception ex)
-                    {
-                        AppendProgress(progressTextBox, $"Erro ao executar comando administrativo: {ex.Message}");
-                        return $"Erro: {ex.Message}";
-                    }
-                    finally
-                    {
-                        try { if (File.Exists(scriptPath)) File.Delete(scriptPath); } catch { }
-                    }
+                    await elevatedProcess.WaitForExitAsync();
+                    AppendProgress(progressTextBox, "Comando administrativo concluído.");
+                    return "Comando administrativo concluído.";
                 }
                 else
                 {
                     var processStartInfo = new ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/c {command}",
+                        Arguments = $"/d /c {command}",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
@@ -326,13 +281,32 @@ namespace DarkHub.UI
 
                     AppendProgress(progressTextBox, $"Executando: {command}");
 
-                    var process = new Process { StartInfo = processStartInfo };
+                    using var process = new Process { StartInfo = processStartInfo };
                     process.Start();
 
-                    string output = await process.StandardOutput.ReadToEndAsync();
-                    string error = await process.StandardError.ReadToEndAsync();
+                    Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
+                    Task<string> errorTask = process.StandardError.ReadToEndAsync();
 
-                    await process.WaitForExitAsync();
+                    try
+                    {
+                        await process.WaitForExitAsync().WaitAsync(TimeSpan.FromMinutes(10));
+                    }
+                    catch (TimeoutException)
+                    {
+                        try
+                        {
+                            process.Kill(entireProcessTree: true);
+                        }
+                        catch
+                        {
+                        }
+
+                        AppendProgress(progressTextBox, $"Tempo limite excedido ao executar: {command}");
+                        return "Erro: comando excedeu o tempo limite.";
+                    }
+
+                    string output = await outputTask;
+                    string error = await errorTask;
 
                     if (!string.IsNullOrEmpty(output))
                         AppendProgress(progressTextBox, output);
@@ -397,7 +371,7 @@ namespace DarkHub.UI
             return style;
         }
 
-        public static void AppendProgress(TextBox textBox, string message)
+        public static void AppendProgress(TextBox? textBox, string message)
         {
             if (textBox != null)
             {
@@ -409,7 +383,7 @@ namespace DarkHub.UI
             }
         }
 
-        public static Window CreateWindow(string title, double width, double height, Window owner = null, bool isModal = true, bool resizable = false)
+        public static Window CreateWindow(string title, double width, double height, Window? owner = null, bool isModal = true, bool resizable = false)
         {
             var window = new Window
             {
@@ -513,7 +487,7 @@ namespace DarkHub.UI
             return style;
         }
 
-        public static void CaptureAndRestoreOwnerState(Window owner, Action action)
+        public static void CaptureAndRestoreOwnerState(Window? owner, Action action)
         {
             WindowState ownerState = WindowState.Normal;
             bool isOwnerVisible = false;
@@ -534,7 +508,7 @@ namespace DarkHub.UI
             }
         }
 
-        public static void ShowMessage(Window owner, string message, string title, MessageBoxImage icon = MessageBoxImage.Information)
+        public static void ShowMessage(Window? owner, string message, string title, MessageBoxImage icon = MessageBoxImage.Information)
         {
             if (owner != null)
             {
@@ -549,6 +523,20 @@ namespace DarkHub.UI
             else
             {
                 MessageBox.Show(message, title, MessageBoxButton.OK, icon);
+            }
+        }
+
+        private static bool IsCurrentProcessAdmin()
+        {
+            try
+            {
+                using var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+                var principal = new System.Security.Principal.WindowsPrincipal(identity);
+                return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+            }
+            catch
+            {
+                return false;
             }
         }
     }

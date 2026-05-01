@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,7 +13,7 @@ namespace DarkHub.UI
         private TextBox _progressTextBox;
         private readonly Button _button;
 
-        public AdvancedNetworkOptimizer(Window owner, Button button)
+        public AdvancedNetworkOptimizer(Window? owner, Button button)
         {
             _button = button;
             (_progressWindow, _progressTextBox) = WindowFactory.CreateProgressWindow("Otimizando Configurações de Rede Avançadas");
@@ -76,7 +77,7 @@ namespace DarkHub.UI
             var ownerState = owner?.WindowState ?? WindowState.Normal;
             var isOwnerVisible = owner?.IsVisible ?? false;
 
-            Window window = null;
+            Window? window = null;
             bool? result = null;
 
             try
@@ -195,11 +196,6 @@ namespace DarkHub.UI
             }
         }
 
-        private async Task<bool?> ShowOptionsDialogAsync()
-        {
-            throw new NotImplementedException("Este método foi substituído por ShowOptionsDialog");
-        }
-
         private async Task ApplyNetworkOptimizationsAsync()
         {
             WindowFactory.AppendProgress(_progressTextBox, "Iniciando otimização avançada da rede...");
@@ -240,7 +236,7 @@ namespace DarkHub.UI
                 }
 
                 WindowFactory.AppendProgress(_progressTextBox, $"{ResourceManagerHelper.Instance.Disabling} Energy-Efficient Ethernet...");
-                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -Command \"Set-NetAdapterAdvancedProperty -Name * -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Disabled' -ErrorAction SilentlyContinue\"", _progressTextBox, true);
+                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Set-NetAdapterAdvancedProperty -Name * -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Disabled' -ErrorAction SilentlyContinue\"", _progressTextBox, true);
                 WindowFactory.AppendProgress(_progressTextBox, "EEE desativado.");
 
                 WindowFactory.AppendProgress(_progressTextBox, "Limpando cache ARP...");
@@ -249,7 +245,7 @@ namespace DarkHub.UI
 
                 WindowFactory.AppendProgress(_progressTextBox, $"{ResourceManagerHelper.Instance.Enabling} Receive Side Scaling (RSS)...");
                 await WindowFactory.ExecuteCommandWithOutputAsync("netsh int tcp set global rss=enabled", _progressTextBox, true);
-                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -Command \"Set-NetAdapterRss -Name * -NumberOfReceiveQueues 4 -ErrorAction SilentlyContinue\"", _progressTextBox, true);
+                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Set-NetAdapterRss -Name * -NumberOfReceiveQueues 4 -ErrorAction SilentlyContinue\"", _progressTextBox, true);
                 WindowFactory.AppendProgress(_progressTextBox, "RSS configurado.");
 
                 await Task.Delay(500);
@@ -320,7 +316,7 @@ namespace DarkHub.UI
                 }
 
                 WindowFactory.AppendProgress(_progressTextBox, "Reativando Energy-Efficient Ethernet...");
-                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -Command \"Set-NetAdapterAdvancedProperty -Name * -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Enabled' -ErrorAction SilentlyContinue\"", _progressTextBox, true);
+                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Set-NetAdapterAdvancedProperty -Name * -DisplayName 'Energy-Efficient Ethernet' -DisplayValue 'Enabled' -ErrorAction SilentlyContinue\"", _progressTextBox, true);
                 WindowFactory.AppendProgress(_progressTextBox, "EEE reativado.");
 
                 WindowFactory.AppendProgress(_progressTextBox, "Limpando cache ARP...");
@@ -329,7 +325,7 @@ namespace DarkHub.UI
 
                 WindowFactory.AppendProgress(_progressTextBox, "Restaurando Receive Side Scaling (RSS) para padrão...");
                 await WindowFactory.ExecuteCommandWithOutputAsync("netsh int tcp set global rss=default", _progressTextBox, true);
-                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -Command \"Set-NetAdapterRss -Name * -NumberOfReceiveQueues 2 -ErrorAction SilentlyContinue\"", _progressTextBox, true);
+                await WindowFactory.ExecuteCommandWithOutputAsync("powershell -NoProfile -ExecutionPolicy Bypass -Command \"Set-NetAdapterRss -Name * -NumberOfReceiveQueues 2 -ErrorAction SilentlyContinue\"", _progressTextBox, true);
                 WindowFactory.AppendProgress(_progressTextBox, "RSS restaurado.");
 
                 await Task.Delay(500);
@@ -368,20 +364,14 @@ namespace DarkHub.UI
 
         private async Task<string> GetActiveNetworkAdapterNameAsync()
         {
-            string output = await WindowFactory.ExecuteCommandWithOutputAsync("netsh interface show interface", _progressTextBox);
-            string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string line in lines)
-            {
-                if (line.Contains("Conectado") || line.Contains("Connected"))
-                {
-                    string[] parts = line.Split(new[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length >= 2)
-                    {
-                        return parts[parts.Length - 1].Trim();
-                    }
-                }
-            }
-            return null;
+            await Task.Yield();
+            var adapter = NetworkInterface.GetAllNetworkInterfaces()
+                .Where(n => n.OperationalStatus == OperationalStatus.Up)
+                .Where(n => n.NetworkInterfaceType != NetworkInterfaceType.Loopback && n.NetworkInterfaceType != NetworkInterfaceType.Tunnel)
+                .OrderByDescending(n => n.Speed)
+                .FirstOrDefault();
+
+            return adapter?.Name ?? string.Empty;
         }
 
         private void SetRegistryValue(string keyPath, string name, object value, RegistryValueKind kind)
